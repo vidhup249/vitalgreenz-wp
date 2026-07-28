@@ -1,38 +1,9 @@
 ---
-const response = await fetch(
-  `${import.meta.env.PUBLIC_WORDPRESS_URL}/wp-json/wc/store/v1/products`
-);
-
-const products = await response.json();
+console.log("PUBLIC_WORDPRESS_URL:", import.meta.env.PUBLIC_WORDPRESS_URL);
 ---
 
-<html lang="en">
-  <head>
-    <title>Products</title>
-  </head>
-
+<html>
   <body>
-    <h1>VitalGreenz 1 Products</h1>
-
-    {
-      products.map((product) => (
-        <div style="margin-bottom:40px;">
-          <h2>{product.name}</h2>
-
-          <img
-            src={product.images[0]?.src}
-            alt={product.name}
-            width="250"
-          />
-
-          <p>
-  {new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-  }).format(product.prices.price / 100)}
-</p>
-        </div>
-      ))
-    }
+    <h1>Environment Test</h1>
   </body>
 </html>
