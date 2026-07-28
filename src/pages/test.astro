@@ -1,0 +1,38 @@
+---
+const response = await fetch(
+  `${import.meta.env.PUBLIC_WORDPRESS_URL}/wp-json/wc/store/v1/products`
+);
+
+const products = await response.json();
+---
+
+<html lang="en">
+  <head>
+    <title>Products</title>
+  </head>
+
+  <body>
+    <h1>VitalGreenz Products</h1>
+
+    {
+      products.map((product) => (
+        <div style="margin-bottom:40px;">
+          <h2>{product.name}</h2>
+
+          <img
+            src={product.images[0]?.src}
+            alt={product.name}
+            width="250"
+          />
+
+          <p>
+  {new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  }).format(product.prices.price / 100)}
+</p>
+        </div>
+      ))
+    }
+  </body>
+</html>

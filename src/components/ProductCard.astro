@@ -1,0 +1,32 @@
+---
+import type { WooProduct } from '../lib/woocommerce';
+import { formatPrice } from '../lib/woocommerce';
+
+interface Props {
+	product: WooProduct;
+}
+
+const { product } = Astro.props;
+const image = product.images?.[0];
+---
+
+<a href={product.permalink} class="group block">
+	<div class="aspect-square overflow-hidden rounded-lg bg-emerald-50">
+		{
+			image && (
+				<img
+					src={image.src}
+					srcset={image.srcset}
+					sizes="(min-width: 640px) 25vw, 50vw"
+					alt={image.alt || product.name}
+					loading="lazy"
+					class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+				/>
+			)
+		}
+	</div>
+	<h3 class="mt-3 text-sm font-medium text-emerald-950">{product.name}</h3>
+	<p class="mt-1 text-sm text-emerald-800/80">
+		{formatPrice(product.prices.price, product.prices)}
+	</p>
+</a>
