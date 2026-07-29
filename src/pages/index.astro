@@ -1,10 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import ProductGrid from '../components/ProductGrid.astro';
+import Marquee from '../components/Marquee.astro';
+import Story from '../components/Story.astro';
+import FeatureCards from '../components/FeatureCards.astro';
+import StatsRow from '../components/StatsRow.astro';
+import ProductShowcase from '../components/ProductShowcase.astro';
+import FlavourFinder from '../components/FlavourFinder.astro';
+import Ritual from '../components/Ritual.astro';
+import Testimonials from '../components/Testimonials.astro';
+import FAQ from '../components/FAQ.astro';
 ---
 
-<Layout>
-	<Hero />
-	<ProductGrid />
+<Layout solid={false}>
+	<main>
+		<Hero />
+		<Marquee />
+		<Story />
+		<FeatureCards />
+		<StatsRow />
+		<ProductShowcase />
+		<FlavourFinder />
+		<Ritual />
+		<Testimonials />
+		<FAQ />
+	</main>
 </Layout>

@@ -1,0 +1,152 @@
+---
+import CartButton from './cart/CartButton.tsx';
+
+interface Props {
+	/** Solid from the top (pages without a dark hero). */
+	solid?: boolean;
+}
+const { solid = false } = Astro.props;
+
+// On the homepage anchors point to sections; elsewhere they jump home first.
+const links = [
+	{ label: 'Shop', href: solid ? '/#shop' : '#shop' },
+	{ label: 'Our Story', href: solid ? '/#story' : '#story' },
+	{ label: 'Find Yours', href: solid ? '/#blend' : '#blend' },
+	{ label: 'About', href: '/about' },
+	{ label: 'Contact', href: '/contact' },
+];
+---
+
+<header
+	id="navbar"
+	data-solid={String(solid)}
+	data-scrolled={String(solid)}
+	class="fixed inset-x-0 top-0 z-50 transition-[background,box-shadow,padding] duration-500"
+>
+	<nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
+		<!-- Wordmark -->
+		<a href={solid ? '/' : '#top'} class="flex items-center gap-2 font-bold tracking-tight" aria-label="Wayomile home">
+			<span class="grid h-8 w-8 place-items-center rounded-full bg-lime text-ink">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+					<path d="M2 21c0-3 1.85-5.36 5.08-6" />
+				</svg>
+			</span>
+			<span class="nav-word text-lg">Wayomile</span>
+		</a>
+
+		<!-- Desktop links -->
+		<ul class="nav-links absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full px-2 py-1.5 lg:flex">
+			{
+				links.map((l) => (
+					<li>
+						<a
+							href={l.href}
+							class="rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-300 hover:bg-ink/10"
+						>
+							{l.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="flex items-center gap-2.5">
+			<CartButton client:load />
+
+			<!-- Mobile toggle -->
+			<button
+				id="menu-toggle"
+				aria-label="Open menu"
+				aria-expanded="false"
+				class="nav-word grid h-10 w-10 place-items-center rounded-full transition hover:bg-ink/10 lg:hidden"
+			>
+				<svg id="menu-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+					<line x1="4" y1="8" x2="20" y2="8" /><line x1="4" y1="16" x2="20" y2="16" />
+				</svg>
+			</button>
+		</div>
+	</nav>
+
+	<!-- Mobile menu -->
+	<div
+		id="mobile-menu"
+		class="pointer-events-none fixed inset-x-0 top-0 z-40 max-h-0 overflow-hidden bg-paper/95 backdrop-blur-xl transition-[max-height,opacity] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] lg:hidden"
+		style="opacity:0"
+	>
+		<ul class="flex flex-col gap-1 px-6 pb-8 pt-24 text-ink">
+			{
+				links.map((l, i) => (
+					<li>
+						<a
+							href={l.href}
+							class="mobile-link block border-b border-ink/10 py-4 text-2xl font-semibold tracking-tight"
+							style={`transition-delay:${i * 40}ms`}
+						>
+							{l.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</header>
+
+<style>
+	/* Text colour flips based on scroll state (light over hero video, ink when scrolled) */
+	.nav-word,
+	.nav-links a {
+		color: white;
+	}
+	#navbar[data-scrolled='true'] .nav-word,
+	#navbar[data-scrolled='true'] .nav-links a {
+		color: var(--color-ink);
+	}
+	#navbar[data-scrolled='true'] {
+		background: color-mix(in srgb, var(--color-paper) 82%, transparent);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		box-shadow: 0 1px 0 color-mix(in srgb, var(--color-ink) 8%, transparent);
+	}
+	.nav-links {
+		background: color-mix(in srgb, white 12%, transparent);
+		backdrop-filter: blur(8px);
+	}
+	#navbar[data-scrolled='true'] .nav-links {
+		background: color-mix(in srgb, var(--color-ink) 5%, transparent);
+	}
+</style>
+
+<script>
+	const nav = document.getElementById('navbar')!;
+	const toggle = document.getElementById('menu-toggle')!;
+	const menu = document.getElementById('mobile-menu')!;
+	const icon = document.getElementById('menu-icon')!;
+
+	const solid = nav.dataset.solid === 'true';
+	const onScroll = () => {
+		nav.dataset.scrolled = solid || window.scrollY > 40 ? 'true' : 'false';
+	};
+	onScroll();
+	window.addEventListener('scroll', onScroll, { passive: true });
+
+	let openState = false;
+	const setMenu = (open: boolean) => {
+		openState = open;
+		toggle.setAttribute('aria-expanded', String(open));
+		menu.style.maxHeight = open ? '100dvh' : '0px';
+		menu.style.opacity = open ? '1' : '0';
+		menu.style.pointerEvents = open ? 'auto' : 'none';
+		document.body.style.overflow = open ? 'hidden' : '';
+		const lenis = (window as any).lenis;
+		open ? lenis?.stop() : lenis?.start();
+		icon.innerHTML = open
+			? '<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>'
+			: '<line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/>';
+		// force ink text when menu open
+		nav.dataset.scrolled = open || solid || window.scrollY > 40 ? 'true' : 'false';
+	};
+
+	toggle.addEventListener('click', () => setMenu(!openState));
+	menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+</script>

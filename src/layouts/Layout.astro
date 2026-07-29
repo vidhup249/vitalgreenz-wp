@@ -1,26 +1,146 @@
 ---
+import '@fontsource-variable/plus-jakarta-sans';
 import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/cart/CartDrawer.tsx';
+
+interface Props {
+	title?: string;
+	description?: string;
+	/** Solid navbar (for pages without a dark hero behind it). Homepage passes false. */
+	solid?: boolean;
+	/** Hide footer (e.g. focused checkout). */
+	hideFooter?: boolean;
+}
+
+const {
+	title = 'Wayomile — Premium Indian Tea',
+	description = 'Experience the heritage of Indian tea. Small-grower sourced, sustainably cultivated, crafted for exceptional taste.',
+	solid = true,
+	hideFooter = false,
+} = Astro.props;
+
+const wpOrigin = new URL(import.meta.env.PUBLIC_WORDPRESS_URL).origin;
 ---
+
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+
+		<!-- Fast product images: warm up the WordPress media origin early -->
+		<link rel="preconnect" href={wpOrigin} crossorigin />
+		<link rel="dns-prefetch" href={wpOrigin} />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta name="theme-color" content="#10241a" />
 	</head>
 	<body>
+		<Navbar solid={solid} />
 		<slot />
+		{!hideFooter && <Footer />}
+		<CartDrawer client:load />
+
+		<script>
+			// Weighted / inertia scroll via Lenis (skipped for reduced-motion users).
+			import Lenis from 'lenis';
+
+			const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			if (!reduce) {
+				const lenis = new Lenis({
+					lerp: 0.085, // lower = heavier / more inertia
+					wheelMultiplier: 1,
+					touchMultiplier: 1.4,
+					smoothWheel: true,
+				});
+				(window as any).lenis = lenis;
+
+				const raf = (time: number) => {
+					lenis.raf(time);
+					requestAnimationFrame(raf);
+				};
+				requestAnimationFrame(raf);
+
+				// Smoothly scroll in-page anchor links through Lenis.
+				document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+					a.addEventListener('click', (e) => {
+						const id = a.getAttribute('href')!;
+						if (id.length < 2) return;
+						const target = document.querySelector(id);
+						if (!target) return;
+						e.preventDefault();
+						lenis.scrollTo(target as HTMLElement, { offset: -72, duration: 1.4 });
+					});
+				});
+			}
+		</script>
+
+		<script>
+			// Scroll-reveal: reveal elements once as they enter the viewport.
+			const setup = () => {
+				const els = document.querySelectorAll('[data-reveal]');
+				if (!('IntersectionObserver' in window) || !els.length) {
+					els.forEach((el) => el.classList.add('is-visible'));
+					return;
+				}
+				const io = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (entry.isIntersecting) {
+								entry.target.classList.add('is-visible');
+								io.unobserve(entry.target);
+							}
+						}
+					},
+					{ threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+				);
+				els.forEach((el) => io.observe(el));
+			};
+
+			// Count-up numbers (elements with [data-countup])
+			const counters = () => {
+				const nums = document.querySelectorAll<HTMLElement>('[data-countup]');
+				if (!nums.length) return;
+				const io = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (!entry.isIntersecting) continue;
+							const el = entry.target as HTMLElement;
+							const target = parseFloat(el.dataset.countup || '0');
+							const suffix = el.dataset.suffix || '';
+							const dur = 1400;
+							let start = 0;
+							const step = (ts: number) => {
+								if (!start) start = ts;
+								const p = Math.min((ts - start) / dur, 1);
+								const eased = 1 - Math.pow(1 - p, 3);
+								const val = Math.round(target * eased);
+								el.textContent = val.toLocaleString() + suffix;
+								if (p < 1) requestAnimationFrame(step);
+							};
+							requestAnimationFrame(step);
+							io.unobserve(el);
+						}
+					},
+					{ threshold: 0.5 }
+				);
+				nums.forEach((n) => io.observe(n));
+			};
+
+			setup();
+			counters();
+			document.addEventListener('astro:after-swap', () => {
+				setup();
+				counters();
+			});
+		</script>
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

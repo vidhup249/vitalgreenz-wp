@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const details = [
+	{ label: 'Call us', value: '+91 9633816338', href: 'tel:+919633816338', icon: '📞' },
+	{ label: 'Email', value: 'support@wayomile.in', href: 'mailto:support@wayomile.in', icon: '✉️' },
+	{ label: 'Hours', value: 'Mon–Sat · 9am – 7pm IST', href: null, icon: '🕒' },
+];
+---
+
+<Layout title="Contact — Wayomile" description="Get in touch with the Wayomile team. We usually reply within a day.">
+	<main class="bg-cream">
+		<section class="px-5 pt-36 sm:px-8">
+			<div class="mx-auto max-w-6xl">
+				<p data-reveal="fade" class="eyebrow text-ink/60">Contact</p>
+				<h1 data-reveal class="display mt-5 max-w-3xl text-[clamp(2.5rem,7vw,4.5rem)] text-ink">
+					Let's talk <span class="text-brand">tea.</span>
+				</h1>
+				<p data-reveal="fade" class="mt-5 max-w-xl text-lg text-ink/65 text-pretty">
+					Questions about a blend, a bulk order, or partnering with us as a grower? Drop us a line —
+					we usually reply within a day.
+				</p>
+			</div>
+		</section>
+
+		<section class="px-5 py-16 sm:px-8">
+			<div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1fr_1.2fr] md:gap-14">
+				<!-- Details -->
+				<div data-reveal="left" class="space-y-4">
+					{
+						details.map((d) => (
+							<div class="flex items-start gap-4 rounded-3xl bg-paper p-6 ring-1 ring-ink/5">
+								<div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-cream text-xl">{d.icon}</div>
+								<div>
+									<p class="text-sm font-semibold uppercase tracking-wider text-ink/50">{d.label}</p>
+									{d.href ? (
+										<a href={d.href} class="mt-1 block text-lg font-bold text-ink transition hover:text-brand">
+											{d.value}
+										</a>
+									) : (
+										<p class="mt-1 text-lg font-bold text-ink">{d.value}</p>
+									)}
+								</div>
+							</div>
+						))
+					}
+					<div class="rounded-3xl bg-brand-dark p-6 text-cream">
+						<p class="font-semibold">Are you a small tea grower?</p>
+						<p class="mt-1 text-sm text-cream/75 text-pretty">
+							We're always looking to partner with family-run gardens. Tell us about yours.
+						</p>
+					</div>
+				</div>
+
+				<!-- Form -->
+				<div data-reveal="right">
+					<form id="contact-form" class="rounded-3xl bg-paper p-6 ring-1 ring-ink/5 sm:p-8">
+						<div class="grid gap-4 sm:grid-cols-2">
+							<label class="block">
+								<span class="text-sm font-semibold text-ink/70">Name</span>
+								<input required name="name" type="text" class="field" placeholder="Your name" />
+							</label>
+							<label class="block">
+								<span class="text-sm font-semibold text-ink/70">Email</span>
+								<input required name="email" type="email" class="field" placeholder="you@email.com" />
+							</label>
+						</div>
+						<label class="mt-4 block">
+							<span class="text-sm font-semibold text-ink/70">Subject</span>
+							<input name="subject" type="text" class="field" placeholder="What's this about?" />
+						</label>
+						<label class="mt-4 block">
+							<span class="text-sm font-semibold text-ink/70">Message</span>
+							<textarea required name="message" rows="5" class="field resize-none" placeholder="How can we help?"></textarea>
+						</label>
+						<button
+							type="submit"
+							class="group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-8 py-4 text-sm font-semibold text-cream transition duration-300 hover:bg-brand sm:w-auto"
+						>
+							Send message
+							<span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+						</button>
+						<p id="contact-success" class="mt-4 hidden rounded-2xl bg-lime/30 px-4 py-3 text-sm font-medium text-ink">
+							✓ Thanks! Your message is on its way — we'll be in touch soon.
+						</p>
+					</form>
+				</div>
+			</div>
+		</section>
+	</main>
+</Layout>
+
+<style>
+	.field {
+		margin-top: 0.4rem;
+		width: 100%;
+		border-radius: 0.9rem;
+		border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+		background: var(--color-cream);
+		padding: 0.75rem 1rem;
+		font-size: 0.95rem;
+		color: var(--color-ink);
+		transition: border-color 0.2s, box-shadow 0.2s;
+	}
+	.field::placeholder {
+		color: color-mix(in srgb, var(--color-ink) 40%, transparent);
+	}
+	.field:focus {
+		outline: none;
+		border-color: var(--color-brand);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 18%, transparent);
+	}
+</style>
+
+<script>
+	// NOTE: static site — no backend wired yet. Shows a success state on submit.
+	// Hook this up to Formspree / a serverless endpoint / WP contact form to deliver mail.
+	const form = document.getElementById('contact-form') as HTMLFormElement | null;
+	const success = document.getElementById('contact-success');
+	form?.addEventListener('submit', (e) => {
+		e.preventDefault();
+		if (!form.checkValidity()) {
+			form.reportValidity();
+			return;
+		}
+		success?.classList.remove('hidden');
+		form.reset();
+	});
+</script>

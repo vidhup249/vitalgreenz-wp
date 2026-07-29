@@ -1,0 +1,61 @@
+---
+const quotes = [
+	{
+		text: 'The saffron tea genuinely stopped me buying supermarket brands. You can taste that it was packed fresh.',
+		name: 'Ananya R.',
+		role: 'Bengaluru',
+		color: '#e7a33a',
+	},
+	{
+		text: 'Knowing it comes from small growers — and it actually tastes better — is the whole package for me.',
+		name: 'Vikram S.',
+		role: 'Mumbai',
+		color: '#3f7d54',
+	},
+	{
+		text: 'Built my own rose-green blend in the Blend Lab. Ridiculously fun, and now it is my daily cup.',
+		name: 'Meera K.',
+		role: 'Pune',
+		color: '#e0669a',
+	},
+];
+---
+
+<section class="bg-brand-dark px-5 py-24 text-cream sm:px-8 sm:py-32">
+	<div class="mx-auto max-w-6xl">
+		<div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+			<h2 data-reveal class="display max-w-xl text-[clamp(2rem,5vw,3.5rem)]">
+				Why they keep the <span class="text-lime">kettle on.</span>
+			</h2>
+			<p data-reveal="fade" class="max-w-xs text-cream/70">
+				Real cups, real people — here's what lands in our inbox.
+			</p>
+		</div>
+
+		<div class="mt-14 grid gap-5 md:grid-cols-3">
+			{
+				quotes.map((q, i) => (
+					<figure
+						data-reveal
+						style={`--reveal-delay:${i * 120}ms`}
+						class="flex flex-col rounded-3xl bg-white/5 p-8 ring-1 ring-white/10 transition duration-500 hover:bg-white/10"
+					>
+						<div class="text-4xl leading-none text-lime">"</div>
+						<blockquote class="mt-3 flex-1 text-lg leading-relaxed text-cream/90 text-pretty">
+							{q.text}
+						</blockquote>
+						<figcaption class="mt-6 flex items-center gap-3">
+							<span class="grid h-10 w-10 place-items-center rounded-full font-bold text-ink" style={`background:${q.color}`}>
+								{q.name.charAt(0)}
+							</span>
+							<span>
+								<span class="block text-sm font-semibold">{q.name}</span>
+								<span class="block text-sm text-cream/60">{q.role}</span>
+							</span>
+						</figcaption>
+					</figure>
+				))
+			}
+		</div>
+	</div>
+</section>

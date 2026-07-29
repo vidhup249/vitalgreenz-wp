@@ -1,0 +1,127 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const values = [
+	{
+		icon: '🤝',
+		title: 'Empowering Small Tea Growers',
+		body: 'We buy directly from family-run gardens at fair prices — no middlemen skimming the margin, more going back to the people who grow the leaf.',
+	},
+	{
+		icon: '🌱',
+		title: 'Sustainably Cultivated',
+		body: 'Grown with responsible practices that protect soil, water and biodiversity — so the gardens that feed us today are thriving tomorrow.',
+	},
+	{
+		icon: '✨',
+		title: 'Crafted for Exceptional Taste',
+		body: 'Small-batch blended and packed to order. Freshness you can smell the moment you open the pack, and taste in every cup.',
+	},
+];
+
+const stats = [
+	{ value: 6, suffix: '', label: 'Signature blends' },
+	{ value: 100, suffix: '%', label: 'Single-origin leaf' },
+	{ value: 48, suffix: 'h', label: 'Garden to your pack' },
+	{ value: 1200, suffix: '+', label: 'Happy sippers' },
+];
+---
+
+<Layout title="About — Wayomile" description="The story behind Wayomile: premium Indian tea, sourced fairly from small growers and packed fresh.">
+	<main>
+		<!-- Hero banner -->
+		<section class="relative overflow-hidden bg-ink px-5 pb-20 pt-36 text-cream sm:px-8">
+			<div class="animate-gradient absolute inset-0 -z-10 opacity-70" style="background-image:radial-gradient(60% 60% at 20% 20%, rgba(63,125,84,0.7), transparent), radial-gradient(50% 50% at 85% 30%, rgba(183,226,58,0.25), transparent), radial-gradient(60% 60% at 70% 90%, rgba(231,163,58,0.25), transparent)"></div>
+			<div class="mx-auto max-w-4xl text-center">
+				<p data-reveal="fade" class="eyebrow justify-center text-cream/60">Our Story</p>
+				<h1 data-reveal class="display mt-6 text-[clamp(2.5rem,7vw,5rem)]">
+					Sip the legacy,<br /><span class="text-lime">taste the tradition.</span>
+				</h1>
+				<p data-reveal="fade" class="mx-auto mt-6 max-w-2xl text-lg text-cream/80 text-pretty">
+					Wayomile began with a simple belief — that the finest cup starts with fairness. We connect
+					small Indian tea gardens directly to your kitchen, with nothing lost in between.
+				</p>
+			</div>
+		</section>
+
+		<!-- Story -->
+		<section class="bg-cream px-5 py-24 sm:px-8">
+			<div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-2 md:items-center">
+				<div data-reveal="left" class="grid grid-cols-2 gap-4">
+					<div class="aspect-[4/5] overflow-hidden rounded-3xl">
+						<div class="animate-gradient h-full w-full" style="background-image:radial-gradient(70% 70% at 30% 20%, rgba(63,125,84,0.9), transparent), radial-gradient(60% 60% at 80% 90%, rgba(231,163,58,0.7), transparent); background-color:#123f24"></div>
+					</div>
+					<div class="mt-8 aspect-[4/5] overflow-hidden rounded-3xl">
+						<div class="animate-gradient h-full w-full" style="background-image:radial-gradient(70% 70% at 70% 30%, rgba(183,226,58,0.8), transparent), radial-gradient(60% 60% at 20% 80%, rgba(31,107,59,0.9), transparent); background-color:#1f6b3b; animation-delay:-4s"></div>
+					</div>
+				</div>
+				<div data-reveal="right">
+					<p class="eyebrow text-ink/60">Why we started</p>
+					<h2 class="display mt-5 text-[clamp(1.8rem,4.5vw,3rem)] text-ink">
+						Great tea shouldn't cost the grower.
+					</h2>
+					<p class="mt-5 text-lg leading-relaxed text-ink/75 text-pretty">
+						Too much of the tea on shelves travels through a maze of traders before it reaches a cup —
+						losing freshness and fairness along the way. We do it differently: work hand-in-hand with
+						small gardens, roast and blend in small batches, and pack only when you order.
+					</p>
+					<p class="mt-4 text-lg leading-relaxed text-ink/75 text-pretty">
+						No middlemen. No shortcuts. No compromise on taste.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Values -->
+		<section class="bg-sand px-5 py-24 sm:px-8">
+			<div class="mx-auto max-w-6xl">
+				<h2 data-reveal class="display max-w-2xl text-[clamp(1.8rem,4.5vw,3rem)] text-ink">
+					What we stand for.
+				</h2>
+				<div class="mt-12 grid gap-5 md:grid-cols-3">
+					{
+						values.map((v, i) => (
+							<article data-reveal style={`--reveal-delay:${i * 120}ms`} class="rounded-3xl bg-paper p-8 ring-1 ring-ink/5">
+								<div class="grid h-12 w-12 place-items-center rounded-2xl bg-cream text-2xl">{v.icon}</div>
+								<h3 class="mt-5 text-xl font-bold">{v.title}</h3>
+								<p class="mt-3 text-ink/70 text-pretty">{v.body}</p>
+							</article>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- Stats -->
+		<section class="bg-cream px-5 py-24 sm:px-8">
+			<div class="mx-auto max-w-6xl">
+				<div class="grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-4">
+					{
+						stats.map((s, i) => (
+							<div data-reveal style={`--reveal-delay:${i * 100}ms`} class="text-center">
+								<div class="display text-[clamp(2.5rem,7vw,4.5rem)] text-ink">
+									<span data-countup={String(s.value)} data-suffix={s.suffix}>0{s.suffix}</span>
+								</div>
+								<div class="mx-auto mt-2 h-px w-10 bg-ink/20"></div>
+								<p class="mt-3 text-sm font-medium text-ink/60">{s.label}</p>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- CTA -->
+		<section class="bg-cream px-5 pb-24 sm:px-8">
+			<div class="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-brand-dark px-8 py-16 text-center text-cream sm:py-20">
+				<h2 data-reveal class="display text-[clamp(2rem,5vw,3.5rem)]">Taste the difference.</h2>
+				<div data-reveal="fade" class="mt-8 flex justify-center">
+					<a href="/#shop" class="group inline-flex items-center gap-2 rounded-full bg-lime px-8 py-4 text-sm font-semibold text-ink transition hover:bg-cream">
+						Shop the collection
+						<span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+					</a>
+				</div>
+			</div>
+		</section>
+	</main>
+</Layout>

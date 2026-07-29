@@ -1,0 +1,124 @@
+---
+// Three-card band (Horizon language): a dark card with a playful toggle,
+// an image/label card, and a light "taste profile" stats card.
+const profiles = [
+	{ label: 'Floral', value: 82 },
+	{ label: 'Malty', value: 64 },
+	{ label: 'Spiced', value: 91 },
+];
+---
+
+<section class="bg-cream px-5 pb-8 sm:px-8">
+	<div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-3">
+		<!-- Card A: dark, with Hot/Iced toggle -->
+		<article data-reveal class="flex flex-col justify-between rounded-3xl bg-ink p-7 text-cream">
+			<div>
+				<span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b7e23a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M4 9h13a3 3 0 0 1 0 6h-1" /><path d="M4 9v6a4 4 0 0 0 4 4h5a4 4 0 0 0 4-4V9z" />
+						<path d="M8 3c0 1-1 1-1 2s1 1 1 2M12 3c0 1-1 1-1 2s1 1 1 2" />
+					</svg>
+				</span>
+				<h3 class="mt-6 text-2xl font-bold">
+					Small-batch blended with
+					<span data-brew-word class="text-lime">tournament-grade care</span> — brewed your way.
+				</h3>
+				<p class="mt-3 text-cream/70" data-brew-copy>Steep hot at 90°C for a bold, aromatic cup.</p>
+			</div>
+
+			<!-- Playful toggle -->
+			<div class="mt-8 flex items-center gap-3">
+				<button
+					id="brew-toggle"
+					role="switch"
+					aria-checked="false"
+					aria-label="Toggle hot or iced brew"
+					class="relative h-8 w-14 rounded-full bg-white/15 transition-colors duration-300"
+				>
+					<span
+						id="brew-knob"
+						class="absolute left-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-lime text-xs transition-transform duration-300 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]"
+					>🔥</span>
+				</button>
+				<span id="brew-mode" class="text-sm font-semibold">Hot brew</span>
+			</div>
+		</article>
+
+		<!-- Card B: image/label -->
+		<article data-reveal style="--reveal-delay:120ms" class="group relative overflow-hidden rounded-3xl bg-brand p-7 text-cream">
+			<div class="animate-gradient absolute inset-0 opacity-90 transition-transform duration-700 group-hover:scale-105" style="background-image:radial-gradient(60% 60% at 30% 20%, rgba(183,226,58,0.55), transparent), radial-gradient(70% 70% at 80% 90%, rgba(18,63,36,0.95), transparent); background-color:#1f6b3b"></div>
+			<div class="relative flex h-full min-h-56 flex-col justify-between">
+				<span class="glass inline-flex w-fit rounded-full px-4 py-1.5 text-sm font-medium">Loose-leaf &amp; granules</span>
+				<div>
+					<h3 class="text-2xl font-bold">From whole leaves to fine granules</h3>
+					<p class="mt-2 text-cream/80">Choose the format that fits your ritual — the garden stays the same.</p>
+				</div>
+			</div>
+		</article>
+
+		<!-- Card C: taste profile stats -->
+		<article data-reveal style="--reveal-delay:240ms" class="flex flex-col rounded-3xl bg-paper p-7 ring-1 ring-ink/5">
+			<div class="flex items-end gap-2">
+				<span class="text-5xl font-bold tabular-nums" data-countup="6">0</span>
+				<span class="pb-1.5 text-xl font-bold">signature</span>
+			</div>
+			<p class="mt-1 text-sm font-semibold text-ink/70">Blends, each with its own character.</p>
+			<p class="mt-2 text-sm text-ink/60">Tasting notes profiled so you always find your match.</p>
+
+			<div class="mt-6 space-y-3">
+				{
+					profiles.map((p, i) => (
+						<div class="flex items-center gap-3">
+							<span class="w-16 text-sm text-ink/70">{p.label}</span>
+							<div class="h-2.5 flex-1 overflow-hidden rounded-full bg-ink/10">
+								<div
+									data-reveal="fade"
+									class="h-full rounded-full bg-brand transition-[width] duration-1000 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+									style={`width:0%; --w:${p.value}%; --reveal-delay:${300 + i * 120}ms`}
+								/>
+							</div>
+							<span class="w-8 text-right text-sm font-semibold tabular-nums">{p.value}</span>
+						</div>
+					))
+				}
+			</div>
+		</article>
+	</div>
+</section>
+
+<script>
+	// Hot/Iced brew toggle
+	const toggle = document.getElementById('brew-toggle');
+	const knob = document.getElementById('brew-knob');
+	const mode = document.getElementById('brew-mode');
+	const word = document.querySelector('[data-brew-word]');
+	const copy = document.querySelector('[data-brew-copy]');
+	let iced = false;
+	toggle?.addEventListener('click', () => {
+		iced = !iced;
+		toggle.setAttribute('aria-checked', String(iced));
+		if (knob) {
+			knob.style.transform = iced ? 'translateX(24px)' : 'translateX(0)';
+			knob.textContent = iced ? '🧊' : '🔥';
+		}
+		if (mode) mode.textContent = iced ? 'Iced brew' : 'Hot brew';
+		if (word) word.textContent = iced ? 'crisp, cold-steeped clarity' : 'tournament-grade care';
+		if (copy) copy.textContent = iced
+			? 'Cold-steep 4 hours for a smooth, refreshing pour.'
+			: 'Steep hot at 90°C for a bold, aromatic cup.';
+	});
+
+	// Animate taste-profile bars to their target width when revealed
+	document.querySelectorAll<HTMLElement>('[style*="--w"]').forEach((el) => {
+		const io = new IntersectionObserver((entries) => {
+			entries.forEach((e) => {
+				if (e.isIntersecting) {
+					const w = getComputedStyle(el).getPropertyValue('--w');
+					el.style.width = w;
+					io.unobserve(el);
+				}
+			});
+		}, { threshold: 0.5 });
+		io.observe(el);
+	});
+</script>

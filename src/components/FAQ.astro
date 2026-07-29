@@ -1,0 +1,59 @@
+---
+// Native <details> accordion — accessible & works without JS.
+const faqs = [
+	{
+		q: 'How fresh is the tea when it arrives?',
+		a: 'We pack every order the day it ships — never from bulk stock sitting on a shelf. From our gardens to your pack in about 48 hours.',
+	},
+	{
+		q: 'Where does your tea come from?',
+		a: 'Directly from small, family-run gardens across India. No middlemen — which means fairer prices for growers and a fresher, single-origin cup for you.',
+	},
+	{
+		q: 'Loose leaf or granules — what should I pick?',
+		a: 'Loose leaf gives a more nuanced, layered cup; granules brew fast and strong. Most blends come in both, so it comes down to your ritual.',
+	},
+	{
+		q: 'Can I create my own blend?',
+		a: 'Yes — head to the Blend Lab above. Choose a base, a flavour and a format, and we blend and pack it to order just for you.',
+	},
+	{
+		q: 'What are the shipping options?',
+		a: 'We ship pan-India. Orders over ₹500 ship free; everything else is a flat, transparent rate calculated at checkout.',
+	},
+];
+---
+
+<section id="faq" class="bg-cream px-5 py-24 sm:px-8 sm:py-32">
+	<div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
+		<div>
+			<p data-reveal="fade" class="eyebrow text-ink/60">Got questions?</p>
+			<h2 data-reveal class="display mt-5 text-[clamp(2rem,5vw,3.5rem)] text-ink">
+				We've got<br /><span class="text-brand">answers.</span>
+			</h2>
+			<p data-reveal="fade" class="mt-5 max-w-xs text-ink/60 text-pretty">
+				Everything about freshness, sourcing and how we get tea to your cup.
+			</p>
+		</div>
+
+		<div data-reveal class="divide-y divide-ink/10 border-y border-ink/10">
+			{
+				faqs.map((f) => (
+					<details class="faq group">
+						<summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-lg font-semibold [&::-webkit-details-marker]:hidden">
+							{f.q}
+							<span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink/5 text-xl transition-transform duration-300 group-open:rotate-45">
+								+
+							</span>
+						</summary>
+						<div class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-open:grid-rows-[1fr]">
+							<p class="min-h-0 overflow-hidden pr-12 text-ink/70 text-pretty">
+								<span class="block pb-5">{f.a}</span>
+							</p>
+						</div>
+					</details>
+				))
+			}
+		</div>
+	</div>
+</section>

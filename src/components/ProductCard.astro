@@ -1,32 +1,79 @@
 ---
 import type { WooProduct } from '../lib/woocommerce';
-import { formatPrice } from '../lib/woocommerce';
+import { formatPrice, stripHtml } from '../lib/woocommerce';
+import AddToCart from './cart/AddToCart.tsx';
 
 interface Props {
 	product: WooProduct;
+	index?: number;
 }
 
-const { product } = Astro.props;
+const { product, index = 0 } = Astro.props;
 const image = product.images?.[0];
+const cat = product.categories.find((c) => c.name.toLowerCase() !== 'uncategorized');
+const summary = stripHtml(product.short_description, 68);
+const slugs = product.categories.map((c) => c.slug).join(' ');
+// First few images eager for instant paint; rest lazy.
+const eager = index < 4;
 ---
 
-<a href={product.permalink} class="group block">
-	<div class="aspect-square overflow-hidden rounded-lg bg-emerald-50">
+<article
+	data-product
+	data-category={slugs}
+	data-reveal
+	style={`--reveal-delay:${(index % 4) * 90}ms`}
+	class="group flex flex-col overflow-hidden rounded-3xl bg-paper p-3 ring-1 ring-ink/5 transition duration-500 hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(16,36,26,0.35)]"
+>
+	<a href={`/products/${product.slug}`} class="relative block aspect-square overflow-hidden rounded-2xl bg-cream">
 		{
 			image && (
 				<img
 					src={image.src}
 					srcset={image.srcset}
-					sizes="(min-width: 640px) 25vw, 50vw"
+					sizes="(min-width:1024px) 22vw, (min-width:640px) 30vw, 45vw"
 					alt={image.alt || product.name}
-					loading="lazy"
-					class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+					width="600"
+					height="600"
+					loading={eager ? 'eager' : 'lazy'}
+					decoding="async"
+					fetchpriority={eager ? 'high' : 'auto'}
+					class="h-full w-full object-cover transition-transform duration-700 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
 				/>
 			)
 		}
+		{product.on_sale && (
+			<span class="absolute left-3 top-3 rounded-full bg-saffron px-3 py-1 text-xs font-bold text-ink">Sale</span>
+		)}
+	</a>
+
+	<div class="flex flex-1 flex-col px-2 pb-1 pt-4">
+		{cat && <span class="text-xs font-semibold uppercase tracking-wider text-brand/70">{cat.name}</span>}
+		<h3 class="mt-1 text-base font-bold leading-snug">
+			<a href={`/products/${product.slug}`} class="transition-colors hover:text-brand">{product.name}</a>
+		</h3>
+		<p class="mt-1 text-sm text-ink/55">{summary}</p>
+
+		<div class="mt-4 flex items-baseline gap-2">
+			{
+				product.on_sale ? (
+					<>
+						<span class="text-lg font-bold text-ink">{formatPrice(product.prices.sale_price, product.prices)}</span>
+						<span class="text-sm text-ink/40 line-through">{formatPrice(product.prices.regular_price, product.prices)}</span>
+					</>
+				) : (
+					<span class="text-lg font-bold text-ink">{formatPrice(product.prices.price, product.prices)}</span>
+				)
+			}
+		</div>
+		<div class="mt-3">
+			<AddToCart
+				client:visible
+				id={product.id}
+				name={product.name}
+				price={Number(product.on_sale ? product.prices.sale_price : product.prices.price)}
+				image={image?.thumbnail || image?.src || ''}
+				slug={product.slug}
+			/>
+		</div>
 	</div>
-	<h3 class="mt-3 text-sm font-medium text-emerald-950">{product.name}</h3>
-	<p class="mt-1 text-sm text-emerald-800/80">
-		{formatPrice(product.prices.price, product.prices)}
-	</p>
-</a>
+</article>

@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Checkout from '../components/checkout/Checkout.tsx';
+---
+
+<Layout title="Checkout — Wayomile" hideFooter={true}>
+	<main class="min-h-screen bg-cream px-5 pt-28 pb-24 sm:px-8">
+		<div class="mx-auto max-w-6xl">
+			<a href="/#shop" class="inline-flex items-center gap-1.5 text-sm text-ink/55 transition hover:text-ink">
+				<span>←</span> Continue shopping
+			</a>
+			<h1 class="display mt-4 text-[clamp(2rem,5vw,3rem)] text-ink">Checkout</h1>
+			<div class="mt-10">
+				<Checkout client:load />
+			</div>
+		</div>
+	</main>
+</Layout>

@@ -1,0 +1,112 @@
+---
+const columns = [
+	{
+		title: 'Shop',
+		links: [
+			{ label: 'All teas', href: '#shop' },
+			{ label: 'Blend Lab', href: '#blend' },
+			{ label: 'Bestsellers', href: '#shop' },
+			{ label: 'Gift sets', href: '#shop' },
+		],
+	},
+	{
+		title: 'Company',
+		links: [
+			{ label: 'Our story', href: '#story' },
+			{ label: 'Sustainability', href: '#story' },
+			{ label: 'Small growers', href: '#story' },
+			{ label: 'FAQ', href: '#faq' },
+		],
+	},
+	{
+		title: 'Social',
+		links: [
+			{ label: 'Instagram', href: '#' },
+			{ label: 'Facebook', href: '#' },
+			{ label: 'YouTube', href: '#' },
+			{ label: 'WhatsApp', href: '#' },
+		],
+	},
+];
+---
+
+<!-- Final CTA band -->
+<section class="relative overflow-hidden bg-ink px-5 py-24 text-cream sm:px-8 sm:py-32">
+	<div class="animate-float absolute -left-10 top-10 h-40 w-40 rounded-full bg-brand/40 blur-3xl"></div>
+	<div class="animate-float absolute -right-10 bottom-10 h-52 w-52 rounded-full bg-saffron/20 blur-3xl" style="animation-delay:-3s"></div>
+	<div class="relative mx-auto max-w-4xl text-center">
+		<p data-reveal="fade" class="eyebrow justify-center text-cream/60">Start today</p>
+		<h2 data-reveal class="display mt-6 text-[clamp(2.5rem,8vw,5.5rem)]">
+			Brew something<br /><span class="text-lime">worth savouring.</span>
+		</h2>
+		<div data-reveal="fade" class="mt-10 flex justify-center">
+			<a
+				href="#shop"
+				class="group inline-flex items-center gap-2 rounded-full bg-lime px-8 py-4 text-sm font-semibold text-ink transition duration-300 hover:bg-cream"
+			>
+				Explore the collection
+				<span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+			</a>
+		</div>
+	</div>
+</section>
+
+<footer class="bg-ink px-5 pb-10 text-cream sm:px-8">
+	<div class="mx-auto max-w-7xl border-t border-white/10 pt-16">
+		<div class="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+			<!-- Brand + newsletter -->
+			<div>
+				<div class="flex items-center gap-2 text-xl font-bold">
+					<span class="grid h-8 w-8 place-items-center rounded-full bg-lime text-ink">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+							<path d="M2 21c0-3 1.85-5.36 5.08-6" />
+						</svg>
+					</span>
+					Wayomile
+				</div>
+				<p class="mt-4 max-w-xs text-cream/70 text-pretty">
+					Sip the legacy, taste the tradition. Premium Indian tea from small growers to your cup.
+				</p>
+
+				<form class="mt-6 flex max-w-sm items-center rounded-full bg-white/10 p-1.5 pl-5 focus-within:bg-white/15" onsubmit="return false">
+					<input
+						type="email"
+						required
+						placeholder="Your email"
+						aria-label="Email address"
+						class="min-w-0 flex-1 bg-transparent text-sm text-cream placeholder:text-cream/50 focus:outline-none"
+					/>
+					<button class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-lime text-ink transition hover:scale-105" aria-label="Subscribe">
+						↗
+					</button>
+				</form>
+			</div>
+
+			<!-- Link columns -->
+			{
+				columns.map((col) => (
+					<div>
+						<h3 class="text-sm font-semibold uppercase tracking-wider text-cream/50">{col.title}</h3>
+						<ul class="mt-4 space-y-3">
+							{col.links.map((l) => (
+								<li>
+									<a href={l.href} class="text-cream/80 transition hover:text-lime">{l.label}</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+		</div>
+
+		<!-- Contact + bottom -->
+		<div class="mt-16 flex flex-col gap-4 border-t border-white/10 pt-8 text-sm text-cream/60 sm:flex-row sm:items-center sm:justify-between">
+			<div class="flex flex-wrap gap-x-6 gap-y-1">
+				<a href="tel:+919633816338" class="transition hover:text-lime">+91 9633816338</a>
+				<a href="mailto:support@wayomile.in" class="transition hover:text-lime">support@wayomile.in</a>
+			</div>
+			<p>© {new Date().getFullYear()} Wayomile. All rights reserved.</p>
+		</div>
+	</div>
+</footer>

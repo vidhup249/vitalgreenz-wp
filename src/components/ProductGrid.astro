@@ -2,7 +2,23 @@
 import { getProducts } from '../lib/woocommerce';
 import ProductCard from './ProductCard.astro';
 
-const products = await getProducts(8);
+// Curated display order (by WooCommerce product name).
+// Note: "Premium Tea" is the "Premium Tea Granules" listing on the price chart.
+const DISPLAY_ORDER = [
+	'Premium Rose Tea',
+	'Premium Saffron Tea',
+	'Indian Masala Tea',
+	'Premium Tea',
+	'Premium Green Tea',
+	'Premium Orthodox Black Tea',
+];
+
+const rank = (name: string) => {
+	const i = DISPLAY_ORDER.indexOf(name);
+	return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+};
+
+const products = (await getProducts(100)).sort((a, b) => rank(a.name) - rank(b.name));
 ---
 
 <section class="px-6 py-16">

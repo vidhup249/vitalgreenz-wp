@@ -1,1 +1,202 @@
 @import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ *  Wayomile design system
+ *  Combined language: editorial type (Stodio) · organic warmth
+ *  (Пист & Зёрна / Coffee) · clean cards & stats (Horizon) ·
+ *  deep-green elegance (Oruzen) · playful oversized type (TEA)
+ * ------------------------------------------------------------------ */
+
+@theme {
+	--font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+
+	/* Surfaces */
+	--color-cream: #f6f4ec;
+	--color-sand: #ece7d8;
+	--color-paper: #fbfaf5;
+
+	/* Ink / greens */
+	--color-ink: #10241a;
+	--color-brand: #1f6b3b;
+	--color-brand-dark: #123f24;
+	--color-moss: #3f7d54;
+
+	/* Playful accents */
+	--color-lime: #b7e23a;
+	--color-saffron: #e7a33a;
+	--color-clay: #c06a44;
+
+	/* Motion */
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ----------------------------- Base ------------------------------- */
+@layer base {
+	html {
+		scroll-behavior: smooth;
+		-webkit-text-size-adjust: 100%;
+	}
+
+	body {
+		background-color: var(--color-cream);
+		color: var(--color-ink);
+		font-family: var(--font-sans);
+		font-synthesis-weight: none;
+		-webkit-font-smoothing: antialiased;
+		text-rendering: optimizeLegibility;
+		overflow-x: hidden;
+	}
+
+	::selection {
+		background: var(--color-lime);
+		color: var(--color-ink);
+	}
+
+	h1, h2, h3 {
+		letter-spacing: -0.03em;
+		text-wrap: balance;
+	}
+}
+
+/* --------------------------- Utilities ---------------------------- */
+@layer utilities {
+	/* Editorial eyebrow label (Stodio "+ SERVICES") */
+	.eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+	}
+	.eyebrow::before {
+		content: "";
+		width: 0.85rem;
+		height: 0.85rem;
+		border-radius: 3px;
+		background: var(--color-lime);
+		box-shadow: inset 0 0 0 2px var(--color-ink);
+	}
+
+	/* Fluid display type */
+	.display {
+		font-weight: 700;
+		line-height: 0.95;
+		letter-spacing: -0.04em;
+	}
+
+	.text-balance { text-wrap: balance; }
+	.text-pretty { text-wrap: pretty; }
+
+	.glass {
+		background: color-mix(in srgb, white 12%, transparent);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+	}
+
+	/* Hide scrollbar for horizontal chip rows */
+	.no-scrollbar::-webkit-scrollbar { display: none; }
+	.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* --------------------------- Animations --------------------------- */
+
+/* Scroll reveal (driven by IntersectionObserver in Layout) */
+[data-reveal] {
+	opacity: 0;
+	transform: translateY(28px);
+	transition:
+		opacity 0.8s var(--ease-out-expo),
+		transform 0.8s var(--ease-out-expo);
+	transition-delay: var(--reveal-delay, 0ms);
+	will-change: opacity, transform;
+}
+[data-reveal="fade"] { transform: none; }
+[data-reveal="left"] { transform: translateX(-40px); }
+[data-reveal="right"] { transform: translateX(40px); }
+[data-reveal="zoom"] { transform: scale(0.94); }
+[data-reveal].is-visible {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+	[data-reveal] { opacity: 1 !important; transform: none !important; }
+}
+
+/* Marquee */
+@keyframes marquee {
+	from { transform: translateX(0); }
+	to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee var(--marquee-duration, 32s) linear infinite; }
+.marquee-paused:hover .animate-marquee { animation-play-state: paused; }
+
+/* Floating blobs / elements */
+@keyframes float {
+	0%, 100% { transform: translateY(0) rotate(0deg); }
+	50% { transform: translateY(-18px) rotate(3deg); }
+}
+.animate-float { animation: float 7s ease-in-out infinite; }
+
+/* Slow spin (badge) */
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spin-slow 18s linear infinite; }
+
+/* Animated gradient mesh (hero fallback) */
+@keyframes gradientShift {
+	0%, 100% { background-position: 0% 50%; }
+	50% { background-position: 100% 50%; }
+}
+.animate-gradient {
+	background-size: 200% 200%;
+	animation: gradientShift 14s ease infinite;
+}
+
+/* Rising steam (playful steep timer / hero) */
+@keyframes steam {
+	0% { opacity: 0; transform: translateY(0) scaleX(1); }
+	15% { opacity: 0.55; }
+	50% { opacity: 0.35; transform: translateY(-26px) scaleX(1.4); }
+	100% { opacity: 0; transform: translateY(-54px) scaleX(1.9); }
+}
+.animate-steam { animation: steam 3.6s ease-in-out infinite; }
+
+/* Scroll cue */
+@keyframes bob {
+	0%, 100% { transform: translateY(0); opacity: 1; }
+	50% { transform: translateY(8px); opacity: 0.4; }
+}
+.animate-bob { animation: bob 1.8s ease-in-out infinite; }
+
+/* Count-up helper receives .is-visible from observer too (opacity only) */
+@keyframes popIn {
+	from { opacity: 0; transform: translateY(10px) scale(0.96); }
+	to { opacity: 1; transform: none; }
+}
+
+/* ------------------------- Lenis smooth scroll -------------------- */
+html.lenis,
+html.lenis body {
+	height: auto;
+}
+.lenis.lenis-smooth {
+	scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+	overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+	overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+	pointer-events: none;
+}
