@@ -43,18 +43,31 @@ export interface WooProduct {
 	categories: WooCategory[];
 }
 
+/** Fetch with a timeout + retries, so a slow/flaky WooCommerce host doesn't fail the build. */
+async function fetchJSON(url: string, attempts = 3, timeoutMs = 20000): Promise<any> {
+	let lastErr: unknown;
+	for (let i = 0; i < attempts; i++) {
+		try {
+			const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+			if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+			return await res.json();
+		} catch (err) {
+			lastErr = err;
+			// brief backoff before retrying
+			if (i < attempts - 1) await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+		}
+	}
+	throw new Error(`Failed to fetch ${url} after ${attempts} attempts: ${lastErr}`);
+}
+
 /** Fetch products from the public WooCommerce Store API (browser-safe — no keys). */
 export async function getProducts(perPage = 100): Promise<WooProduct[]> {
-	const res = await fetch(`${WP_URL}/wp-json/wc/store/v1/products?per_page=${perPage}`);
-	if (!res.ok) throw new Error(`Failed to fetch products: ${res.status}`);
-	return res.json();
+	return fetchJSON(`${WP_URL}/wp-json/wc/store/v1/products?per_page=${perPage}`);
 }
 
 /** Fetch a single product (full detail incl. description + attributes). */
 export async function getProduct(id: number): Promise<WooProduct> {
-	const res = await fetch(`${WP_URL}/wp-json/wc/store/v1/products/${id}`);
-	if (!res.ok) throw new Error(`Failed to fetch product ${id}: ${res.status}`);
-	return res.json();
+	return fetchJSON(`${WP_URL}/wp-json/wc/store/v1/products/${id}`);
 }
 
 /** WooCommerce sometimes stores term names with stray quotes/slashes — tidy them. */
@@ -102,9 +115,14 @@ export function formatPrice(amount: string, prices: WooProduct['prices']): strin
 	})}`;
 }
 
+/** Old backend brand → current storefront brand. Applied to all displayed copy. */
+export function normalizeBrand(text: string): string {
+	return text.replace(/vital\s*greenz/gi, 'Wayomile');
+}
+
 /** Strip HTML tags from WooCommerce rich-text fields for safe short summaries. */
 export function stripHtml(html: string, max = 120): string {
-	const text = html
+	const text = normalizeBrand(html)
 		.replace(/<[^>]*>/g, ' ')
 		.replace(/&nbsp;/g, ' ')
 		.replace(/&amp;/g, '&')

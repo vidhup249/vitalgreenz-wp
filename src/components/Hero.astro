@@ -7,7 +7,7 @@ const socials = [
 ];
 ---
 
-<section id="top" class="relative flex h-[100svh] min-h-[600px] flex-col overflow-hidden">
+<section id="top" class="relative isolate flex h-[100svh] min-h-[600px] flex-col overflow-hidden">
 	<!-- Animated gradient fallback (behind the video, shows until frames decode) -->
 	<div class="absolute inset-0 -z-20 bg-ink"></div>
 	<div
@@ -42,30 +42,27 @@ const socials = [
 
 	<!-- Content -->
 	<div class="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 sm:px-8">
-		<div data-reveal="fade" class="mb-6">
+		<div class="hero-in mb-6" style="--d:60ms">
 			<span class="eyebrow rounded-full bg-white/10 px-4 py-2 text-white backdrop-blur">
 				Premium Indian Tea · Est. small farms
 			</span>
 		</div>
 
 		<h1 class="display max-w-4xl text-[clamp(2.75rem,8vw,6.5rem)] text-white">
-			<span class="block overflow-hidden"><span data-reveal class="block">Experience the</span></span>
-			<span class="block overflow-hidden"><span data-reveal class="block" style="--reveal-delay:120ms">Heritage of</span></span>
-			<span class="block overflow-hidden">
-				<span data-reveal class="block text-lime" style="--reveal-delay:240ms">Indian Tea.</span>
-			</span>
+			<span class="block overflow-hidden"><span class="hero-in block" style="--d:140ms">Experience the</span></span>
+			<span class="block overflow-hidden"><span class="hero-in block" style="--d:220ms">Heritage of</span></span>
+			<span class="block overflow-hidden"><span class="hero-in block text-lime" style="--d:300ms">Indian Tea.</span></span>
 		</h1>
 
 		<p
-			data-reveal
-			style="--reveal-delay:360ms"
-			class="mt-7 max-w-xl text-lg text-white/80 text-pretty sm:text-xl"
+			style="--d:400ms"
+			class="hero-in mt-7 max-w-xl text-lg text-white/80 text-pretty sm:text-xl"
 		>
 			Every leaf tells a story of purity, tradition and exceptional taste — sourced from small
 			growers, cultivated sustainably.
 		</p>
 
-		<div data-reveal style="--reveal-delay:480ms" class="mt-9 flex flex-wrap items-center gap-3">
+		<div style="--d:480ms" class="hero-in mt-9 flex flex-wrap items-center gap-3">
 			<a
 				href="#shop"
 				class="group inline-flex items-center gap-2 rounded-full bg-lime px-7 py-4 text-sm font-semibold text-ink transition duration-300 hover:bg-white"
@@ -84,7 +81,7 @@ const socials = [
 
 	<!-- Bottom bar: social proof + links -->
 	<div class="relative mx-auto w-full max-w-7xl px-5 pb-8 sm:px-8">
-		<div data-reveal="fade" style="--reveal-delay:600ms" class="flex flex-wrap items-center justify-between gap-4 text-white/80">
+		<div style="--d:580ms" class="hero-in flex flex-wrap items-center justify-between gap-4 text-white/80">
 			<div class="flex items-center gap-3">
 				<div class="flex -space-x-2.5">
 					{

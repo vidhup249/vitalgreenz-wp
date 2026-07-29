@@ -31,7 +31,20 @@ const columns = [
 ---
 
 <!-- Final CTA band -->
-<section class="relative overflow-hidden bg-ink px-5 py-24 text-cream sm:px-8 sm:py-32">
+<section class="relative isolate overflow-hidden bg-ink px-5 py-24 text-cream sm:px-8 sm:py-32">
+	<!-- Dimmed tea-pour video texture -->
+	<video
+		class="absolute inset-0 -z-10 h-full w-full object-cover opacity-25"
+		autoplay
+		muted
+		loop
+		playsinline
+		preload="metadata"
+		aria-hidden="true"
+	>
+		<source src="/videos/tea-pour.mp4" type="video/mp4" />
+	</video>
+	<div class="absolute inset-0 -z-10 bg-gradient-to-b from-ink/70 via-ink/60 to-ink/80"></div>
 	<div class="animate-float absolute -left-10 top-10 h-40 w-40 rounded-full bg-brand/40 blur-3xl"></div>
 	<div class="animate-float absolute -right-10 bottom-10 h-52 w-52 rounded-full bg-saffron/20 blur-3xl" style="animation-delay:-3s"></div>
 	<div class="relative mx-auto max-w-4xl text-center">

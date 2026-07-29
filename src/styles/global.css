@@ -36,6 +36,9 @@
 	html {
 		scroll-behavior: smooth;
 		-webkit-text-size-adjust: 100%;
+		/* clip (not hidden) guards against horizontal overflow without creating a
+		   scroll container — so sticky positioning keeps working. */
+		overflow-x: clip;
 	}
 
 	body {
@@ -45,7 +48,6 @@
 		font-synthesis-weight: none;
 		-webkit-font-smoothing: antialiased;
 		text-rendering: optimizeLegibility;
-		overflow-x: hidden;
 	}
 
 	::selection {
@@ -103,23 +105,36 @@
 
 /* --------------------------- Animations --------------------------- */
 
-/* Scroll reveal (driven by IntersectionObserver in Layout) */
-[data-reveal] {
+/* Scroll reveal (driven by IntersectionObserver in Layout).
+   Gated behind html.js so content stays VISIBLE if JS is slow/blocked/disabled —
+   it's only hidden once the inline head script confirms JS can reveal it again. */
+html.js [data-reveal] {
 	opacity: 0;
 	transform: translateY(28px);
 	transition:
-		opacity 0.8s var(--ease-out-expo),
-		transform 0.8s var(--ease-out-expo);
+		opacity 0.7s var(--ease-out-expo),
+		transform 0.7s var(--ease-out-expo);
 	transition-delay: var(--reveal-delay, 0ms);
 	will-change: opacity, transform;
 }
-[data-reveal="fade"] { transform: none; }
-[data-reveal="left"] { transform: translateX(-40px); }
-[data-reveal="right"] { transform: translateX(40px); }
-[data-reveal="zoom"] { transform: scale(0.94); }
-[data-reveal].is-visible {
+html.js [data-reveal="fade"] { transform: none; }
+html.js [data-reveal="left"] { transform: translateX(-40px); }
+html.js [data-reveal="right"] { transform: translateX(40px); }
+html.js [data-reveal="zoom"] { transform: scale(0.94); }
+html.js [data-reveal].is-visible {
 	opacity: 1;
 	transform: none;
+}
+
+/* Hero entrance — pure CSS, plays on first paint. Never waits on JS, so the
+   headline/CTA never lag behind the background video. */
+@keyframes heroIn {
+	from { opacity: 0; transform: translateY(24px); }
+	to { opacity: 1; transform: none; }
+}
+.hero-in {
+	animation: heroIn 0.75s var(--ease-out-expo) both;
+	animation-delay: var(--d, 0ms);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -29,6 +29,12 @@ const wpOrigin = new URL(import.meta.env.PUBLIC_WORDPRESS_URL).origin;
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- Runs before paint: marks JS available so scroll-reveal hides content ONLY
+		     when JS can reveal it again (fail-open if JS is slow/blocked/disabled). -->
+		<script is:inline>
+			document.documentElement.classList.add('js');
+		</script>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 
@@ -83,63 +89,101 @@ const wpOrigin = new URL(import.meta.env.PUBLIC_WORDPRESS_URL).origin;
 			}
 		</script>
 
-		<script>
-			// Scroll-reveal: reveal elements once as they enter the viewport.
-			const setup = () => {
-				const els = document.querySelectorAll('[data-reveal]');
-				if (!('IntersectionObserver' in window) || !els.length) {
-					els.forEach((el) => el.classList.add('is-visible'));
-					return;
-				}
-				const io = new IntersectionObserver(
-					(entries) => {
-						for (const entry of entries) {
-							if (entry.isIntersecting) {
-								entry.target.classList.add('is-visible');
-								io.unobserve(entry.target);
-							}
-						}
-					},
-					{ threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
-				);
-				els.forEach((el) => io.observe(el));
-			};
+		<!-- Inline (not bundled) so reveals fire immediately, without waiting on a
+		     separate JS download that the hero video would otherwise starve. -->
+		<script is:inline>
+			(function () {
+				// Scroll-reveal: reveal elements once as they enter the viewport.
+				var setup = function () {
+					var els = document.querySelectorAll('[data-reveal]');
+					if (!('IntersectionObserver' in window) || !els.length) {
+						els.forEach(function (el) {
+							el.classList.add('is-visible');
+						});
+						return;
+					}
+					var io = new IntersectionObserver(
+						function (entries) {
+							entries.forEach(function (entry) {
+								if (entry.isIntersecting) {
+									entry.target.classList.add('is-visible');
+									io.unobserve(entry.target);
+								}
+							});
+						},
+						{ threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+					);
+					els.forEach(function (el) {
+						io.observe(el);
+					});
+				};
 
-			// Count-up numbers (elements with [data-countup])
-			const counters = () => {
-				const nums = document.querySelectorAll<HTMLElement>('[data-countup]');
-				if (!nums.length) return;
-				const io = new IntersectionObserver(
-					(entries) => {
-						for (const entry of entries) {
-							if (!entry.isIntersecting) continue;
-							const el = entry.target as HTMLElement;
-							const target = parseFloat(el.dataset.countup || '0');
-							const suffix = el.dataset.suffix || '';
-							const dur = 1400;
-							let start = 0;
-							const step = (ts: number) => {
-								if (!start) start = ts;
-								const p = Math.min((ts - start) / dur, 1);
-								const eased = 1 - Math.pow(1 - p, 3);
-								const val = Math.round(target * eased);
-								el.textContent = val.toLocaleString() + suffix;
-								if (p < 1) requestAnimationFrame(step);
-							};
-							requestAnimationFrame(step);
-							io.unobserve(el);
-						}
-					},
-					{ threshold: 0.5 }
-				);
-				nums.forEach((n) => io.observe(n));
-			};
+				// Count-up numbers (elements with [data-countup]).
+				var counters = function () {
+					var nums = document.querySelectorAll('[data-countup]');
+					if (!nums.length) return;
+					var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+					if (reduceMotion) {
+						nums.forEach(function (el) {
+							var target = parseFloat(el.dataset.countup || '0');
+							el.textContent = target.toLocaleString() + (el.dataset.suffix || '');
+						});
+						return;
+					}
+					var io = new IntersectionObserver(
+						function (entries) {
+							entries.forEach(function (entry) {
+								if (!entry.isIntersecting) return;
+								var el = entry.target;
+								var target = parseFloat(el.dataset.countup || '0');
+								var suffix = el.dataset.suffix || '';
+								var dur = 1400;
+								var start = 0;
+								var step = function (ts) {
+									if (!start) start = ts;
+									var p = Math.min((ts - start) / dur, 1);
+									var eased = 1 - Math.pow(1 - p, 3);
+									el.textContent = Math.round(target * eased).toLocaleString() + suffix;
+									if (p < 1) requestAnimationFrame(step);
+								};
+								requestAnimationFrame(step);
+								io.unobserve(el);
+							});
+						},
+						{ threshold: 0.5 }
+					);
+					nums.forEach(function (n) {
+						io.observe(n);
+					});
+				};
 
-			setup();
-			counters();
-			document.addEventListener('astro:after-swap', () => {
 				setup();
 				counters();
+				document.addEventListener('astro:after-swap', function () {
+					setup();
+					counters();
+				});
+			})();
+		</script>
+
+		<!-- Product card image carousel (delegated — one handler for all cards) -->
+		<script is:inline>
+			document.addEventListener('click', function (e) {
+				var dot = e.target.closest && e.target.closest('[data-dot]');
+				if (!dot) return;
+				var card = dot.closest('[data-card]');
+				if (!card) return;
+				var img = card.querySelector('[data-media-img]');
+				var raw = card.getAttribute('data-images');
+				if (!img || !raw) return;
+				var imgs = JSON.parse(raw);
+				var i = parseInt(dot.getAttribute('data-dot'), 10);
+				if (!imgs[i]) return;
+				img.setAttribute('src', imgs[i].s);
+				if (imgs[i].ss) img.setAttribute('srcset', imgs[i].ss);
+				card.querySelectorAll('[data-dot]').forEach(function (d) {
+					d.setAttribute('data-active', d === dot ? 'true' : 'false');
+				});
 			});
 		</script>
 	</body>

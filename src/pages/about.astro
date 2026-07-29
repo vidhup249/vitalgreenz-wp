@@ -1,5 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getProducts } from '../lib/woocommerce';
+
+const products = await getProducts(100);
+const pick = (name: string, idx = 0) => products.find((p) => p.name === name)?.images?.[idx];
+const imgA = pick('Indian Masala Tea', 0);
+const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
 
 const values = [
 	{
@@ -30,7 +36,7 @@ const stats = [
 <Layout title="About — Wayomile" description="The story behind Wayomile: premium Indian tea, sourced fairly from small growers and packed fresh.">
 	<main>
 		<!-- Hero banner -->
-		<section class="relative overflow-hidden bg-ink px-5 pb-20 pt-36 text-cream sm:px-8">
+		<section class="relative isolate overflow-hidden bg-ink px-5 pb-20 pt-36 text-cream sm:px-8">
 			<div class="animate-gradient absolute inset-0 -z-10 opacity-70" style="background-image:radial-gradient(60% 60% at 20% 20%, rgba(63,125,84,0.7), transparent), radial-gradient(50% 50% at 85% 30%, rgba(183,226,58,0.25), transparent), radial-gradient(60% 60% at 70% 90%, rgba(231,163,58,0.25), transparent)"></div>
 			<div class="mx-auto max-w-4xl text-center">
 				<p data-reveal="fade" class="eyebrow justify-center text-cream/60">Our Story</p>
@@ -48,11 +54,37 @@ const stats = [
 		<section class="bg-cream px-5 py-24 sm:px-8">
 			<div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-2 md:items-center">
 				<div data-reveal="left" class="grid grid-cols-2 gap-4">
-					<div class="aspect-[4/5] overflow-hidden rounded-3xl">
-						<div class="animate-gradient h-full w-full" style="background-image:radial-gradient(70% 70% at 30% 20%, rgba(63,125,84,0.9), transparent), radial-gradient(60% 60% at 80% 90%, rgba(231,163,58,0.7), transparent); background-color:#123f24"></div>
+					<div class="aspect-[4/5] overflow-hidden rounded-3xl bg-sand">
+						{
+							imgA && (
+								<img
+									src={imgA.src}
+									srcset={imgA.srcset}
+									sizes="(min-width:768px) 28vw, 45vw"
+									alt={imgA.alt || 'Wayomile masala tea'}
+									width="500"
+									height="625"
+									loading="lazy"
+									class="h-full w-full object-cover transition duration-700 hover:scale-105"
+								/>
+							)
+						}
 					</div>
-					<div class="mt-8 aspect-[4/5] overflow-hidden rounded-3xl">
-						<div class="animate-gradient h-full w-full" style="background-image:radial-gradient(70% 70% at 70% 30%, rgba(183,226,58,0.8), transparent), radial-gradient(60% 60% at 20% 80%, rgba(31,107,59,0.9), transparent); background-color:#1f6b3b; animation-delay:-4s"></div>
+					<div class="mt-8 aspect-[4/5] overflow-hidden rounded-3xl bg-sand">
+						{
+							imgB && (
+								<img
+									src={imgB.src}
+									srcset={imgB.srcset}
+									sizes="(min-width:768px) 28vw, 45vw"
+									alt={imgB.alt || 'Wayomile rose tea'}
+									width="500"
+									height="625"
+									loading="lazy"
+									class="h-full w-full object-cover transition duration-700 hover:scale-105"
+								/>
+							)
+						}
 					</div>
 				</div>
 				<div data-reveal="right">

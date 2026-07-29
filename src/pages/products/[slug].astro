@@ -8,6 +8,7 @@ import {
 	orderProducts,
 	formatPrice,
 	cleanTerm,
+	normalizeBrand,
 	type WooProduct,
 } from '../../lib/woocommerce';
 
@@ -38,7 +39,7 @@ const related = list
 	.slice(0, 4);
 ---
 
-<Layout title={`${product.name} — Wayomile`} description={product.short_description.replace(/<[^>]*>/g, '').slice(0, 150)}>
+<Layout title={`${product.name} — Wayomile`} description={normalizeBrand(product.short_description.replace(/<[^>]*>/g, '')).slice(0, 150)}>
 	<main class="bg-cream pt-24">
 		<div class="mx-auto max-w-6xl px-5 sm:px-8">
 			<!-- Breadcrumb -->
@@ -113,7 +114,7 @@ const related = list
 
 					{
 						product.short_description && (
-							<div class="prose-tea mt-5 text-ink/70" set:html={product.short_description} />
+							<div class="prose-tea mt-5 text-ink/70" set:html={normalizeBrand(product.short_description)} />
 						)
 					}
 
@@ -147,7 +148,7 @@ const related = list
 				product.description && (
 					<section class="border-t border-ink/10 py-14">
 						<h2 data-reveal class="display text-2xl text-ink">Details</h2>
-						<div class="prose-tea mt-6 max-w-3xl text-ink/75" set:html={product.description} />
+						<div class="prose-tea mt-6 max-w-3xl text-ink/75" set:html={normalizeBrand(product.description)} />
 					</section>
 				)
 			}
@@ -159,7 +160,7 @@ const related = list
 				<section class="border-t border-ink/10 bg-sand px-5 py-20 sm:px-8">
 					<div class="mx-auto max-w-6xl">
 						<h2 data-reveal class="display text-[clamp(1.6rem,4vw,2.5rem)] text-ink">You might also like</h2>
-						<div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+						<div class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
 							{related.map((p, i) => (
 								<ProductCard product={p} index={i} />
 							))}
