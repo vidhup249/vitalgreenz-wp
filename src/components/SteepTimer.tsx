@@ -94,7 +94,16 @@ export default function SteepTimer() {
 
 					<div className="absolute inset-0 grid place-items-center">
 						<div className="text-center">
-							<div className="text-5xl font-bold tabular-nums">{done ? '🍵' : fmt(Math.ceil(remaining))}</div>
+							<div className="text-5xl font-bold tabular-nums">
+								{done ? (
+									<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto" aria-hidden="true">
+										<path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" />
+										<path d="M6 2v2M10 2v2M14 2v2" />
+									</svg>
+								) : (
+									fmt(Math.ceil(remaining))
+								)}
+							</div>
 							<p className="mt-1 text-sm font-medium text-ink/60">
 								{done ? 'Pour & enjoy' : `${tea.name} · ${tea.temp}`}
 							</p>

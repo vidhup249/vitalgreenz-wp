@@ -84,7 +84,7 @@ export default function CartDrawer() {
 									shipping
 								</>
 							) : (
-								<span className="font-semibold text-brand">🎉 You've unlocked free shipping!</span>
+								<span className="font-semibold text-brand">You've unlocked free shipping!</span>
 							)}
 						</p>
 						<div className="mt-2 h-2 overflow-hidden rounded-full bg-ink/10">
@@ -100,7 +100,12 @@ export default function CartDrawer() {
 				<div className="flex-1 overflow-y-auto px-6 py-4">
 					{items.length === 0 ? (
 						<div className="flex h-full flex-col items-center justify-center text-center">
-							<div className="mb-4 grid h-20 w-20 place-items-center rounded-full bg-cream text-3xl">🍵</div>
+							<div className="mb-4 grid h-20 w-20 place-items-center rounded-full bg-cream text-ink/60">
+								<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+									<path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" />
+									<path d="M6 2v2M10 2v2M14 2v2" />
+								</svg>
+							</div>
 							<p className="font-semibold">Nothing steeping yet</p>
 							<p className="mt-1 text-sm text-ink/60">Add a blend and it'll appear here.</p>
 							<button

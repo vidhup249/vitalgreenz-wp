@@ -9,17 +9,17 @@ const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
 
 const values = [
 	{
-		icon: '🤝',
+		icon: 'handshake',
 		title: 'Empowering Small Tea Growers',
 		body: 'We buy directly from family-run gardens at fair prices — no middlemen skimming the margin, more going back to the people who grow the leaf.',
 	},
 	{
-		icon: '🌱',
+		icon: 'sprout',
 		title: 'Sustainably Cultivated',
 		body: 'Grown with responsible practices that protect soil, water and biodiversity — so the gardens that feed us today are thriving tomorrow.',
 	},
 	{
-		icon: '✨',
+		icon: 'sparkles',
 		title: 'Crafted for Exceptional Taste',
 		body: 'Small-batch blended and packed to order. Freshness you can smell the moment you open the pack, and taste in every cup.',
 	},
@@ -114,7 +114,23 @@ const stats = [
 					{
 						values.map((v, i) => (
 							<article data-reveal style={`--reveal-delay:${i * 120}ms`} class="rounded-3xl bg-paper p-8 ring-1 ring-ink/5">
-								<div class="grid h-12 w-12 place-items-center rounded-2xl bg-cream text-2xl">{v.icon}</div>
+								<div class="grid h-12 w-12 place-items-center rounded-2xl bg-cream text-brand">
+								{v.icon === 'handshake' && (
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+										<path d="m11 17 2 2a1 1 0 1 0 3-3" /><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4" /><path d="m21 3 1 11h-2" /><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" /><path d="M3 4h8" />
+									</svg>
+								)}
+								{v.icon === 'sprout' && (
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+										<path d="M7 20h10" /><path d="M10 20c5.5-2.5.8-6.4 3-10" /><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" /><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
+									</svg>
+								)}
+								{v.icon === 'sparkles' && (
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+										<path d="M9.94 14.06A2 2 0 0 0 8.5 12.6l-5.2-1.35a.4.4 0 0 1 0-.78L8.5 9.12A2 2 0 0 0 9.94 7.68l1.35-5.2a.4.4 0 0 1 .78 0l1.35 5.2A2 2 0 0 0 14.86 9.1l5.2 1.35a.4.4 0 0 1 0 .78l-5.2 1.35a2 2 0 0 0-1.44 1.44l-1.35 5.2a.4.4 0 0 1-.78 0z" /><path d="M19 4v3M20.5 5.5h-3" />
+									</svg>
+								)}
+							</div>
 								<h3 class="mt-5 text-xl font-bold">{v.title}</h3>
 								<p class="mt-3 text-ink/70 text-pretty">{v.body}</p>
 							</article>

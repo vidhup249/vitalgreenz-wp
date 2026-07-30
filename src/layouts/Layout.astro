@@ -111,11 +111,24 @@ const wpOrigin = new URL(import.meta.env.PUBLIC_WORDPRESS_URL).origin;
 								}
 							});
 						},
-						{ threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+						// Pre-fire: reveal sections ~40% of a viewport BEFORE they scroll
+						// into view, so content is already there as you reach it (and the
+						// first section below the hero reveals at load).
+						{ threshold: 0, rootMargin: '0px 0px 40% 0px' }
 					);
 					els.forEach(function (el) {
 						io.observe(el);
 					});
+
+					// Safety net (runs promptly, NOT on window.load which the big video
+					// delays): reveal anything within ~1.4 viewports so nothing stays blank.
+					setTimeout(function () {
+						els.forEach(function (el) {
+							if (el.getBoundingClientRect().top < window.innerHeight * 1.4) {
+								el.classList.add('is-visible');
+							}
+						});
+					}, 250);
 				};
 
 				// Count-up numbers (elements with [data-countup]).

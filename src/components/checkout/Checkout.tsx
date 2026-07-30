@@ -31,7 +31,11 @@ export default function Checkout() {
 	if (placed) {
 		return (
 			<div className="mx-auto max-w-lg py-20 text-center">
-				<div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-lime text-4xl">✓</div>
+				<div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-lime text-ink">
+					<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+						<path d="M20 6 9 17l-5-5" />
+					</svg>
+				</div>
 				<h1 className="display mt-6 text-4xl text-ink">Order placed!</h1>
 				<p className="mt-3 text-ink/65 text-pretty">
 					Thank you — we've got your order and we'll email a confirmation shortly. Your tea will be
@@ -47,7 +51,12 @@ export default function Checkout() {
 	if (items.length === 0) {
 		return (
 			<div className="mx-auto max-w-lg py-20 text-center">
-				<div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-cream text-4xl">🛒</div>
+				<div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-cream text-ink/60">
+					<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+						<path d="M4 5h2l1.2 12.2a1 1 0 0 0 1 .9h8.4a1 1 0 0 0 1-.86L20 8H6" />
+						<circle cx="9.5" cy="20.5" r="1.2" /><circle cx="16.5" cy="20.5" r="1.2" />
+					</svg>
+				</div>
 				<h1 className="display mt-6 text-3xl text-ink">Your basket is empty</h1>
 				<p className="mt-3 text-ink/60">Add a blend or two and they'll show up here.</p>
 				<a href="/#shop" className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-semibold text-cream transition hover:bg-brand">

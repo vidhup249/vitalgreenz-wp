@@ -1,28 +1,630 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import Marquee from '../components/Marquee.astro';
-import Story from '../components/Story.astro';
-import FeatureCards from '../components/FeatureCards.astro';
-import StatsRow from '../components/StatsRow.astro';
-import ProductShowcase from '../components/ProductShowcase.astro';
-import FlavourFinder from '../components/FlavourFinder.astro';
-import Ritual from '../components/Ritual.astro';
-import Testimonials from '../components/Testimonials.astro';
-import FAQ from '../components/FAQ.astro';
+import ProductCard from '../components/ProductCard.astro';
+import FlavourFinder, { type FinderProduct } from '../components/FlavourFinder.tsx';
+import SteepTimer from '../components/SteepTimer.tsx';
+import { getShopData, stripHtml } from '../lib/woocommerce';
+
+// ---- Data (one fetch, shared by every section) ---------------------------
+const { products, categories } = await getShopData();
+
+// Hero
+const socials = [
+	{ label: 'Instagram', href: '#' },
+	{ label: 'Facebook', href: '#' },
+	{ label: 'YouTube', href: '#' },
+];
+
+// Marquee (duplicated once for a seamless -50% loop)
+const marqueeItems = [
+	'Empowering Small Tea Growers',
+	'Sustainably Cultivated',
+	'Crafted for Exceptional Taste',
+	'Single-Origin Gardens',
+	'Freshly Packed to Order',
+];
+const marqueeLoop = [...marqueeItems, ...marqueeItems];
+
+// Feature cards
+const profiles = [
+	{ label: 'Floral', value: 82 },
+	{ label: 'Malty', value: 64 },
+	{ label: 'Spiced', value: 91 },
+];
+
+// Stats
+const stats = [
+	{ value: 6, suffix: '', label: 'Signature blends' },
+	{ value: 100, suffix: '%', label: 'Single-origin leaf' },
+	{ value: 1200, suffix: '+', label: 'Happy sippers' },
+	{ value: 48, suffix: 'h', label: 'Garden to your pack' },
+];
+
+// Shop filters
+const filters = [{ name: 'All', slug: 'all' }, ...categories];
+
+// Flavour finder
+const finderProducts: FinderProduct[] = products.map((p) => {
+	const img = p.images?.[0];
+	return {
+		id: p.id,
+		name: p.name,
+		price: Number(p.on_sale ? p.prices.sale_price : p.prices.price),
+		image: img?.thumbnail || img?.src || '',
+		permalink: `/products/${p.slug}`,
+		slug: p.slug,
+		summary: stripHtml(p.short_description, 80),
+	};
+});
+
+// Testimonials
+const quotes = [
+	{
+		text: 'The saffron tea genuinely stopped me buying supermarket brands. You can taste that it was packed fresh.',
+		name: 'Ananya R.',
+		role: 'Bengaluru',
+		color: '#e7a33a',
+	},
+	{
+		text: 'Knowing it comes from small growers — and it actually tastes better — is the whole package for me.',
+		name: 'Vikram S.',
+		role: 'Mumbai',
+		color: '#3f7d54',
+	},
+	{
+		text: 'Built my own rose-green blend in the Blend Lab. Ridiculously fun, and now it is my daily cup.',
+		name: 'Meera K.',
+		role: 'Pune',
+		color: '#e0669a',
+	},
+];
+
+// FAQ
+const faqs = [
+	{
+		q: 'How fresh is the tea when it arrives?',
+		a: 'We pack every order the day it ships — never from bulk stock sitting on a shelf. From our gardens to your pack in about 48 hours.',
+	},
+	{
+		q: 'Where does your tea come from?',
+		a: 'Directly from small, family-run gardens across India. No middlemen — which means fairer prices for growers and a fresher, single-origin cup for you.',
+	},
+	{
+		q: 'Loose leaf or granules — what should I pick?',
+		a: 'Loose leaf gives a more nuanced, layered cup; granules brew fast and strong. Most blends come in both, so it comes down to your ritual.',
+	},
+	{
+		q: 'Can I create my own blend?',
+		a: 'Yes — head to the Blend Lab above. Choose a base, a flavour and a format, and we blend and pack it to order just for you.',
+	},
+	{
+		q: 'What are the shipping options?',
+		a: 'We ship pan-India. Orders over ₹500 ship free; everything else is a flat, transparent rate calculated at checkout.',
+	},
+];
 ---
 
 <Layout solid={false}>
 	<main>
-		<Hero />
-		<Marquee />
-		<Story />
-		<FeatureCards />
-		<StatsRow />
-		<ProductShowcase />
-		<FlavourFinder />
-		<Ritual />
-		<Testimonials />
-		<FAQ />
+		<!-- ============================ HERO ============================ -->
+		<section id="top" class="relative isolate flex h-[100svh] min-h-[600px] flex-col overflow-hidden">
+			<div class="absolute inset-0 -z-20 bg-ink"></div>
+			<div
+				class="animate-gradient absolute inset-0 -z-20"
+				style="background-image:
+					radial-gradient(60% 55% at 18% 20%, rgba(63,125,84,0.85), transparent 60%),
+					radial-gradient(50% 50% at 85% 15%, rgba(183,226,58,0.35), transparent 55%),
+					radial-gradient(60% 60% at 75% 85%, rgba(231,163,58,0.30), transparent 55%),
+					radial-gradient(70% 70% at 30% 90%, rgba(18,63,36,0.95), transparent 60%);"
+			>
+			</div>
+
+			<video
+				class="absolute inset-0 -z-10 h-full w-full object-cover"
+				autoplay
+				muted
+				loop
+				playsinline
+				preload="auto"
+				aria-hidden="true"
+			>
+				<source src="/videos/tea-pour.mp4" type="video/mp4" />
+			</video>
+
+			<div class="absolute inset-0 -z-10 bg-gradient-to-b from-ink/55 via-ink/30 to-ink/75"></div>
+
+			<div class="animate-float absolute left-[8%] top-[24%] -z-10 h-24 w-24 rounded-full bg-lime/20 blur-2xl"></div>
+			<div class="animate-float absolute right-[12%] top-[55%] -z-10 h-32 w-32 rounded-full bg-saffron/20 blur-3xl" style="animation-delay:-2s"></div>
+
+			<div class="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 sm:px-8">
+				<div class="hero-in mb-6" style="--d:60ms">
+					<span class="eyebrow rounded-full bg-white/10 px-4 py-2 text-white backdrop-blur">
+						Premium Indian Tea · Est. small farms
+					</span>
+				</div>
+
+				<h1 class="display max-w-4xl text-[clamp(2.75rem,8vw,6.5rem)] text-white">
+					<span class="block overflow-hidden"><span class="hero-in block" style="--d:140ms">Experience the</span></span>
+					<span class="block overflow-hidden"><span class="hero-in block" style="--d:220ms">Heritage of</span></span>
+					<span class="block overflow-hidden"><span class="hero-in block text-lime" style="--d:300ms">Indian Tea.</span></span>
+				</h1>
+
+				<p style="--d:400ms" class="hero-in mt-7 max-w-xl text-lg text-white/80 text-pretty sm:text-xl">
+					Every leaf tells a story of purity, tradition and exceptional taste — sourced from small
+					growers, cultivated sustainably.
+				</p>
+
+				<div style="--d:480ms" class="hero-in mt-9 flex flex-wrap items-center gap-3">
+					<a
+						href="#shop"
+						class="group inline-flex items-center gap-2 rounded-full bg-lime px-7 py-4 text-sm font-semibold text-ink transition duration-300 hover:bg-white"
+					>
+						Start your ritual
+						<span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+					</a>
+					<a
+						href="#story"
+						class="inline-flex items-center gap-2 rounded-full border border-white/30 px-7 py-4 text-sm font-semibold text-white backdrop-blur transition duration-300 hover:bg-white/10"
+					>
+						Our story
+					</a>
+				</div>
+			</div>
+
+			<div class="relative mx-auto w-full max-w-7xl px-5 pb-8 sm:px-8">
+				<div style="--d:580ms" class="hero-in flex flex-wrap items-center justify-between gap-4 text-white/80">
+					<div class="flex items-center gap-3">
+						<div class="flex -space-x-2.5">
+							{
+								['#B7E23A', '#E7A33A', '#3F7D54', '#c06a44'].map((c) => (
+									<span class="h-8 w-8 rounded-full border-2 border-ink/40" style={`background:${c}`} />
+								))
+							}
+						</div>
+						<p class="text-sm leading-tight">
+							Loved by <span class="font-semibold text-white">1,200+</span> tea drinkers<br class="hidden sm:block" />
+							across India.
+						</p>
+					</div>
+					<div class="flex items-center gap-4 text-sm">
+						{
+							socials.map((s) => (
+								<a href={s.href} class="group inline-flex items-center gap-1 transition hover:text-white">
+									{s.label}
+									<span class="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">↗</span>
+								</a>
+							))
+						}
+					</div>
+				</div>
+			</div>
+
+			<div class="pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 lg:block">
+				<div class="animate-bob grid h-10 w-6 place-items-start rounded-full border border-white/40 p-1.5">
+					<span class="h-2 w-1 rounded-full bg-white/80"></span>
+				</div>
+			</div>
+		</section>
+
+		<!-- ========================== MARQUEE ========================== -->
+		<div class="marquee-paused overflow-hidden border-y border-ink/10 bg-ink py-4 text-cream">
+			<div class="flex w-max animate-marquee items-center whitespace-nowrap" style="--marquee-duration:36s">
+				{
+					marqueeLoop.map((item) => (
+						<span class="flex items-center">
+							<span class="px-8 text-sm font-medium uppercase tracking-[0.18em] sm:text-base">{item}</span>
+							<span class="text-lime">✦</span>
+						</span>
+					))
+				}
+			</div>
+		</div>
+
+		<!-- =========================== STORY =========================== -->
+		<section id="story" class="relative bg-cream px-5 py-24 sm:px-8 sm:py-32">
+			<div class="mx-auto max-w-6xl">
+				<p data-reveal="fade" class="eyebrow text-ink/60">Our Story</p>
+
+				<h2 data-reveal class="display mt-8 max-w-5xl text-[clamp(1.9rem,5.2vw,4rem)] leading-[1.05] text-ink/85">
+					We grow tea the
+					<span class="mx-1.5 inline-grid h-[0.72em] w-[1.4em] -translate-y-[0.04em] place-items-center overflow-hidden rounded-full bg-brand align-middle">
+						<svg class="animate-spin-slow h-[0.5em] w-[0.5em] text-lime" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+							<circle cx="12" cy="12" r="2.4" /><circle cx="12" cy="5" r="2.4" /><circle cx="12" cy="19" r="2.4" /><circle cx="5" cy="12" r="2.4" /><circle cx="19" cy="12" r="2.4" />
+						</svg>
+					</span>
+					slow way — beside the{' '}
+					<span class="text-brand">small growers</span>{' '}
+					who tend every leaf by hand.
+				</h2>
+
+				<div class="mt-16 grid gap-12 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+					<div data-reveal="left" class="order-2 grid grid-cols-2 gap-4 md:order-1">
+						<div class="aspect-[4/5] overflow-hidden rounded-3xl bg-sand">
+							<img
+								src="/images/tra-granules.webp"
+								alt="Loose tea granules with a spoon and glass jar"
+								width="500"
+								height="625"
+								loading="lazy"
+								class="h-full w-full object-cover transition duration-700 hover:scale-105"
+							/>
+						</div>
+						<div class="mt-8 aspect-[4/5] overflow-hidden rounded-3xl bg-sand">
+							<img
+								src="/images/tea-pl-sq.webp"
+								alt="Pickers hand-plucking fresh leaves on a tea plantation"
+								width="500"
+								height="625"
+								loading="lazy"
+								class="h-full w-full object-cover transition duration-700 hover:scale-105"
+							/>
+						</div>
+					</div>
+
+					<div data-reveal="right" class="order-1 md:order-2">
+						<p class="text-lg leading-relaxed text-ink/75 text-pretty">
+							Wayomile began with a simple belief — that the finest cup starts with fairness. We work
+							directly with family-run gardens, roast and blend in small batches, and pack only when you
+							order. No middlemen, no shortcuts, no compromise on taste.
+						</p>
+						<a
+							href="#shop"
+							class="group mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-cream transition hover:bg-brand"
+						>
+							Meet the blends
+							<span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- ======================= FEATURE CARDS ======================= -->
+		<section class="bg-cream px-5 pb-8 sm:px-8">
+			<div class="mx-auto grid max-w-6xl gap-5 md:grid-cols-3">
+				<!-- Card A: dark, with Hot/Iced toggle -->
+				<article data-reveal class="flex flex-col justify-between rounded-3xl bg-ink p-7 text-cream">
+					<div>
+						<span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10">
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b7e23a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M4 9h13a3 3 0 0 1 0 6h-1" /><path d="M4 9v6a4 4 0 0 0 4 4h5a4 4 0 0 0 4-4V9z" />
+								<path d="M8 3c0 1-1 1-1 2s1 1 1 2M12 3c0 1-1 1-1 2s1 1 1 2" />
+							</svg>
+						</span>
+						<h3 class="mt-6 text-2xl font-bold">
+							Small-batch blended with{' '}
+							<span data-brew-word class="text-lime">tournament-grade care</span> — brewed your way.
+						</h3>
+						<p class="mt-3 text-cream/70" data-brew-copy>Steep hot at 90°C for a bold, aromatic cup.</p>
+					</div>
+
+					<div class="mt-8 flex items-center gap-3">
+						<button
+							id="brew-toggle"
+							role="switch"
+							aria-checked="false"
+							aria-label="Toggle hot or iced brew"
+							class="relative h-8 w-14 rounded-full bg-white/15 transition-colors duration-300"
+						>
+							<span
+								id="brew-knob"
+								class="absolute left-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-lime text-ink transition-transform duration-300 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]"
+							>
+								<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg>
+							</span>
+						</button>
+						<span id="brew-mode" class="text-sm font-semibold">Hot brew</span>
+					</div>
+				</article>
+
+				<!-- Card B: image/label -->
+				<article data-reveal style="--reveal-delay:120ms" class="group relative overflow-hidden rounded-3xl bg-brand p-7 text-cream">
+					<!-- To change this image, just edit the filename below (files live in /public/images) -->
+					<img
+						src="/images/tea-close-up.webp"
+						alt=""
+						class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+					/>
+					<div class="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-ink/20"></div>
+					<div class="relative flex h-full min-h-56 flex-col justify-between">
+						<span class="glass inline-flex w-fit rounded-full px-4 py-1.5 text-sm font-medium">Loose-leaf &amp; granules</span>
+						<div>
+							<h3 class="text-2xl font-bold">From whole leaves to fine granules</h3>
+							<p class="mt-2 text-cream/85">Choose the format that fits your ritual — the garden stays the same.</p>
+						</div>
+					</div>
+				</article>
+
+				<!-- Card C: taste profile stats -->
+				<article data-reveal style="--reveal-delay:240ms" class="flex flex-col rounded-3xl bg-paper p-7 ring-1 ring-ink/5">
+					<div class="flex items-end gap-2">
+						<span class="text-5xl font-bold tabular-nums" data-countup="6">0</span>
+						<span class="pb-1.5 text-xl font-bold">signature</span>
+					</div>
+					<p class="mt-1 text-sm font-semibold text-ink/70">Blends, each with its own character.</p>
+					<p class="mt-2 text-sm text-ink/60">Tasting notes profiled so you always find your match.</p>
+
+					<div class="mt-6 space-y-3">
+						{
+							profiles.map((p, i) => (
+								<div class="flex items-center gap-3">
+									<span class="w-16 text-sm text-ink/70">{p.label}</span>
+									<div class="h-2.5 flex-1 overflow-hidden rounded-full bg-ink/10">
+										<div
+											data-reveal="fade"
+											class="h-full rounded-full bg-brand transition-[width] duration-1000 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+											style={`width:0%; --w:${p.value}%; --reveal-delay:${300 + i * 120}ms`}
+										/>
+									</div>
+									<span class="w-8 text-right text-sm font-semibold tabular-nums">{p.value}</span>
+								</div>
+							))
+						}
+					</div>
+				</article>
+			</div>
+		</section>
+
+		<!-- =========================== STATS =========================== -->
+		<section class="bg-cream px-5 py-20 sm:px-8">
+			<div class="mx-auto max-w-6xl">
+				<p data-reveal="fade" class="text-center text-lg text-ink/60">A few facts about us, in numbers</p>
+				<div class="mt-12 grid grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-4">
+					{
+						stats.map((s, i) => (
+							<div data-reveal style={`--reveal-delay:${i * 100}ms`} class="text-center">
+								<div class="display text-[clamp(2.5rem,7vw,4.5rem)] text-ink">
+									<span data-countup={String(s.value)} data-suffix={s.suffix}>0{s.suffix}</span>
+								</div>
+								<div class="mx-auto mt-2 h-px w-10 bg-ink/20"></div>
+								<p class="mt-3 text-sm font-medium text-ink/60">{s.label}</p>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- ==================== SHOP / PRODUCT GRID ===================== -->
+		<section id="shop" class="bg-cream px-5 py-24 sm:px-8 sm:py-32">
+			<div class="mx-auto max-w-6xl">
+				<div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+					<div>
+						<p data-reveal="fade" class="eyebrow text-ink/60">The Collection</p>
+						<h2 data-reveal class="display mt-5 text-[clamp(2rem,5.5vw,3.75rem)] text-ink">
+							Find your<br /><span class="text-brand">everyday brew.</span>
+						</h2>
+					</div>
+					<p data-reveal="fade" class="max-w-sm text-ink/65 text-pretty">
+						Six honest blends, packed the day they ship. Tap
+						<span class="mx-1 inline-grid h-5 w-5 place-items-center rounded-full bg-ink align-middle text-xs text-cream">+</span>
+						to drop one in your basket — no page reloads, ever.
+					</p>
+				</div>
+
+				<!-- Filter chips -->
+				<div data-reveal="fade" class="no-scrollbar mt-10 flex gap-2 overflow-x-auto pb-1">
+					{
+						filters.map((f) => (
+							<button
+								data-filter={f.slug}
+								class={`filter-chip shrink-0 rounded-full border px-5 py-2.5 text-sm font-semibold transition duration-300 ${
+									f.slug === 'all'
+										? 'border-ink bg-ink text-cream'
+										: 'border-ink/15 bg-transparent text-ink hover:border-ink/40'
+								}`}
+							>
+								{f.name}
+							</button>
+						))
+					}
+				</div>
+
+				<!-- Grid -->
+				<div id="product-grid" class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+					{products.map((product, i) => <ProductCard product={product} index={i} />)}
+				</div>
+			</div>
+		</section>
+
+		<!-- ====================== FLAVOUR FINDER ======================= -->
+		<section id="blend" class="relative overflow-hidden bg-sand px-5 py-24 sm:px-8 sm:py-32">
+			<span
+				aria-hidden="true"
+				class="pointer-events-none absolute -right-4 top-8 select-none text-[22vw] font-bold leading-none tracking-tighter text-ink/5 sm:top-4"
+			>BLEND.</span>
+
+			<div class="relative mx-auto max-w-6xl">
+				<div class="max-w-2xl">
+					<p data-reveal="fade" class="eyebrow text-ink/60">Find your blend</p>
+					<h2 data-reveal class="display mt-5 text-[clamp(2rem,5.5vw,3.75rem)] text-ink">
+						Not sure where to start? <span class="text-brand">We'll match you.</span>
+					</h2>
+					<p data-reveal="fade" class="mt-4 text-lg text-ink/65 text-pretty">
+						One tap on the mood you're after and we'll point you to the blend that fits — then drop it
+						straight in your basket.
+					</p>
+				</div>
+
+				<div data-reveal class="mt-14">
+					<FlavourFinder client:visible products={finderProducts} />
+				</div>
+			</div>
+		</section>
+
+		<!-- ========================== RITUAL =========================== -->
+		<section id="ritual" class="bg-cream px-5 py-24 sm:px-8 sm:py-32">
+			<div class="mx-auto max-w-6xl">
+				<div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+					<div>
+						<p data-reveal="fade" class="eyebrow text-ink/60">The Ritual</p>
+						<h2 data-reveal class="display mt-5 text-[clamp(2rem,5.5vw,3.75rem)] text-ink">
+							Steep it <span class="text-brand">just right.</span>
+						</h2>
+					</div>
+					<p data-reveal="fade" class="max-w-sm text-ink/60 text-pretty">
+						A tiny brew companion — because great leaves deserve great timing. Fully interactive, just for fun.
+					</p>
+				</div>
+
+				<div data-reveal class="mt-14 rounded-[2rem] bg-paper p-8 ring-1 ring-ink/5 sm:p-12">
+					<SteepTimer client:visible />
+				</div>
+			</div>
+		</section>
+
+		<!-- ======================= TESTIMONIALS ======================== -->
+		<section class="bg-brand-dark px-5 py-24 text-cream sm:px-8 sm:py-32">
+			<div class="mx-auto max-w-6xl">
+				<div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+					<h2 data-reveal class="display max-w-xl text-[clamp(2rem,5vw,3.5rem)]">
+						Why they keep the <span class="text-lime">kettle on.</span>
+					</h2>
+					<p data-reveal="fade" class="max-w-xs text-cream/70">
+						Real cups, real people — here's what lands in our inbox.
+					</p>
+				</div>
+
+				<div class="mt-14 grid gap-5 md:grid-cols-3">
+					{
+						quotes.map((q, i) => (
+							<figure
+								data-reveal
+								style={`--reveal-delay:${i * 120}ms`}
+								class="flex flex-col rounded-3xl bg-white/5 p-8 ring-1 ring-white/10 transition duration-500 hover:bg-white/10"
+							>
+								<div class="text-4xl leading-none text-lime">"</div>
+								<blockquote class="mt-3 flex-1 text-lg leading-relaxed text-cream/90 text-pretty">
+									{q.text}
+								</blockquote>
+								<figcaption class="mt-6 flex items-center gap-3">
+									<span class="grid h-10 w-10 place-items-center rounded-full font-bold text-ink" style={`background:${q.color}`}>
+										{q.name.charAt(0)}
+									</span>
+									<span>
+										<span class="block text-sm font-semibold">{q.name}</span>
+										<span class="block text-sm text-cream/60">{q.role}</span>
+									</span>
+								</figcaption>
+							</figure>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- ============================ FAQ ============================ -->
+		<section id="faq" class="bg-cream px-5 py-24 sm:px-8 sm:py-32">
+			<div class="mx-auto grid max-w-6xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
+				<div>
+					<p data-reveal="fade" class="eyebrow text-ink/60">Got questions?</p>
+					<h2 data-reveal class="display mt-5 text-[clamp(2rem,5vw,3.5rem)] text-ink">
+						We've got<br /><span class="text-brand">answers.</span>
+					</h2>
+					<p data-reveal="fade" class="mt-5 max-w-xs text-ink/60 text-pretty">
+						Everything about freshness, sourcing and how we get tea to your cup.
+					</p>
+				</div>
+
+				<div data-reveal class="divide-y divide-ink/10 border-y border-ink/10">
+					{
+						faqs.map((f) => (
+							<details class="faq group">
+								<summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-lg font-semibold [&::-webkit-details-marker]:hidden">
+									{f.q}
+									<span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-ink/5 text-xl transition-transform duration-300 group-open:rotate-45">
+										+
+									</span>
+								</summary>
+								<div class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] group-open:grid-rows-[1fr]">
+									<p class="min-h-0 overflow-hidden pr-12 text-ink/70 text-pretty">
+										<span class="block pb-5">{f.a}</span>
+									</p>
+								</div>
+							</details>
+						))
+					}
+				</div>
+			</div>
+		</section>
 	</main>
 </Layout>
+
+<script>
+	// Hot/Iced brew toggle (feature card)
+	const toggle = document.getElementById('brew-toggle');
+	const knob = document.getElementById('brew-knob');
+	const mode = document.getElementById('brew-mode');
+	const word = document.querySelector('[data-brew-word]');
+	const copy = document.querySelector('[data-brew-copy]');
+	const flameSVG =
+		'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
+	const snowSVG =
+		'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5 4.2 16.5"/></svg>';
+	let iced = false;
+	toggle?.addEventListener('click', () => {
+		iced = !iced;
+		toggle.setAttribute('aria-checked', String(iced));
+		if (knob) {
+			knob.style.transform = iced ? 'translateX(24px)' : 'translateX(0)';
+			knob.innerHTML = iced ? snowSVG : flameSVG;
+		}
+		if (mode) mode.textContent = iced ? 'Iced brew' : 'Hot brew';
+		if (word) word.textContent = iced ? 'crisp, cold-steeped clarity' : 'tournament-grade care';
+		if (copy)
+			copy.textContent = iced
+				? 'Cold-steep 4 hours for a smooth, refreshing pour.'
+				: 'Steep hot at 90°C for a bold, aromatic cup.';
+	});
+
+	// Animate taste-profile bars to their target width when revealed
+	document.querySelectorAll<HTMLElement>('[style*="--w"]').forEach((el) => {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					if (e.isIntersecting) {
+						el.style.width = getComputedStyle(el).getPropertyValue('--w');
+						io.unobserve(el);
+					}
+				});
+			},
+			{ threshold: 0.5 }
+		);
+		io.observe(el);
+	});
+
+	// Product filter chips
+	const chips = document.querySelectorAll<HTMLButtonElement>('.filter-chip');
+	const cards = document.querySelectorAll<HTMLElement>('[data-product]');
+	const activate = (chip: HTMLButtonElement) => {
+		chips.forEach((c) => {
+			const on = c === chip;
+			c.classList.toggle('bg-ink', on);
+			c.classList.toggle('text-cream', on);
+			c.classList.toggle('border-ink', on);
+			c.classList.toggle('border-ink/15', !on);
+			c.classList.toggle('text-ink', !on);
+		});
+	};
+	chips.forEach((chip) => {
+		chip.addEventListener('click', () => {
+			activate(chip);
+			const slug = chip.dataset.filter;
+			cards.forEach((card) => {
+				const match = slug === 'all' || (card.dataset.category || '').split(' ').includes(slug!);
+				card.style.transition = 'opacity .35s ease, transform .35s ease';
+				if (match) {
+					card.style.display = '';
+					requestAnimationFrame(() => {
+						card.style.opacity = '1';
+						card.style.transform = 'none';
+					});
+				} else {
+					card.style.opacity = '0';
+					card.style.transform = 'scale(0.96)';
+					setTimeout(() => (card.style.display = 'none'), 300);
+				}
+			});
+		});
+	});
+</script>

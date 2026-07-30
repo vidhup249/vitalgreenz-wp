@@ -13,10 +13,8 @@ export default function CartButton({ variant = 'dark' }: Props) {
 		<button
 			onClick={openCart}
 			aria-label={`Open cart, ${count} item${count === 1 ? '' : 's'}`}
-			className={`group relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition duration-300 ${
-				isLight
-					? 'bg-white/15 text-white backdrop-blur hover:bg-white/25'
-					: 'bg-ink text-cream hover:bg-brand-dark'
+			className={`group relative inline-flex h-10 w-10 items-center justify-center rounded-full transition duration-300 sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-2 sm:text-sm sm:font-semibold ${
+				isLight ? 'bg-white/15 text-white backdrop-blur hover:bg-white/25' : 'bg-ink text-cream hover:bg-brand-dark'
 			}`}
 		>
 			<svg
@@ -35,10 +33,11 @@ export default function CartButton({ variant = 'dark' }: Props) {
 				<circle cx="16.5" cy="20.5" r="1.2" />
 			</svg>
 			<span className="hidden sm:inline">Cart</span>
+			{/* Count: floating badge on the mobile circle, inline chip on desktop */}
 			<span
-				className={`grid h-5 min-w-5 place-items-center rounded-full px-1 text-[11px] font-bold tabular-nums transition ${
+				className={`absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-lime px-1 text-[11px] font-bold leading-none tabular-nums text-ink transition sm:static sm:right-auto sm:top-auto ${
 					count > 0 ? 'scale-100' : 'scale-0'
-				} ${isLight ? 'bg-lime text-ink' : 'bg-lime text-ink'}`}
+				}`}
 			>
 				{count}
 			</span>

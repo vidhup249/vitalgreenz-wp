@@ -60,9 +60,30 @@ async function fetchJSON(url: string, attempts = 3, timeoutMs = 20000): Promise<
 	throw new Error(`Failed to fetch ${url} after ${attempts} attempts: ${lastErr}`);
 }
 
-/** Fetch products from the public WooCommerce Store API (browser-safe — no keys). */
-export async function getProducts(perPage = 100): Promise<WooProduct[]> {
-	return fetchJSON(`${WP_URL}/wp-json/wc/store/v1/products?per_page=${perPage}`);
+/**
+ * Fetch products from the public WooCommerce Store API (browser-safe — no keys).
+ *
+ * Memoised by perPage: the homepage renders several components that each need the
+ * product list (Story, FeatureCards, ProductShowcase, FlavourFinder). Without this
+ * cache each would fire its own sequential request, and because Astro streams HTML
+ * the below-hero content wouldn't flush until all of them resolved (~3s on a slow
+ * host). Sharing one in-flight promise collapses that to a single fetch.
+ */
+const productsCache = new Map<number, Promise<WooProduct[]>>();
+
+export function getProducts(perPage = 100): Promise<WooProduct[]> {
+	let pending = productsCache.get(perPage);
+	if (!pending) {
+		pending = fetchJSON(`${WP_URL}/wp-json/wc/store/v1/products?per_page=${perPage}`).catch(
+			(err) => {
+				// Don't cache failures — let the next caller retry.
+				productsCache.delete(perPage);
+				throw err;
+			}
+		);
+		productsCache.set(perPage, pending);
+	}
+	return pending;
 }
 
 /** Fetch a single product (full detail incl. description + attributes). */
