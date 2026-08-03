@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { cartItems, cartSubtotal, setQty, removeItem, clearCart } from '../../stores/cart';
 import { formatINR } from '../../lib/format';
@@ -6,47 +6,90 @@ import { formatINR } from '../../lib/format';
 const FREE_SHIP_THRESHOLD = 50000; // ₹500
 const FLAT_SHIP = 4900; // ₹49
 
+const CLIENT_ID = import.meta.env.PUBLIC_PAYPAL_CLIENT_ID as string | undefined;
+const CURRENCY = (import.meta.env.PUBLIC_PAYPAL_CURRENCY as string) || 'INR';
+
+// Load the PayPal JS SDK once, on demand.
+let sdkPromise: Promise<any> | null = null;
+function loadPayPalSdk(): Promise<any> {
+	if (typeof window === 'undefined') return Promise.resolve(null);
+	if ((window as any).paypal) return Promise.resolve((window as any).paypal);
+	if (sdkPromise) return sdkPromise;
+	sdkPromise = new Promise((resolve, reject) => {
+		const s = document.createElement('script');
+		s.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${CURRENCY}&intent=capture`;
+		s.onload = () => resolve((window as any).paypal);
+		s.onerror = () => reject(new Error('Failed to load PayPal SDK'));
+		document.head.appendChild(s);
+	});
+	return sdkPromise;
+}
+
 export default function Checkout() {
 	const items = useStore(cartItems);
 	const subtotal = useStore(cartSubtotal);
-	const [placed, setPlaced] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const formRef = useRef<HTMLFormElement>(null);
+	const paypalRef = useRef<HTMLDivElement>(null);
+	const wooOrderIdRef = useRef<number | null>(null);
+	const renderedRef = useRef(false);
 
 	const shipping = subtotal >= FREE_SHIP_THRESHOLD || subtotal === 0 ? 0 : FLAT_SHIP;
 	const total = subtotal + shipping;
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		const form = e.currentTarget;
-		if (!form.checkValidity()) {
-			form.reportValidity();
-			return;
-		}
-		// NOTE: no payment gateway / WooCommerce order creation wired yet.
-		// Next step: POST to WooCommerce Store API /checkout or a Razorpay flow.
-		clearCart();
-		setPlaced(true);
-		window.scrollTo({ top: 0, behavior: 'smooth' });
-	};
+	useEffect(() => {
+		if (!CLIENT_ID || items.length === 0 || renderedRef.current || !paypalRef.current) return;
+		renderedRef.current = true;
 
-	if (placed) {
-		return (
-			<div className="mx-auto max-w-lg py-20 text-center">
-				<div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-lime text-ink">
-					<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-						<path d="M20 6 9 17l-5-5" />
-					</svg>
-				</div>
-				<h1 className="display mt-6 text-4xl text-ink">Order placed!</h1>
-				<p className="mt-3 text-ink/65 text-pretty">
-					Thank you — we've got your order and we'll email a confirmation shortly. Your tea will be
-					packed fresh and on its way soon.
-				</p>
-				<a href="/#shop" className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-semibold text-cream transition hover:bg-brand">
-					Continue shopping
-				</a>
-			</div>
-		);
-	}
+		loadPayPalSdk()
+			.then((paypal) => {
+				if (!paypal || !paypalRef.current) return;
+				paypal
+					.Buttons({
+						style: { color: 'gold', shape: 'pill', layout: 'vertical', height: 48, label: 'paypal' },
+						createOrder: async () => {
+							setError(null);
+							const form = formRef.current;
+							if (form && !form.checkValidity()) {
+								form.reportValidity();
+								throw new Error('form-invalid');
+							}
+							const customer = form ? Object.fromEntries(new FormData(form).entries()) : {};
+							const cart = cartItems.get().map((i) => ({ id: i.id, qty: i.qty }));
+							const res = await fetch('/api/create-order', {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ items: cart, customer }),
+							});
+							const data = await res.json();
+							if (!res.ok) {
+								setError(data.error || 'Could not start the payment.');
+								throw new Error(data.error || 'create-order-failed');
+							}
+							wooOrderIdRef.current = data.wooOrderId;
+							return data.paypalOrderId;
+						},
+						onApprove: async (data: { orderID: string }) => {
+							const res = await fetch('/api/capture-order', {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ paypalOrderId: data.orderID, wooOrderId: wooOrderIdRef.current }),
+							});
+							const out = await res.json();
+							if (!res.ok || !out.ok) {
+								setError('Payment was not completed. If you were charged, contact us and we’ll sort it out.');
+								return;
+							}
+							clearCart();
+							window.location.href = `/success?order=${out.wooOrderId}`;
+						},
+						onError: () => setError('Something went wrong with PayPal. Please try again.'),
+						onCancel: () => setError(null),
+					})
+					.render(paypalRef.current);
+			})
+			.catch(() => setError('Could not load PayPal. Please refresh and try again.'));
+	}, [items.length]);
 
 	if (items.length === 0) {
 		return (
@@ -68,36 +111,52 @@ export default function Checkout() {
 
 	return (
 		<div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-14">
-			{/* Form */}
-			<form id="checkout-form" onSubmit={handleSubmit}>
-				<h2 className="text-xl font-bold">Contact</h2>
-				<div className="mt-4 grid gap-4 sm:grid-cols-2">
-					<Field name="fullname" label="Full name" required placeholder="Your name" />
-					<Field name="email" type="email" label="Email" required placeholder="you@email.com" />
-					<Field name="phone" type="tel" label="Phone" required placeholder="+91 …" />
-				</div>
-
-				<h2 className="mt-10 text-xl font-bold">Shipping address</h2>
-				<div className="mt-4 grid gap-4 sm:grid-cols-2">
-					<div className="sm:col-span-2">
-						<Field name="address" label="Address" required placeholder="House no, street, area" />
+			{/* Form + payment */}
+			<div>
+				<form ref={formRef} id="checkout-form" onSubmit={(e) => e.preventDefault()}>
+					<h2 className="text-xl font-bold">Contact</h2>
+					<div className="mt-4 grid gap-4 sm:grid-cols-2">
+						<Field name="fullname" label="Full name" required placeholder="Your name" />
+						<Field name="email" type="email" label="Email" required placeholder="you@email.com" />
+						<Field name="phone" type="tel" label="Phone" required placeholder="+91 …" />
 					</div>
-					<Field name="city" label="City" required placeholder="City" />
-					<Field name="state" label="State" required placeholder="State" />
-					<Field name="pincode" label="PIN code" required placeholder="6-digit PIN" />
-				</div>
 
-				<button
-					type="submit"
-					className="group mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-8 py-4 text-sm font-semibold text-cream transition duration-300 hover:bg-brand"
-				>
-					Place order · {formatINR(total)}
-					<span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-				</button>
-				<p className="mt-3 text-center text-xs text-ink/45">
-					Demo checkout — no payment is taken yet. Payment &amp; order creation come next.
-				</p>
-			</form>
+					<h2 className="mt-10 text-xl font-bold">Shipping address</h2>
+					<div className="mt-4 grid gap-4 sm:grid-cols-2">
+						<div className="sm:col-span-2">
+							<Field name="address" label="Address" required placeholder="House no, street, area" />
+						</div>
+						<Field name="city" label="City" required placeholder="City" />
+						<Field name="state" label="State" required placeholder="State" />
+						<Field name="pincode" label="PIN code" required placeholder="6-digit PIN" />
+					</div>
+				</form>
+
+				{/* Payment */}
+				<div className="mt-10">
+					<h2 className="text-xl font-bold">Payment</h2>
+					{CLIENT_ID ? (
+						<>
+							<p className="mt-2 text-sm text-ink/55">
+								Fill in your details above, then pay securely with PayPal — you'll approve the
+								payment in a PayPal window and come straight back.
+							</p>
+							<div ref={paypalRef} className="mt-5 min-h-[52px]" />
+						</>
+					) : (
+						<div className="mt-3 rounded-2xl border border-ink/10 bg-cream/60 p-5 text-sm text-ink/70">
+							<p className="font-semibold text-ink">Online payment isn't switched on yet.</p>
+							<p className="mt-1">
+								We're finishing our PayPal setup. Your <strong>{formatINR(total)}</strong> order can be
+								placed as soon as it's live.
+							</p>
+						</div>
+					)}
+					{error && (
+						<p className="mt-3 rounded-xl bg-clay/10 px-4 py-3 text-sm font-medium text-clay">{error}</p>
+					)}
+				</div>
+			</div>
 
 			{/* Summary */}
 			<aside className="h-fit rounded-3xl bg-paper p-6 ring-1 ring-ink/5 lg:sticky lg:top-24">
@@ -107,7 +166,7 @@ export default function Checkout() {
 						<li key={item.id} className="flex gap-3">
 							<div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-cream">
 								{item.image && <img src={item.image} alt={item.name} className="h-full w-full object-cover" />}
-								<span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-ink px-1 text-[11px] font-bold text-cream">
+								<span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-ink px-1 text-[11px] font-bold leading-none text-cream">
 									{item.qty}
 								</span>
 							</div>

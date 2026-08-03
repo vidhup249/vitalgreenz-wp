@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Thank you - VitalGreenz" hideFooter={true}>
+	<main class="grid min-h-[80vh] place-items-center bg-cream px-5 py-28 sm:px-8">
+		<div class="mx-auto max-w-lg text-center">
+			<div class="animate-float-y mx-auto grid h-24 w-24 place-items-center rounded-full bg-lime text-ink" style="animation-duration:5s">
+				<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M20 6 9 17l-5-5" />
+				</svg>
+			</div>
+
+			<p class="eyebrow mt-8 justify-center text-ink/50">Order confirmed</p>
+			<h1 class="display mt-4 text-[clamp(2.25rem,6vw,3.5rem)] text-ink">Thank you!</h1>
+
+			<p class="mt-4 text-lg text-ink/70 text-pretty">
+				Your payment went through and your order
+				<span id="order-ref" class="font-semibold text-brand"></span>
+				is confirmed. We've emailed your receipt, and your tea will be packed fresh and on its way soon.
+			</p>
+
+			<div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+				<a
+					href="/#shop"
+					class="group inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-semibold text-cream transition hover:bg-brand"
+				>
+					Continue shopping
+					<span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+				</a>
+				<a
+					href="/contact"
+					class="inline-flex items-center gap-2 rounded-full border border-ink/15 px-7 py-3.5 text-sm font-semibold text-ink transition hover:border-ink/40"
+				>
+					Need help?
+				</a>
+			</div>
+		</div>
+	</main>
+</Layout>
+
+<script is:inline>
+	// Show the order number from ?order=… and make sure the basket is emptied.
+	const id = new URLSearchParams(location.search).get('order');
+	const ref = document.getElementById('order-ref');
+	if (id && ref) ref.textContent = ' #' + id;
+	try {
+		localStorage.removeItem('wayomile:cart');
+	} catch (e) {}
+</script>

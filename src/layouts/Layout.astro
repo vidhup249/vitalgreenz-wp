@@ -22,6 +22,11 @@ const {
 } = Astro.props;
 
 const wpOrigin = new URL(import.meta.env.PUBLIC_WORDPRESS_URL).origin;
+
+// Absolute URLs for social sharing (falls back to the request origin locally).
+const base = Astro.site ?? Astro.url;
+const ogImage = new URL('/og.png', base).href;
+const canonicalURL = new URL(Astro.url.pathname, base).href;
 ---
 
 <!doctype html>
@@ -44,9 +49,26 @@ const wpOrigin = new URL(import.meta.env.PUBLIC_WORDPRESS_URL).origin;
 
 		<title>{title}</title>
 		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+
+		<!-- Open Graph -->
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:site_name" content="VitalGreenz" />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:alt" content="VitalGreenz — premium Indian tea" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+
 		<meta name="theme-color" content="#10241a" />
 	</head>
 	<body>
