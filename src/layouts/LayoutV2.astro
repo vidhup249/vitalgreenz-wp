@@ -1,0 +1,442 @@
+---
+/**
+ * Layout for the "Edition" design language (v2).
+ * Self-contained: it loads ONLY v2.css, and ships its own minimal navbar,
+ * closing CTA and footer so the original Layout/Navbar/Footer stay untouched.
+ */
+import '@fontsource-variable/plus-jakarta-sans';
+import '../styles/v2.css';
+import CartButton from '../components/cart/CartButton.tsx';
+import CartDrawer from '../components/cart/CartDrawer.tsx';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'Wayomile — Premium Indian Tea',
+	description =
+		'Experience the heritage of Indian tea. Small-grower sourced, sustainably cultivated, crafted for exceptional taste.',
+} = Astro.props;
+
+const wpOrigin = new URL(import.meta.env.PUBLIC_WORDPRESS_URL).origin;
+
+const base = Astro.site ?? Astro.url;
+const ogImage = new URL('/og.png', base).href;
+const canonicalURL = new URL(Astro.url.pathname, base).href;
+
+const navLinks = [
+	{ label: 'Shop', href: '#shop' },
+	{ label: 'Our Story', href: '#story' },
+	{ label: 'Find Yours', href: '#blend' },
+	{ label: 'About', href: '/about' },
+	{ label: 'Contact', href: '/contact' },
+];
+
+const footerColumns = [
+	{
+		title: 'Shop',
+		links: [
+			{ label: 'All teas', href: '#shop' },
+			{ label: 'Blend Lab', href: '#blend' },
+			{ label: 'Bestsellers', href: '#shop' },
+			{ label: 'Gift sets', href: '#shop' },
+		],
+	},
+	{
+		title: 'Company',
+		links: [
+			{ label: 'Our story', href: '#story' },
+			{ label: 'Sustainability', href: '#story' },
+			{ label: 'Small growers', href: '#story' },
+			{ label: 'FAQ', href: '#faq' },
+		],
+	},
+	{
+		title: 'Social',
+		links: [
+			{ label: 'Instagram', href: '#' },
+			{ label: 'Facebook', href: '#' },
+			{ label: 'YouTube', href: '#' },
+			{ label: 'WhatsApp', href: '#' },
+		],
+	},
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<script is:inline>
+			document.documentElement.classList.add('js');
+		</script>
+
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<meta name="generator" content={Astro.generator} />
+
+		<link rel="preconnect" href={wpOrigin} crossorigin />
+		<link rel="dns-prefetch" href={wpOrigin} />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:site_name" content="Wayomile" />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:alt" content="Wayomile — premium Indian tea" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+
+		<meta name="theme-color" content="#f1f1ef" />
+	</head>
+
+	<body>
+		<!-- ============================ NAV ============================ -->
+		<header id="nav" class="nav" data-scrolled="false">
+			<div class="wrap nav-inner">
+				<a href="#top" class="nav-logo rise" aria-label="Wayomile home" style="--d:120ms">
+					<img src="/images/vg-logo-hor.png" alt="Wayomile" width="1220" height="265" />
+				</a>
+
+				<nav class="nav-links" aria-label="Primary">
+					{navLinks.map((l, i) => (
+						<a href={l.href} class="rise" style={`--d:${220 + i * 60}ms`}>{l.label}</a>
+					))}
+				</nav>
+
+				<div class="nav-actions rise" style="--d:520ms">
+					<CartButton client:load />
+					<button id="burger" class="nav-burger" aria-label="Open menu" aria-expanded="false">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+							<line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" />
+						</svg>
+					</button>
+				</div>
+			</div>
+		</header>
+
+		<!-- Full-screen mobile menu (outside <header> so the blur isn't its container) -->
+		<div id="menu" class="menu">
+			<div class="wrap menu-head">
+				<img src="/images/vg-logo-hor.png" alt="Wayomile" width="1220" height="265" style="height:34px;width:auto" />
+				<button id="menu-close" class="nav-burger" aria-label="Close menu">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+						<line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" />
+					</svg>
+				</button>
+			</div>
+			<div class="wrap menu-nav">
+				{
+					navLinks.map((l, i) => (
+						<a href={l.href} class="menu-link" style={`--d:${i * 60}ms`}>
+							{l.label}
+							<span>{String(i + 1).padStart(2, '0')}</span>
+						</a>
+					))
+				}
+			</div>
+			<div class="wrap" style="padding-bottom:2.5rem">
+				<a href="tel:+919633816338" class="body">+91 9633816338</a>
+			</div>
+		</div>
+
+		<slot />
+
+		<!-- ====================== CLOSING CTA + FOOTER ====================== -->
+		<div class="close-block">
+			<section class="close-cta">
+				<video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+					<source src="/videos/tea-pour.mp4" type="video/mp4" />
+				</video>
+				<div class="wrap">
+					<p><span class="label label-light" data-anim="fade">Start today</span></p>
+					<h2 data-anim="words" class="d2" style="margin-top:2rem;--anim-delay:80ms">
+						Brew something<br /><span style="color:var(--on-dark-mute)">worth savouring.</span>
+					</h2>
+					<div data-anim="up" style="margin-top:2.75rem;display:flex;justify-content:center;--anim-delay:340ms">
+						<a href="#shop" class="btn btn-light">
+							Explore the collection
+							<span class="arrow">↗</span>
+						</a>
+					</div>
+				</div>
+			</section>
+
+			<footer class="wrap foot">
+				<div class="foot-top" data-anim="stagger">
+					<div>
+						<img src="/images/vg-logo-w.png" alt="Wayomile" width="615" height="444" class="foot-logo" />
+						<p class="body measure" style="margin-top:1.5rem;color:var(--on-dark-mute)">
+							Sip the legacy, taste the tradition. Premium Indian tea from small growers to your cup.
+						</p>
+						<form class="foot-form" onsubmit="return false">
+							<input type="email" required placeholder="Your email" aria-label="Email address" />
+							<button aria-label="Subscribe"><span class="arrow">↗</span></button>
+						</form>
+					</div>
+
+					{
+						footerColumns.map((col, i) => (
+							<div class="foot-col" style={`--i:${i + 1}`}>
+								<h3>{col.title}</h3>
+								<ul>
+									{col.links.map((l) => (
+										<li><a href={l.href}>{l.label}</a></li>
+									))}
+								</ul>
+							</div>
+						))
+					}
+				</div>
+
+				<div class="foot-bottom" data-anim="fade">
+					<div style="display:flex;flex-wrap:wrap;gap:0 1.75rem">
+						<a href="tel:+919633816338">+91 9633816338</a>
+						<a href="mailto:support@wayomile.in">support@wayomile.in</a>
+					</div>
+					<p>© {new Date().getFullYear()} Wayomile. All rights reserved.</p>
+				</div>
+			</footer>
+		</div>
+
+		<CartDrawer client:load />
+
+		<script>
+			// Weighted / inertia scroll via Lenis (skipped for reduced-motion users).
+			import Lenis from 'lenis';
+
+			const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			if (!reduce) {
+				const lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 1, touchMultiplier: 1.4, smoothWheel: true });
+				(window as any).lenis = lenis;
+
+				const raf = (time: number) => {
+					lenis.raf(time);
+					requestAnimationFrame(raf);
+				};
+				requestAnimationFrame(raf);
+
+				document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+					a.addEventListener('click', (e) => {
+						const id = a.getAttribute('href')!;
+						if (id.length < 2) return;
+						const target = document.querySelector(id);
+						if (!target) return;
+						e.preventDefault();
+						lenis.scrollTo(target as HTMLElement, { offset: -80, duration: 1.4 });
+					});
+				});
+			}
+		</script>
+
+		<!-- Navbar state + mobile menu -->
+		<script>
+			const nav = document.getElementById('nav')!;
+			const burger = document.getElementById('burger')!;
+			const menu = document.getElementById('menu')!;
+			const menuClose = document.getElementById('menu-close')!;
+
+			const onScroll = () => {
+				nav.dataset.scrolled = window.scrollY > 24 ? 'true' : 'false';
+			};
+			onScroll();
+			window.addEventListener('scroll', onScroll, { passive: true });
+
+			let open = false;
+			const apply = (next: boolean) => {
+				open = next;
+				burger.setAttribute('aria-expanded', String(next));
+				menu.classList.toggle('is-open', next);
+				document.body.style.overflow = next ? 'hidden' : '';
+				const lenis = (window as any).lenis;
+				next ? lenis?.stop() : lenis?.start();
+			};
+
+			const openMenu = () => {
+				if (open) return;
+				apply(true);
+				history.pushState({ wmMenu: true }, '');
+			};
+			const closeMenu = () => {
+				if (!open) return;
+				apply(false);
+				if (history.state && (history.state as any).wmMenu) history.back();
+			};
+
+			burger.addEventListener('click', () => (open ? closeMenu() : openMenu()));
+			menuClose.addEventListener('click', closeMenu);
+			window.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && open) closeMenu();
+			});
+			window.addEventListener('popstate', () => {
+				if (open) apply(false);
+			});
+			menu.querySelectorAll('a').forEach((a) =>
+				a.addEventListener('click', () => {
+					apply(false);
+					if (history.state && (history.state as any).wmMenu) history.replaceState(null, '');
+				})
+			);
+		</script>
+
+		<!-- Inline (not bundled) so reveals fire on first paint. -->
+		<script is:inline>
+			(function () {
+				var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+				/**
+				 * Wrap every word of a heading in <span class="w"><span>…</span></span>
+				 * so the CSS can slide them up one after another. Walks text nodes
+				 * only, so inline spans (.accent, .ghost, .spin) keep their classes.
+				 * Never run inside a hydrated island — it would break hydration.
+				 */
+				var split = function (el) {
+					if (el.dataset.split) return;
+					el.dataset.split = '1';
+					var i = 0;
+					var walk = function (node) {
+						Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+							if (child.nodeType === 3) {
+								if (!child.textContent.trim()) return;
+								var frag = document.createDocumentFragment();
+								child.textContent.split(/(\s+)/).forEach(function (part) {
+									if (!part) return;
+									if (!part.trim()) {
+										frag.appendChild(document.createTextNode(part));
+										return;
+									}
+									var outer = document.createElement('span');
+									outer.className = 'w';
+									var inner = document.createElement('span');
+									inner.textContent = part;
+									inner.style.setProperty('--i', i++);
+									outer.appendChild(inner);
+									frag.appendChild(outer);
+								});
+								node.replaceChild(frag, child);
+							} else if (child.nodeType === 1 && child.tagName !== 'BR' && child.tagName !== 'SVG') {
+								walk(child);
+							}
+						});
+					};
+					walk(el);
+				};
+
+				var setup = function () {
+					document.querySelectorAll('[data-anim="words"]').forEach(split);
+
+					var els = document.querySelectorAll('[data-anim]');
+					if (reduce || !('IntersectionObserver' in window) || !els.length) {
+						els.forEach(function (el) {
+							el.classList.add('is-in');
+						});
+						return;
+					}
+
+					var io = new IntersectionObserver(
+						function (entries) {
+							entries.forEach(function (entry) {
+								if (entry.isIntersecting) {
+									entry.target.classList.add('is-in');
+									io.unobserve(entry.target);
+								}
+							});
+						},
+						// Fire as an element clears the fold, so the motion is felt
+						// rather than already finished by the time you get there.
+						{ threshold: 0, rootMargin: '0px 0px -6% 0px' }
+					);
+					els.forEach(function (el) {
+						io.observe(el);
+					});
+
+					// Safety net for anything already on screen at load (also covers a
+					// slow first observer callback while the hero video decodes).
+					setTimeout(function () {
+						els.forEach(function (el) {
+							if (el.getBoundingClientRect().top < window.innerHeight) {
+								el.classList.add('is-in');
+							}
+						});
+					}, 120);
+				};
+
+				var counters = function () {
+					var nums = document.querySelectorAll('[data-countup]');
+					if (!nums.length) return;
+					var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+					if (reduceMotion) {
+						nums.forEach(function (el) {
+							var target = parseFloat(el.dataset.countup || '0');
+							el.textContent = target.toLocaleString() + (el.dataset.suffix || '');
+						});
+						return;
+					}
+					var io = new IntersectionObserver(
+						function (entries) {
+							entries.forEach(function (entry) {
+								if (!entry.isIntersecting) return;
+								var el = entry.target;
+								var target = parseFloat(el.dataset.countup || '0');
+								var suffix = el.dataset.suffix || '';
+								var dur = 1500;
+								var start = 0;
+								var step = function (ts) {
+									if (!start) start = ts;
+									var p = Math.min((ts - start) / dur, 1);
+									var eased = 1 - Math.pow(1 - p, 3);
+									el.textContent = Math.round(target * eased).toLocaleString() + suffix;
+									if (p < 1) requestAnimationFrame(step);
+								};
+								requestAnimationFrame(step);
+								io.unobserve(el);
+							});
+						},
+						{ threshold: 0.5 }
+					);
+					nums.forEach(function (n) {
+						io.observe(n);
+					});
+				};
+
+				setup();
+				counters();
+			})();
+		</script>
+
+		<!-- Product card image carousel (one delegated handler for all cards) -->
+		<script is:inline>
+			document.addEventListener('click', function (e) {
+				var dot = e.target.closest && e.target.closest('[data-dot]');
+				if (!dot) return;
+				var card = dot.closest('[data-card]');
+				if (!card) return;
+				var img = card.querySelector('[data-media-img]');
+				var raw = card.getAttribute('data-images');
+				if (!img || !raw) return;
+				var imgs = JSON.parse(raw);
+				var i = parseInt(dot.getAttribute('data-dot'), 10);
+				if (!imgs[i]) return;
+				img.setAttribute('src', imgs[i].s);
+				if (imgs[i].ss) img.setAttribute('srcset', imgs[i].ss);
+				card.querySelectorAll('[data-dot]').forEach(function (d) {
+					d.setAttribute('data-active', d === dot ? 'true' : 'false');
+				});
+			});
+		</script>
+	</body>
+</html>

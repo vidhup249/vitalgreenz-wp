@@ -1,0 +1,118 @@
+---
+import type { WooProduct } from '../../lib/woocommerce';
+import { formatPrice, stripHtml } from '../../lib/woocommerce';
+import AddToCart from '../cart/AddToCart.tsx';
+
+interface Props {
+	product: WooProduct;
+	index?: number;
+}
+
+const { product, index = 0 } = Astro.props;
+
+const images = product.images?.slice(0, 5) ?? [];
+const image = images[0];
+const cat = product.categories.find((c) => c.name.toLowerCase() !== 'uncategorized');
+
+/** Truncate on a word boundary — a mid-word cut reads as a bug at this scale. */
+const clip = (text: string, max: number) => {
+	if (text.length <= max) return text;
+	const cut = text.slice(0, max);
+	const space = cut.lastIndexOf(' ');
+	return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd().replace(/[.,;:—-]$/, '') + '…';
+};
+
+// Sized to land inside the card's two-line clamp, so the visible cut is our
+// word-boundary ellipsis rather than the browser's mid-word one.
+const summary = clip(stripHtml(product.short_description, 400), 86);
+
+const slugs = product.categories.map((c) => c.slug).join(' ');
+const href = `/products/${product.slug}`;
+const eager = index < 3;
+
+const rating = Number(product.average_rating) || 0;
+const hasRating = product.review_count > 0 && rating > 0;
+
+// src + srcset pairs for the dot navigation (handled by the delegated
+// carousel listener in LayoutV2).
+const mediaData = JSON.stringify(images.map((i) => ({ s: i.src, ss: i.srcset })));
+---
+
+<article
+	data-card
+	data-product
+	data-category={slugs}
+	data-images={mediaData}
+	style={`--i:${index % 3}`}
+	class="pcard"
+>
+	<div class="pcard-media">
+		<a href={href} aria-label={product.name}>
+			{
+				image && (
+					<img
+						data-media-img
+						src={image.src}
+						srcset={image.srcset}
+						sizes="(min-width:1024px) 32vw, (min-width:640px) 45vw, 92vw"
+						alt={image.alt || product.name}
+						width="640"
+						height="640"
+						loading={eager ? 'eager' : 'lazy'}
+						decoding="async"
+						fetchpriority={eager ? 'high' : 'auto'}
+					/>
+				)
+			}
+		</a>
+
+		{
+			images.length > 1 && (
+				<div class="pcard-dots">
+					{images.map((_, i) => (
+						<button data-dot={i} data-active={i === 0 ? 'true' : 'false'} aria-label={`View image ${i + 1}`} />
+					))}
+				</div>
+			)
+		}
+	</div>
+
+	<div class="pcard-body">
+		<p class="pcard-kicker" data-sale={String(product.on_sale)}>
+			{product.on_sale ? 'On sale' : cat?.name || 'Single-origin'}
+		</p>
+
+		<h3 class="pcard-title"><a href={href}>{product.name}</a></h3>
+
+		<p class="pcard-meta">
+			{hasRating ? `★ ${rating.toFixed(1)}` : 'New'} · Freshly packed · Ships in 48h
+		</p>
+
+		<p class="pcard-sum">{summary}</p>
+
+		<div class="pcard-foot">
+			<p class="pcard-price">
+				{
+					product.on_sale ? (
+						<>
+							{formatPrice(product.prices.sale_price, product.prices)}
+							<span class="pcard-was">{formatPrice(product.prices.regular_price, product.prices)}</span>
+						</>
+					) : (
+						formatPrice(product.prices.price, product.prices)
+					)
+				}
+			</p>
+
+			<AddToCart
+				client:visible
+				id={product.id}
+				name={product.name}
+				price={Number(product.on_sale ? product.prices.sale_price : product.prices.price)}
+				image={image?.thumbnail || image?.src || ''}
+				slug={product.slug}
+				label="Add"
+			/>
+		</div>
+	</div>
+</article>
