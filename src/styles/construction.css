@@ -1,0 +1,295 @@
+/* ==================================================================
+ *  Wayomile — holding page
+ *  ------------------------------------------------------------------
+ *  Self-contained: no Tailwind, no framework islands, no JS. The whole
+ *  page is this file plus index.astro, so "/" paints almost instantly.
+ *  Palette follows the Edition language used on /v2.
+ * ================================================================== */
+
+:root {
+	--bg: #f1f1ef;
+	--ink: #0b0b0b;
+	--mute: #6e6e6e;
+	--faint: #9a9a9a;
+	--line: rgba(11, 11, 11, 0.12);
+	--accent: #e4471f;
+
+	--ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	overflow-x: clip;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--ink);
+	font-family: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+	font-synthesis-weight: none;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+::selection {
+	background: var(--ink);
+	color: var(--bg);
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+
+/* ------------------------------ Shell ----------------------------- */
+.page {
+	min-height: 100svh;
+	display: flex;
+	flex-direction: column;
+	gap: clamp(2rem, 4vw, 2.75rem);
+	width: 100%;
+	max-width: 1280px;
+	margin-inline: auto;
+	padding: clamp(1.75rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem);
+}
+
+.top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1.25rem;
+}
+
+/* The wordmark PNG is RGBA, so brightness(0) flattens it to solid ink. */
+.logo img {
+	height: clamp(32px, 4vw, 42px);
+	width: auto;
+	filter: brightness(0);
+}
+
+.mid {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding-block: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.bottom {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 1.25rem 2rem;
+	padding-top: clamp(1.5rem, 3vw, 2rem);
+	border-top: 1px solid var(--line);
+	font-size: 0.85rem;
+	color: var(--mute);
+}
+
+/* ------------------------------ Label ----------------------------- */
+.label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.7rem;
+	max-width: 100%;
+	font-size: 0.6875rem;
+	font-weight: 600;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+.label::before {
+	content: "";
+	flex: 0 0 7px;
+	width: 7px;
+	height: 7px;
+	background: var(--accent);
+	transform: rotate(45deg);
+	animation: mark 0.9s var(--spring) 0.15s both;
+}
+.label::after {
+	content: "";
+	flex: 0 1 clamp(1.75rem, 4vw, 3rem);
+	min-width: 0;
+	height: 1px;
+	background: var(--line);
+	transform-origin: left;
+	animation: rule 1s var(--ease) 0.45s both;
+}
+
+/* ---------------------------- Headline ---------------------------- */
+.title {
+	margin: 0;
+	font-size: clamp(2.75rem, 9.4vw, 8rem);
+	font-weight: 700;
+	line-height: 0.98;
+	letter-spacing: -0.05em;
+	max-width: 16ch;
+}
+/* The deliberate break only earns its place once the line is wide enough;
+   below that it strands a single short word on its own line. */
+.title br {
+	display: none;
+}
+@media (min-width: 720px) {
+	.title br {
+		display: inline;
+	}
+}
+.accent {
+	color: var(--accent);
+}
+
+/* Masked word reveal — delays come from --i in the markup, so the whole
+   entrance runs on CSS alone with no script to wait for. */
+.w {
+	display: inline-block;
+	overflow: hidden;
+	padding-bottom: 0.16em;
+	margin-bottom: -0.16em;
+}
+.w > span {
+	display: inline-block;
+	animation: word 1.05s var(--ease) both;
+	animation-delay: calc(var(--i, 0) * 90ms + 250ms);
+}
+
+.lede {
+	margin: clamp(1.75rem, 3.5vw, 2.5rem) 0 0;
+	max-width: 46ch;
+	font-size: clamp(1.0625rem, 1.4vw, 1.3rem);
+	line-height: 1.6;
+	color: var(--mute);
+	text-wrap: pretty;
+	animation: up 1s var(--ease) 0.75s both;
+}
+
+/* ------------------------- Progress hairline ----------------------- */
+.bar {
+	position: relative;
+	height: 2px;
+	margin-top: clamp(2.5rem, 5vw, 3.5rem);
+	max-width: 30rem;
+	background: var(--line);
+	overflow: hidden;
+	animation: up 1s var(--ease) 0.9s both;
+}
+.bar::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	width: 30%;
+	background: var(--accent);
+	animation: travel 2.8s var(--ease) infinite;
+}
+
+/* ---------------------------- Contact ----------------------------- */
+.links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1.75rem;
+	animation: up 1s var(--ease) 1.05s both;
+}
+.links a {
+	position: relative;
+	font-weight: 600;
+	color: var(--ink);
+	transition: color 0.35s var(--ease);
+}
+.links a::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -3px;
+	height: 1px;
+	background: currentColor;
+	transform: scaleX(0);
+	transform-origin: right;
+	transition: transform 0.5s var(--ease);
+}
+.links a:hover {
+	color: var(--accent);
+}
+.links a:hover::after {
+	transform: scaleX(1);
+	transform-origin: left;
+}
+
+.copy {
+	margin: 0;
+	animation: up 1s var(--ease) 1.15s both;
+}
+
+/* ---------------------------- Keyframes ---------------------------- */
+@keyframes word {
+	from {
+		transform: translateY(115%);
+		opacity: 0;
+	}
+}
+@keyframes up {
+	from {
+		transform: translateY(22px);
+		opacity: 0;
+	}
+}
+@keyframes mark {
+	from {
+		transform: rotate(45deg) scale(0);
+	}
+}
+@keyframes rule {
+	from {
+		transform: scaleX(0);
+	}
+}
+@keyframes travel {
+	0% {
+		transform: translateX(-110%);
+	}
+	100% {
+		transform: translateX(440%);
+	}
+}
+
+@media (max-width: 480px) {
+	.label::after {
+		display: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
+	.bar::after {
+		width: 100%;
+		transform: none;
+	}
+}
