@@ -176,7 +176,7 @@ export default function CartDrawer() {
 							className="group mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-4 text-sm font-semibold text-cream transition duration-300 hover:bg-brand"
 						>
 							Checkout
-							<span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+							<span className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
 						</a>
 					</footer>
 				)}
