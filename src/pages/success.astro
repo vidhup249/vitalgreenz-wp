@@ -1,43 +1,37 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import LayoutV2 from '../layouts/LayoutV2.astro';
 ---
 
-<Layout title="Thank you - VitalGreenz" hideFooter={true}>
-	<main class="grid min-h-[80vh] place-items-center bg-cream px-5 py-28 sm:px-8">
-		<div class="mx-auto max-w-lg text-center">
-			<div class="animate-float-y mx-auto grid h-24 w-24 place-items-center rounded-full bg-lime text-ink" style="animation-duration:5s">
-				<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<LayoutV2 title="Thank you — Wayomile" hideFooter>
+	<main class="wrap page-top sec" style="display:grid;place-items:center;min-height:66svh">
+		<div style="max-width:46rem;text-align:center">
+			<span class="grid-check" aria-hidden="true">
+				<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M20 6 9 17l-5-5" />
 				</svg>
-			</div>
+			</span>
 
-			<p class="eyebrow mt-8 justify-center text-ink/50">Order confirmed</p>
-			<h1 class="display mt-4 text-[clamp(2.25rem,6vw,3.5rem)] text-ink">Thank you!</h1>
+			<p style="margin-top:2rem;display:flex;justify-content:center">
+				<span class="label" data-anim="fade">Order confirmed</span>
+			</p>
 
-			<p class="mt-4 text-lg text-ink/70 text-pretty">
+			<h1 class="d1" data-anim="words" style="margin-top:1.5rem;font-size:clamp(2.4rem,6vw,4rem)">
+				Thank you!
+			</h1>
+
+			<p class="lede" data-anim="up" style="margin:1.5rem auto 0;max-width:48ch">
 				Your payment went through and your order
-				<span id="order-ref" class="font-semibold text-brand"></span>
+				<span id="order-ref" class="accent" style="font-weight:600"></span>
 				is confirmed. We've emailed your receipt, and your tea will be packed fresh and on its way soon.
 			</p>
 
-			<div class="mt-10 flex flex-wrap items-center justify-center gap-3">
-				<a
-					href="/#shop"
-					class="group inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-semibold text-cream transition hover:bg-brand"
-				>
-					Continue shopping
-					<span class="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
-				</a>
-				<a
-					href="/contact"
-					class="inline-flex items-center gap-2 rounded-full border border-ink/15 px-7 py-3.5 text-sm font-semibold text-ink transition hover:border-ink/40"
-				>
-					Need help?
-				</a>
+			<div data-anim="up" style="--anim-delay:120ms;margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:0.65rem;justify-content:center">
+				<a href="/#shop" class="btn btn-dark">Continue shopping <span class="arrow">↗</span></a>
+				<a href="/contact" class="btn btn-ghost">Need help?</a>
 			</div>
 		</div>
 	</main>
-</Layout>
+</LayoutV2>
 
 <script is:inline>
 	// Show the order number from ?order=… and make sure the basket is emptied.

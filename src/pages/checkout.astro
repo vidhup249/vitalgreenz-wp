@@ -1,18 +1,16 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import LayoutV2 from '../layouts/LayoutV2.astro';
 import Checkout from '../components/checkout/Checkout.tsx';
 ---
 
-<Layout title="Checkout - VitalGreenz" hideFooter={true}>
-	<main class="min-h-screen bg-cream px-5 pt-28 pb-24 sm:px-8">
-		<div class="mx-auto max-w-6xl">
-			<a href="/#shop" class="group inline-flex items-center gap-1.5 text-sm text-ink/55 transition hover:text-ink">
-				<span class="transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5">↖</span> Continue shopping
-			</a>
-			<h1 class="display mt-4 text-[clamp(2rem,5vw,3rem)] text-ink">Checkout</h1>
-			<div class="mt-10">
-				<Checkout client:load />
-			</div>
+<LayoutV2 title="Checkout — Wayomile" hideFooter>
+	<main class="wrap page-top sec">
+		<a href="/#shop" class="back-link"><span class="arrow">↖</span> Continue shopping</a>
+
+		<h1 class="d2" style="margin-top:1.5rem">Checkout</h1>
+
+		<div style="margin-top:clamp(2.5rem,5vw,3.5rem)">
+			<Checkout client:load />
 		</div>
 	</main>
-</Layout>
+</LayoutV2>

@@ -16,6 +16,8 @@ interface Props {
 	description?: string;
 	/** Nav sits over a dark full-bleed hero until the page scrolls. */
 	heroOverlay?: boolean;
+	/** Hide the closing CTA + footer (focused flows like checkout). */
+	hideFooter?: boolean;
 }
 
 const {
@@ -23,6 +25,7 @@ const {
 	description =
 		'Experience the heritage of Indian tea. Small-grower sourced, sustainably cultivated, crafted for exceptional taste.',
 	heroOverlay = false,
+	hideFooter = false,
 } = Astro.props;
 
 const wpOrigin = new URL(WP_URL).origin;
@@ -31,10 +34,13 @@ const base = Astro.site ?? Astro.url;
 const ogImage = new URL('/og.png', base).href;
 const canonicalURL = new URL(Astro.url.pathname, base).href;
 
+const isHome = Astro.url.pathname === '/';
+const sec = (id: string) => (isHome ? `#${id}` : `/#${id}`);
+
 const navLinks = [
-	{ label: 'Shop', href: '#shop' },
-	{ label: 'Our Story', href: '#story' },
-	{ label: 'Find Yours', href: '#blend' },
+	{ label: 'Shop', href: sec('shop') },
+	{ label: 'Our Story', href: sec('story') },
+	{ label: 'Find Yours', href: sec('blend') },
 	{ label: 'About', href: '/about' },
 	{ label: 'Contact', href: '/contact' },
 ];
@@ -43,19 +49,19 @@ const footerColumns = [
 	{
 		title: 'Shop',
 		links: [
-			{ label: 'All teas', href: '#shop' },
-			{ label: 'Blend Lab', href: '#blend' },
-			{ label: 'Bestsellers', href: '#shop' },
-			{ label: 'Gift sets', href: '#shop' },
+			{ label: 'All teas', href: sec('shop') },
+			{ label: 'Blend Lab', href: sec('blend') },
+			{ label: 'Bestsellers', href: sec('shop') },
+			{ label: 'Gift sets', href: sec('shop') },
 		],
 	},
 	{
 		title: 'Company',
 		links: [
-			{ label: 'Our story', href: '#story' },
-			{ label: 'Sustainability', href: '#story' },
-			{ label: 'Small growers', href: '#story' },
-			{ label: 'FAQ', href: '#faq' },
+			{ label: 'Our story', href: sec('story') },
+			{ label: 'Sustainability', href: sec('story') },
+			{ label: 'Small growers', href: sec('story') },
+			{ label: 'FAQ', href: sec('faq') },
 		],
 	},
 	{
@@ -113,7 +119,7 @@ const footerColumns = [
 		<!-- ============================ NAV ============================ -->
 		<header id="nav" class="nav" data-scrolled="false" data-over-hero={heroOverlay ? 'true' : 'false'}>
 			<div class="wrap nav-inner">
-				<a href="#top" class="nav-logo rise" aria-label="Wayomile home" style="--d:120ms">
+				<a href={isHome ? "#top" : "/"} class="nav-logo rise" aria-label="Wayomile home" style="--d:120ms">
 					<img src="/images/vg-logo-hor.png" alt="Wayomile" width="1220" height="265" />
 				</a>
 
@@ -162,6 +168,7 @@ const footerColumns = [
 		<slot />
 
 		<!-- ====================== CLOSING CTA + FOOTER ====================== -->
+		{!hideFooter && (
 		<div class="close-block">
 			<section class="close-cta">
 				<video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
@@ -217,6 +224,7 @@ const footerColumns = [
 				</div>
 			</footer>
 		</div>
+		)}
 
 		<CartDrawer client:load />
 
