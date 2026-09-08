@@ -16,16 +16,6 @@ const clip = (text: string, max: number) => {
 	return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd().replace(/[.,;:—-]$/, '') + '…';
 };
 
-// Marquee (duplicated once for a seamless -50% loop)
-const marqueeItems = [
-	'Empowering Small Tea Growers',
-	'Sustainably Cultivated',
-	'Crafted for Exceptional Taste',
-	'Single-Origin Gardens',
-	'Freshly Packed to Order',
-];
-const marqueeLoop = [...marqueeItems, ...marqueeItems];
-
 // Feature cards
 const profiles = [
 	{ label: 'Floral', value: 82 },
@@ -115,7 +105,7 @@ const faqs = [
 					</span>
 
 					<h1 class="d1 hero-title" data-anim="words" style="--anim-delay:180ms">
-						Experience the<br />Heritage of<br /><span class="accent">Indian Tea.</span>
+						Experience the Heritage<br /><span class="accent">of Indian Tea.</span>
 					</h1>
 
 					<p class="lede hero-lede" data-anim="up" style="--anim-delay:520ms">
@@ -144,20 +134,6 @@ const faqs = [
 				</div>
 			</div>
 		</section>
-
-		<!-- ========================== MARQUEE ========================== -->
-		<div class="marquee">
-			<div class="marquee-track" style="--dur:52s">
-				{
-					marqueeLoop.map((item) => (
-						<span class="marquee-item">
-							{item}
-							<i />
-						</span>
-					))
-				}
-			</div>
-		</div>
 
 		<!-- =========================== STORY =========================== -->
 		<section id="story" class="wrap sec">
