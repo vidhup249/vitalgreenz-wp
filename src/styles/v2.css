@@ -115,20 +115,20 @@
    next line's caps. */
 .d1 {
 	font-size: clamp(3rem, 10.4vw, 9rem);
-	font-weight: 700;
+	font-weight: 500;
 	line-height: 0.95;
 	letter-spacing: -0.05em;
 }
 .d2 {
 	font-size: clamp(2.35rem, 6.2vw, 5.25rem);
-	font-weight: 700;
+	font-weight: 500;
 	line-height: 1.02;
 	letter-spacing: -0.042em;
 	text-wrap: balance;
 }
 .d3 {
 	font-size: clamp(1.6rem, 2.8vw, 2.35rem);
-	font-weight: 700;
+	font-weight: 500;
 	line-height: 1.16;
 	letter-spacing: -0.032em;
 }
@@ -641,9 +641,10 @@ astro-island [class*="rounded"] {
 }
 .hero-title {
 	margin-top: clamp(1.5rem, 3vw, 2.25rem);
-	/* Two forced lines in a half-width column: the longer line is 23
-	   characters, so the size is set to let it hold without re-wrapping. */
-	font-size: clamp(2.05rem, 4.4vw, 3.5rem);
+	/* Two forced lines in a half-width column. The longer line is 23
+	   characters; measured against the 640px column the ceiling is ~61.5px,
+	   so this sits just under it at every breakpoint with margin to spare. */
+	font-size: clamp(2rem, 4.6vw, 3.65rem);
 	max-width: 24ch;
 }
 .hero-lede {
