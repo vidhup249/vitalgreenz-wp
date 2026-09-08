@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import heroCup from '../assets/hero-tea-cup.png';
 import LayoutV2 from '../layouts/LayoutV2.astro';
 import ProductCardV2 from '../components/v2/ProductCardV2.astro';
 import FinderV2, { type FinderProduct } from '../components/v2/FinderV2.tsx';
@@ -119,17 +121,18 @@ const faqs = [
 					</div>
 				</div>
 
-				<!-- Cutout slot. Drop /public/images/tea-cup-cutout.webp in and it
-				     appears; until then the <img> removes itself so there is no
-				     broken-image icon. -->
+				<!-- Cutout. Imported through astro:assets so the 3.4 MB source PNG
+				     is emitted as sized WebP variants rather than shipped whole. -->
 				<div class="hero-figure" data-anim="up" style="--anim-delay:760ms">
-					<img
-						src="/images/tea-cup-cutout.webp"
-						alt="A freshly poured cup of Wayomile tea"
-						width="900"
-						height="900"
+					<Image
+						src={heroCup}
+						alt="A glass cup of freshly poured Wayomile tea, mid-splash with sugar and mint"
+						widths={[420, 640, 900]}
+						sizes="(min-width: 900px) 38vw, 70vw"
+						format="webp"
+						quality={82}
+						loading="eager"
 						fetchpriority="high"
-						onerror="this.remove()"
 					/>
 				</div>
 			</div>

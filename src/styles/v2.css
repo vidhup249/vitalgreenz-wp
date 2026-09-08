@@ -667,9 +667,12 @@ astro-island [class*="rounded"] {
 	min-height: clamp(240px, 34vw, 460px);
 }
 .hero-figure img {
-	width: 100%;
-	max-width: min(30rem, 92%);
+	/* The cutout is portrait (1541x2752), so cap its HEIGHT — capping width
+	   would let it run past the bottom of a 100vh hero. */
+	width: auto;
 	height: auto;
+	max-width: 100%;
+	max-height: min(74svh, 640px);
 	object-fit: contain;
 	filter: drop-shadow(0 34px 60px rgba(0, 0, 0, 0.55));
 	/* Float lives on the image so it can't fight the reveal transform,
@@ -695,7 +698,9 @@ astro-island [class*="rounded"] {
 		min-height: clamp(200px, 52vw, 320px);
 	}
 	.hero-figure img {
-		max-width: min(22rem, 78%);
+		/* Stacked under the copy, it gets whatever height is left over. */
+		max-height: min(32svh, 280px);
+		max-width: 78%;
 	}
 	/* Stacked layout: the copy spans the full width, so a left-weighted
 	   scrim leaves the ends of each line unprotected. Go vertical instead. */
