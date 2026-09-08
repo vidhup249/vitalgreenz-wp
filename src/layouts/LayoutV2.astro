@@ -14,12 +14,15 @@ import CartDrawer from '../components/cart/CartDrawer.tsx';
 interface Props {
 	title?: string;
 	description?: string;
+	/** Nav sits over a dark full-bleed hero until the page scrolls. */
+	heroOverlay?: boolean;
 }
 
 const {
 	title = 'Wayomile — Premium Indian Tea',
 	description =
 		'Experience the heritage of Indian tea. Small-grower sourced, sustainably cultivated, crafted for exceptional taste.',
+	heroOverlay = false,
 } = Astro.props;
 
 const wpOrigin = new URL(WP_URL).origin;
@@ -108,7 +111,7 @@ const footerColumns = [
 
 	<body>
 		<!-- ============================ NAV ============================ -->
-		<header id="nav" class="nav" data-scrolled="false">
+		<header id="nav" class="nav" data-scrolled="false" data-over-hero={heroOverlay ? 'true' : 'false'}>
 			<div class="wrap nav-inner">
 				<a href="#top" class="nav-logo rise" aria-label="Wayomile home" style="--d:120ms">
 					<img src="/images/vg-logo-hor.png" alt="Wayomile" width="1220" height="265" />

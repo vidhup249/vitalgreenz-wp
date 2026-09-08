@@ -16,13 +16,6 @@ const clip = (text: string, max: number) => {
 	return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd().replace(/[.,;:—-]$/, '') + '…';
 };
 
-// Hero
-const socials = [
-	{ label: 'Instagram', href: '#' },
-	{ label: 'Facebook', href: '#' },
-	{ label: 'YouTube', href: '#' },
-];
-
 // Marquee (duplicated once for a seamless -50% loop)
 const marqueeItems = [
 	'Empowering Small Tea Growers',
@@ -109,56 +102,45 @@ const faqs = [
 ];
 ---
 
-<LayoutV2>
+<LayoutV2 heroOverlay>
 	<main>
 		<!-- ============================ HERO ============================ -->
-		<section id="top" class="wrap hero">
-			<p>
-				<span class="label" data-anim="fade" style="--anim-delay:100ms">
-					Premium Indian Tea · Est. small farms
-				</span>
-			</p>
+		<section id="top" class="hero">
+			<div class="hero-bg" aria-hidden="true"></div>
 
-			<h1 class="d1 hero-title" data-anim="words" style="--anim-delay:180ms">
-				Experience the<br />Heritage of<br /><span class="accent">Indian Tea.</span>
-			</h1>
+			<div class="wrap hero-inner">
+				<div class="hero-copy">
+					<span class="label label-light" data-anim="fade" style="--anim-delay:100ms">
+						Premium Indian Tea · Est. small farms
+					</span>
 
-			<div class="hero-foot">
-				<p class="lede measure-wide" data-anim="up" style="--anim-delay:520ms">
-					Every leaf tells a story of purity, tradition and exceptional taste — sourced from small
-					growers, cultivated sustainably.
-				</p>
+					<h1 class="d1 hero-title" data-anim="words" style="--anim-delay:180ms">
+						Experience the<br />Heritage of<br /><span class="accent">Indian Tea.</span>
+					</h1>
 
-				<div class="hero-actions" data-anim="up" style="--anim-delay:620ms">
-					<a href="#shop" class="btn btn-dark">Start sipping <span class="arrow">↗</span></a>
-					<a href="#story" class="btn btn-ghost">Our story</a>
+					<p class="lede hero-lede" data-anim="up" style="--anim-delay:520ms">
+						Every leaf tells a story of purity, tradition and exceptional taste — sourced from small
+						growers, cultivated sustainably.
+					</p>
+
+					<div class="hero-actions" data-anim="up" style="--anim-delay:620ms">
+						<a href="#shop" class="btn btn-light">Start sipping <span class="arrow">↗</span></a>
+						<a href="#story" class="btn btn-outline-light">Our story</a>
+					</div>
 				</div>
-			</div>
 
-			<div class="hero-media" data-anim="mask" style="--anim-delay:700ms">
-				<video autoplay muted loop playsinline preload="auto" aria-hidden="true">
-					<source src="/videos/tea-pour.mp4" type="video/mp4" />
-				</video>
-
-				<div class="hero-media-bar" data-anim="up" style="--anim-delay:1250ms">
-					<div style="display:flex;align-items:center;gap:0.9rem">
-						<span class="avatars">
-							{['#d9d9d4', '#b6b6ae', '#8f8f86', '#5f5f57'].map((c) => <span style={`background:${c}`} />)}
-						</span>
-						<p style="font-size:0.875rem;line-height:1.4;max-width:22ch">
-							Loved by <strong>1,200+</strong> tea drinkers across India.
-						</p>
-					</div>
-
-					<div class="socials">
-						{
-							socials.map((s) => (
-								<a href={s.href}>
-									{s.label} <span class="arrow">↗</span>
-								</a>
-							))
-						}
-					</div>
+				<!-- Cutout slot. Drop /public/images/tea-cup-cutout.webp in and it
+				     appears; until then the <img> removes itself so there is no
+				     broken-image icon. -->
+				<div class="hero-figure" data-anim="up" style="--anim-delay:760ms">
+					<img
+						src="/images/tea-cup-cutout.webp"
+						alt="A freshly poured cup of Wayomile tea"
+						width="900"
+						height="900"
+						fetchpriority="high"
+						onerror="this.remove()"
+					/>
 				</div>
 			</div>
 		</section>

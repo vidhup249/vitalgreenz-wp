@@ -288,6 +288,15 @@ html.js .label[data-anim].is-in::after {
 	color: var(--on-dark);
 	border-color: var(--ink);
 }
+.btn-outline-light {
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	color: var(--on-dark);
+}
+.btn-outline-light:hover {
+	background: var(--on-dark);
+	border-color: var(--on-dark);
+	color: var(--ink);
+}
 .btn-light {
 	background: var(--on-dark);
 	color: var(--ink);
@@ -461,6 +470,30 @@ html.js .label[data-anim].is-in::after {
 	}
 }
 
+/* Over the dark hero artwork the bar has to invert: white wordmark, white
+   links, light cart pill — until the page scrolls and the solid bar kicks in. */
+.nav-logo img {
+	transition: filter 0.4s var(--ease);
+}
+.nav[data-over-hero="true"]:not([data-scrolled="true"]) .nav-logo img {
+	filter: brightness(0) invert(1);
+}
+.nav[data-over-hero="true"]:not([data-scrolled="true"]) .nav-links a {
+	color: var(--on-dark);
+}
+.nav[data-over-hero="true"]:not([data-scrolled="true"]) .nav-burger {
+	border-color: rgba(255, 255, 255, 0.35);
+	color: var(--on-dark);
+}
+.nav[data-over-hero="true"]:not([data-scrolled="true"]) .nav-burger:hover {
+	background: var(--on-dark);
+	color: var(--ink);
+}
+.nav[data-over-hero="true"]:not([data-scrolled="true"]) .nav-actions astro-island button {
+	background: var(--on-dark);
+	color: var(--ink);
+}
+
 /* Full-screen mobile menu */
 .menu {
 	position: fixed;
@@ -518,105 +551,139 @@ html.js .label[data-anim].is-in::after {
 	transform: none;
 }
 
-/* =============================== Hero ============================= */
+/* =============================== Hero =============================
+   Art-directed hero: full-bleed artwork, copy left, product cutout right.
+   The artwork is layered *over* a gradient of the same tonality, so a file
+   that is missing or still loading degrades to the gradient rather than to
+   a broken box. Drop the real image in and it simply takes over. */
 .hero {
-	padding-top: calc(var(--nav-h) + clamp(2.5rem, 7vw, 6rem));
-	padding-bottom: clamp(2rem, 4vw, 3.5rem);
+	position: relative;
+	isolation: isolate;
+	display: flex;
+	align-items: center;
+	min-height: min(94svh, 920px);
+	padding-top: calc(var(--nav-h) + clamp(2rem, 5vw, 3.5rem));
+	padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+	overflow: hidden;
+	color: var(--on-dark);
+}
+
+.hero-bg {
+	position: absolute;
+	inset: 0;
+	z-index: -2;
+	background-color: #0c110f;
+	background-image:
+		url("/images/fractal-bg1.webp"),
+		radial-gradient(85% 75% at 74% 16%, rgba(122, 173, 141, 0.55), transparent 62%),
+		radial-gradient(65% 60% at 12% 88%, rgba(228, 71, 31, 0.14), transparent 62%),
+		linear-gradient(150deg, #18362b 0%, #102420 46%, #0a1512 100%);
+	background-size: cover, cover, cover, cover;
+	background-position: center, center, center, center;
+	background-repeat: no-repeat;
+}
+
+/* Scrim: heaviest under the copy, clearing toward the cutout, with a light
+   wash at the top so the navbar always has something to sit on. Swap the
+   alphas down if the artwork turns out to be light rather than dark. */
+.hero-bg::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(
+			90deg,
+			rgba(6, 12, 9, 0.74) 0%,
+			rgba(6, 12, 9, 0.5) 40%,
+			rgba(6, 12, 9, 0.12) 70%,
+			rgba(6, 12, 9, 0.28) 100%
+		),
+		linear-gradient(180deg, rgba(6, 10, 8, 0.5) 0%, transparent 26%, rgba(6, 10, 8, 0.32) 100%);
+}
+
+.hero-inner {
+	position: relative;
+	display: grid;
+	align-items: center;
+	gap: clamp(2.5rem, 5vw, 4rem);
+	width: 100%;
+}
+@media (min-width: 900px) {
+	.hero-inner {
+		grid-template-columns: 1.02fr 0.98fr;
+	}
+}
+
+.hero-copy {
+	max-width: 40rem;
 }
 .hero-title {
-	margin-top: clamp(1.75rem, 3.5vw, 2.75rem);
-	max-width: 15ch;
+	margin-top: clamp(1.5rem, 3vw, 2.25rem);
+	/* Smaller than the full-width .d1 — it only owns half the viewport now. */
+	font-size: clamp(2.6rem, 5.7vw, 4.9rem);
+	max-width: 13ch;
 }
-.hero-foot {
-	margin-top: clamp(2.25rem, 4.5vw, 3.5rem);
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-end;
-	justify-content: space-between;
-	gap: clamp(1.75rem, 4vw, 3rem);
+.hero-lede {
+	margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
+	max-width: 44ch;
+	color: var(--on-dark-mute);
 }
 .hero-actions {
+	margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.65rem;
 }
 
-/* Media panel */
-.hero-media {
+/* Cutout slot. The <img> removes itself if the file isn't there yet, so the
+   column just stays empty instead of showing a broken-image icon. */
+.hero-figure {
 	position: relative;
-	margin-top: clamp(2.5rem, 5vw, 4rem);
-	border-radius: var(--r-xl);
-	overflow: hidden;
-	background: var(--surface-2);
-	height: clamp(300px, 46vw, 560px);
-	isolation: isolate;
-	--mask-r: var(--r-xl);
+	display: grid;
+	place-items: center;
+	min-height: clamp(240px, 34vw, 460px);
 }
-.hero-media video {
-	position: absolute;
-	inset: 0;
-	height: 100%;
+.hero-figure img {
 	width: 100%;
-	object-fit: cover;
+	max-width: min(30rem, 92%);
+	height: auto;
+	object-fit: contain;
+	filter: drop-shadow(0 34px 60px rgba(0, 0, 0, 0.55));
+	/* Float lives on the image so it can't fight the reveal transform,
+	   which is applied to .hero-figure. */
+	animation: floaty 9s ease-in-out infinite;
 }
-.hero-media::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	background: linear-gradient(
-		to top,
-		rgba(11, 11, 11, 0.72),
-		rgba(11, 11, 11, 0.12) 46%,
-		transparent 70%
-	);
+@keyframes floaty {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-14px);
+	}
 }
-.hero-media-bar {
-	position: absolute;
-	inset: auto 0 0 0;
-	z-index: 2;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-between;
-	gap: 1.25rem;
-	padding: clamp(1.25rem, 3vw, 2.25rem);
-	color: var(--on-dark);
+/* No artwork yet? Collapse the slot rather than reserving dead space. */
+.hero-figure:not(:has(img)) {
+	min-height: 0;
 }
-.avatars {
-	display: flex;
-}
-.avatars span {
-	height: 34px;
-	width: 34px;
-	border-radius: 999px;
-	border: 2px solid rgba(11, 11, 11, 0.6);
-	margin-left: -10px;
-}
-.avatars span:first-child {
-	margin-left: 0;
-}
-.socials {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1.4rem;
-	font-size: 0.85rem;
-	font-weight: 500;
-}
-.socials a {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.3rem;
-	color: var(--on-dark-mute);
-	transition: color 0.35s var(--ease);
-}
-.socials a:hover {
-	color: var(--on-dark);
-}
-.socials a .arrow {
-	transition: transform 0.4s var(--ease);
-}
-.socials a:hover .arrow {
-	transform: translate(2px, -2px);
+
+@media (max-width: 899px) {
+	.hero-figure {
+		min-height: clamp(200px, 52vw, 320px);
+	}
+	.hero-figure img {
+		max-width: min(22rem, 78%);
+	}
+	/* Stacked layout: the copy spans the full width, so a left-weighted
+	   scrim leaves the ends of each line unprotected. Go vertical instead. */
+	.hero-bg::after {
+		background: linear-gradient(
+			180deg,
+			rgba(6, 12, 9, 0.74) 0%,
+			rgba(6, 12, 9, 0.58) 48%,
+			rgba(6, 12, 9, 0.38) 100%
+		);
+	}
 }
 
 /* ============================== Marquee =========================== */
