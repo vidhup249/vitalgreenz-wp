@@ -2,7 +2,8 @@
  * WooCommerce order helpers — REST API v3 with the consumer key/secret.
  * SERVER-ONLY (uses WC_SECRET). Never import this into a client component.
  */
-const WP = import.meta.env.PUBLIC_WORDPRESS_URL as string;
+import { WP_URL as WP } from './woocommerce';
+
 const KEY = import.meta.env.WC_KEY as string;
 const SECRET = import.meta.env.WC_SECRET as string;
 

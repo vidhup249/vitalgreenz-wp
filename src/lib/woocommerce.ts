@@ -1,4 +1,27 @@
-const WP_URL = import.meta.env.PUBLIC_WORDPRESS_URL;
+/**
+ * Resolve the WordPress base URL.
+ *
+ * WooCommerce lives at wp.vitalgreenz.in. The apex/www hosts (and the other
+ * brand domains) now serve the Vercel-hosted landing page instead, returning
+ * 403 for /wp-json and /wp-content. A deploy still configured with one of
+ * those would fail the build outright when the product fetch 403s, and any
+ * image URL it did emit would be dead - so treat them as retired and fall
+ * back to the live host rather than trusting a stale env var.
+ */
+const DEFAULT_WP_URL = 'https://wp.vitalgreenz.in';
+const RETIRED_HOSTS = /^(?:www\.)?(?:vitalgreenz\.in|wayomile\.in|flavvofresh\.com)$/i;
+
+function resolveWpUrl(configured: string | undefined): string {
+	if (!configured) return DEFAULT_WP_URL;
+	try {
+		if (RETIRED_HOSTS.test(new URL(configured).hostname)) return DEFAULT_WP_URL;
+		return configured.replace(/\/+$/, '');
+	} catch {
+		return DEFAULT_WP_URL;
+	}
+}
+
+export const WP_URL = resolveWpUrl(import.meta.env.PUBLIC_WORDPRESS_URL);
 
 export interface WooImage {
 	id: number;
