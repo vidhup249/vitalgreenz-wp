@@ -709,6 +709,57 @@ astro-island [class*="rounded"] {
 	}
 }
 
+/* ============================ Commitments =========================
+   The three statements the marquee used to carry, restated as a quiet
+   hairline-divided row. No card, no motion, no scroll. */
+.creds {
+	border-bottom: 1px solid var(--line);
+}
+.creds-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+}
+.creds-grid p {
+	display: flex;
+	align-items: center;
+	gap: 0.85rem;
+	margin: 0;
+	padding-block: clamp(1.35rem, 2.6vw, 1.9rem);
+	border-top: 1px solid var(--line);
+	font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+	font-weight: 600;
+	letter-spacing: -0.012em;
+	color: var(--ink);
+	text-wrap: balance;
+}
+/* Same rotated accent mark the section labels use. */
+.creds-grid p::before {
+	content: "";
+	flex: 0 0 6px;
+	width: 6px;
+	height: 6px;
+	background: var(--accent);
+	transform: rotate(45deg);
+}
+@media (min-width: 780px) {
+	.creds-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+	.creds-grid p {
+		border-top: 0;
+		padding-inline: clamp(1rem, 2.5vw, 2rem);
+	}
+	.creds-grid p + p {
+		border-left: 1px solid var(--line);
+	}
+	.creds-grid p:first-child {
+		padding-left: 0;
+	}
+	.creds-grid p:last-child {
+		padding-right: 0;
+	}
+}
+
 /* =============================== Story ============================ */
 .story-grid {
 	margin-top: clamp(3rem, 6vw, 5rem);
