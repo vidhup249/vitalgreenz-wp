@@ -1,101 +1,518 @@
 ---
-/**
- * Holding page for "/". Deliberately standalone — it does not use
- * Layout.astro, so it ships no navbar, cart islands or smooth-scroll
- * bundle. The full homepage now lives at /home.
- */
-import '@fontsource-variable/plus-jakarta-sans';
-import '@fontsource-variable/plus-jakarta-sans/wght-italic.css';
-import '../styles/construction.css';
+import LayoutV2 from '../layouts/LayoutV2.astro';
+import ProductCardV2 from '../components/v2/ProductCardV2.astro';
+import FinderV2, { type FinderProduct } from '../components/v2/FinderV2.tsx';
+import TimerV2 from '../components/v2/TimerV2.tsx';
+import { getShopData, stripHtml } from '../lib/woocommerce';
 
-const title = 'Wayomile — Coming Soon';
-const description =
-  'Something good is brewing. Our new home for premium Indian tea, sourced from small growers, is on its way.';
+// ---- Data (one fetch, shared by every section) ---------------------------
+const { products, categories } = await getShopData();
 
-const base = Astro.site ?? Astro.url;
-const ogImage = new URL('/og.png', base).href;
-const canonicalURL = new URL(Astro.url.pathname, base).href;
+/** Truncate on a word boundary — a mid-word cut reads as a bug at this scale. */
+const clip = (text: string, max: number) => {
+	if (text.length <= max) return text;
+	const cut = text.slice(0, max);
+	const space = cut.lastIndexOf(' ');
+	return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd().replace(/[.,;:—-]$/, '') + '…';
+};
 
-// The headline is split by hand so the entrance runs on CSS alone.
-const headline = [
-  { text: 'Something', accent: false },
-  { text: 'good', accent: false },
-  { text: 'is', accent: false, break: true },
-  { text: 'brewing.', accent: true },
+// Hero
+const socials = [
+	{ label: 'Instagram', href: '#' },
+	{ label: 'Facebook', href: '#' },
+	{ label: 'YouTube', href: '#' },
 ];
 
-const year = new Date().getFullYear();
+// Marquee (duplicated once for a seamless -50% loop)
+const marqueeItems = [
+	'Empowering Small Tea Growers',
+	'Sustainably Cultivated',
+	'Crafted for Exceptional Taste',
+	'Single-Origin Gardens',
+	'Freshly Packed to Order',
+];
+const marqueeLoop = [...marqueeItems, ...marqueeItems];
+
+// Feature cards
+const profiles = [
+	{ label: 'Floral', value: 82 },
+	{ label: 'Malty', value: 64 },
+	{ label: 'Spiced', value: 91 },
+];
+
+// Stats
+const stats = [
+	{ value: 6, suffix: '', label: 'Signature blends' },
+	{ value: 100, suffix: '%', label: 'Single-origin leaf' },
+	{ value: 1200, suffix: '+', label: 'Happy sippers' },
+	{ value: 48, suffix: 'h', label: 'Garden to your pack' },
+];
+
+// Shop filters
+const filters = [{ name: 'All', slug: 'all' }, ...categories];
+
+// Flavour finder
+const finderProducts: FinderProduct[] = products.map((p) => {
+	const img = p.images?.[0];
+	return {
+		id: p.id,
+		name: p.name,
+		price: Number(p.on_sale ? p.prices.sale_price : p.prices.price),
+		image: img?.thumbnail || img?.src || '',
+		permalink: `/products/${p.slug}`,
+		slug: p.slug,
+		summary: clip(stripHtml(p.short_description, 400), 92),
+	};
+});
+
+// Testimonials
+const quotes = [
+	{
+		text: 'The saffron tea genuinely stopped me buying supermarket brands. You can taste that it was packed fresh.',
+		name: 'Ananya R.',
+		role: 'Bengaluru',
+	},
+	{
+		text: 'Knowing it comes from small growers — and it actually tastes better — is the whole package for me.',
+		name: 'Vikram S.',
+		role: 'Mumbai',
+	},
+	{
+		text: 'Built my own rose-green blend in the Blend Lab. Ridiculously fun, and now it is my daily cup.',
+		name: 'Meera K.',
+		role: 'Pune',
+	},
+];
+
+// FAQ
+const faqs = [
+	{
+		q: 'How fresh is the tea when it arrives?',
+		a: 'We pack every order the day it ships — never from bulk stock sitting on a shelf. From our gardens to your pack in about 48 hours.',
+	},
+	{
+		q: 'Where does your tea come from?',
+		a: 'Directly from small, family-run gardens across India. No middlemen — which means fairer prices for growers and a fresher, single-origin cup for you.',
+	},
+	{
+		q: 'Loose leaf or granules — what should I pick?',
+		a: 'Loose leaf gives a more nuanced, layered cup; granules brew fast and strong. Most blends come in both, so it comes down to your ritual.',
+	},
+	{
+		q: 'Can I create my own blend?',
+		a: 'Yes — head to the Blend Lab above. Choose a base, a flavour and a format, and we blend and pack it to order just for you.',
+	},
+	{
+		q: 'What are the shipping options?',
+		a: 'We ship pan-India. Orders over ₹500 ship free; everything else is a flat, transparent rate calculated at checkout.',
+	},
+];
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<LayoutV2>
+	<main>
+		<!-- ============================ HERO ============================ -->
+		<section id="top" class="wrap hero">
+			<p>
+				<span class="label" data-anim="fade" style="--anim-delay:100ms">
+					Premium Indian Tea · Est. small farms
+				</span>
+			</p>
 
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="generator" content={Astro.generator} />
+			<h1 class="d1 hero-title" data-anim="words" style="--anim-delay:180ms">
+				Experience the<br />Heritage of<br /><span class="accent">Indian Tea.</span>
+			</h1>
 
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalURL} />
+			<div class="hero-foot">
+				<p class="lede measure-wide" data-anim="up" style="--anim-delay:520ms">
+					Every leaf tells a story of purity, tradition and exceptional taste — sourced from small
+					growers, cultivated sustainably.
+				</p>
 
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:site_name" content="Wayomile" />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Wayomile — premium Indian tea" />
+				<div class="hero-actions" data-anim="up" style="--anim-delay:620ms">
+					<a href="#shop" class="btn btn-dark">Start sipping <span class="arrow">↗</span></a>
+					<a href="#story" class="btn btn-ghost">Our story</a>
+				</div>
+			</div>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+			<div class="hero-media" data-anim="mask" style="--anim-delay:700ms">
+				<video autoplay muted loop playsinline preload="auto" aria-hidden="true">
+					<source src="/videos/tea-pour.mp4" type="video/mp4" />
+				</video>
 
-    <meta name="theme-color" content="#f1f1ef" />
-  </head>
+				<div class="hero-media-bar" data-anim="up" style="--anim-delay:1250ms">
+					<div style="display:flex;align-items:center;gap:0.9rem">
+						<span class="avatars">
+							{['#d9d9d4', '#b6b6ae', '#8f8f86', '#5f5f57'].map((c) => <span style={`background:${c}`} />)}
+						</span>
+						<p style="font-size:0.875rem;line-height:1.4;max-width:22ch">
+							Loved by <strong>1,200+</strong> tea drinkers across India.
+						</p>
+					</div>
 
-  <body>
-    <main class="page">
-      <header class="top">
-        <span class="logo">
-          <img src="/images/vg-logo-hor.png" alt="Wayomile" width="1220" height="265" />
-        </span>
-        <span class="label">Site under construction</span>
-      </header>
+					<div class="socials">
+						{
+							socials.map((s) => (
+								<a href={s.href}>
+									{s.label} <span class="arrow">↗</span>
+								</a>
+							))
+						}
+					</div>
+				</div>
+			</div>
+		</section>
 
-      <section class="mid">
-        <h1 class="title">
-          {
-            headline.map((word, i) => (
-              <>
-                <span class:list={['w', { accent: word.accent }]}>
-                  <span style={`--i:${i}`}>{word.text}</span>
-                </span>
-                {word.break ? <br /> : ' '}
-              </>
-            ))
-          }
-        </h1>
+		<!-- ========================== MARQUEE ========================== -->
+		<div class="marquee">
+			<div class="marquee-track" style="--dur:52s">
+				{
+					marqueeLoop.map((item) => (
+						<span class="marquee-item">
+							{item}
+							<i />
+						</span>
+					))
+				}
+			</div>
+		</div>
 
-        <p class="lede">
-          We're putting the finishing touches on the new Wayomile — premium Indian tea, sourced
-          straight from small growers and packed the day it ships. Back very soon.
-        </p>
+		<!-- =========================== STORY =========================== -->
+		<section id="story" class="wrap sec">
+			<p><span class="label" data-anim="fade">Our Story</span></p>
 
-        <div class="bar" role="presentation"></div>
-      </section>
+			<h2 class="d2" data-anim="words" style="margin-top:2rem;max-width:19ch;--anim-delay:60ms">
+				We grow tea the <span class="spin">✳</span> slow way — beside the{' '}
+				<span class="accent">small growers</span> who tend every leaf by hand.
+			</h2>
 
-      <footer class="bottom">
-        <div class="links">
-          <a href="tel:+919633816338">+91 9633816338</a>
-          <a href="mailto:support@wayomile.in">support@wayomile.in</a>
-        </div>
-        <p class="copy">© {year} Wayomile. All rights reserved.</p>
-      </footer>
-    </main>
-  </body>
-</html>
+			<div class="story-grid">
+				<div class="story-figs">
+					<figure class="story-fig" data-anim="mask">
+						<img
+							src="/images/tra-granules.webp"
+							alt="Loose tea granules with a spoon and glass jar"
+							width="500"
+							height="625"
+							loading="lazy"
+						/>
+					</figure>
+					<figure class="story-fig" data-anim="mask" style="--anim-delay:160ms">
+						<img
+							src="/images/tea-pl-sq.webp"
+							alt="Pickers hand-plucking fresh leaves on a tea plantation"
+							width="500"
+							height="625"
+							loading="lazy"
+						/>
+					</figure>
+				</div>
+
+				<div data-anim="right">
+					<p class="lede measure-wide">
+						Wayomile began with a simple belief — that the finest cup starts with fairness. We work
+						directly with family-run gardens, roast and blend in small batches, and pack only when you
+						order. No middlemen, no shortcuts, no compromise on taste.
+					</p>
+					<a href="#shop" class="btn btn-dark" style="margin-top:2.5rem">
+						Meet the blends <span class="arrow">↗</span>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- ======================= FEATURE CARDS ======================= -->
+		<section class="wrap sec">
+			<div class="trio" data-anim="stagger">
+				<!-- A · dark, with the Hot/Iced toggle -->
+				<article class="card-dark">
+					<div>
+						<span class="label label-light">Brew your way</span>
+						<h3 class="d3" style="margin-top:1.75rem">
+							Small-batch blended with <span data-brew-word class="accent">tournament-grade care</span> —
+							brewed your way.
+						</h3>
+						<p class="body" data-brew-copy style="margin-top:1.1rem;color:var(--on-dark-mute)">
+							Steep hot at 90°C for a bold, aromatic cup.
+						</p>
+					</div>
+
+					<div style="display:flex;align-items:center;gap:0.9rem">
+						<button
+							id="brew-toggle"
+							class="switch"
+							role="switch"
+							aria-checked="false"
+							aria-label="Toggle hot or iced brew"
+						>
+							<span id="brew-knob" class="switch-knob">
+								<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg>
+							</span>
+						</button>
+						<span id="brew-mode" style="font-size:0.9rem;font-weight:600">Hot brew</span>
+					</div>
+				</article>
+
+				<!-- B · imagery -->
+				<article class="card-dark feat-media" style="--i:1">
+					<img src="/images/tea-close-up.webp" alt="" loading="lazy" />
+					<span class="label label-light">Loose-leaf &amp; granules</span>
+					<div>
+						<h3 class="d3">From whole leaves to fine granules</h3>
+						<p class="body" style="margin-top:0.9rem;color:var(--on-dark-mute)">
+							Choose the format that fits your ritual — the garden stays the same.
+						</p>
+					</div>
+				</article>
+
+				<!-- C · taste profile -->
+				<article class="card" style="--i:2">
+					<div>
+						<p class="stat-num"><span data-countup="6">0</span></p>
+						<p class="body" style="margin-top:1.1rem">
+							Signature blends, each with its own character — tasting notes profiled so you always find
+							your match.
+						</p>
+					</div>
+
+					<div class="bars">
+						{
+							profiles.map((p, i) => (
+								<div class="bar-row">
+									<span style="color:var(--mute)">{p.label}</span>
+									<span class="bar-track">
+										<span class="bar-fill" style={`--w:${p.value}%;--bar-delay:${i * 140}ms`} />
+									</span>
+									<span style="text-align:right;font-variant-numeric:tabular-nums">{p.value}</span>
+								</div>
+							))
+						}
+					</div>
+				</article>
+			</div>
+		</section>
+
+		<!-- =========================== STATS =========================== -->
+		<section class="wrap sec-tight">
+			<p class="body" data-anim="fade" style="text-align:center">A few facts about us, in numbers</p>
+
+			<div class="stats" data-anim="stagger" style="margin-top:clamp(2.5rem,5vw,4rem)">
+				{
+					stats.map((s, i) => (
+						<div class="stat" style={`--i:${i}`}>
+							<p class="stat-num">
+								<span data-countup={String(s.value)} data-suffix={s.suffix}>0{s.suffix}</span>
+							</p>
+							<p class="stat-label">{s.label}</p>
+						</div>
+					))
+				}
+			</div>
+		</section>
+
+		<!-- ==================== SHOP / PRODUCT GRID ===================== -->
+		<section id="shop" class="wrap sec">
+			<div class="head-row">
+				<div>
+					<p><span class="label" data-anim="fade">The Collection</span></p>
+					<h2 class="d2" data-anim="words" style="margin-top:2rem;--anim-delay:60ms">
+						Find your<br /><span class="ghost">everyday brew.</span>
+					</h2>
+				</div>
+				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
+					Six honest blends, packed the day they ship. One tap drops a pack straight in your basket — no
+					page reloads, ever.
+				</p>
+			</div>
+
+			<div class="chips no-scrollbar" data-anim="up" style="margin-top:clamp(2.5rem,5vw,3.5rem)">
+				{
+					filters.map((f) => (
+						<button class="chip" data-filter={f.slug} data-on={f.slug === 'all' ? 'true' : 'false'}>
+							{f.name}
+						</button>
+					))
+				}
+			</div>
+
+			<div class="grid-3" data-anim="stagger" style="margin-top:clamp(1.75rem,3vw,2.5rem)">
+				{products.map((product, i) => <ProductCardV2 product={product} index={i} />)}
+			</div>
+		</section>
+
+		<!-- ====================== FLAVOUR FINDER ======================= -->
+		<section id="blend" class="wrap sec">
+			<div class="head-row">
+				<div>
+					<p><span class="label" data-anim="fade">Find your blend</span></p>
+					<h2 class="d2" data-anim="words" style="margin-top:2rem;max-width:14ch;--anim-delay:60ms">
+						Not sure where to start? <span class="ghost">We'll match you.</span>
+					</h2>
+				</div>
+				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
+					One tap on the mood you're after and we'll point you to the blend that fits — then drop it
+					straight in your basket.
+				</p>
+			</div>
+
+			<div data-anim="up" style="margin-top:clamp(2.5rem,5vw,3.5rem)">
+				<FinderV2 client:visible products={finderProducts} />
+			</div>
+		</section>
+
+		<!-- ========================== RITUAL =========================== -->
+		<section id="ritual" class="wrap sec">
+			<div class="head-row">
+				<div>
+					<p><span class="label" data-anim="fade">The Ritual</span></p>
+					<h2 class="d2" data-anim="words" style="margin-top:2rem;--anim-delay:60ms">
+						Steep it <span class="ghost">just right.</span>
+					</h2>
+				</div>
+				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
+					A tiny brew companion — because great leaves deserve great timing. Fully interactive, just for
+					fun.
+				</p>
+			</div>
+
+			<div
+				class="card"
+				data-anim="up"
+				style="margin-top:clamp(2.5rem,5vw,3.5rem);padding:clamp(1.75rem,4vw,3.5rem)"
+			>
+				<TimerV2 client:visible />
+			</div>
+		</section>
+
+		<!-- ======================= TESTIMONIALS ======================== -->
+		<section class="wrap sec">
+			<div class="head-row">
+				<h2 class="d2" data-anim="words" style="max-width:15ch">
+					Why they keep the <span class="ghost">kettle on.</span>
+				</h2>
+				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
+					Real cups, real people — here's what lands in our inbox.
+				</p>
+			</div>
+
+			<div class="quotes" data-anim="stagger" style="margin-top:clamp(2.5rem,5vw,3.5rem)">
+				{
+					quotes.map((q, i) => (
+						<figure class="quote" style={`--i:${i}`}>
+							<span class="quote-mark" aria-hidden="true">&ldquo;</span>
+							<blockquote class="quote-text">{q.text}</blockquote>
+							<figcaption class="quote-by">
+								<span class="quote-avatar">{q.name.charAt(0)}</span>
+								<span>
+									<span style="display:block;font-size:0.9rem;font-weight:600">{q.name}</span>
+									<span style="display:block;font-size:0.85rem;color:var(--faint)">{q.role}</span>
+								</span>
+							</figcaption>
+						</figure>
+					))
+				}
+			</div>
+		</section>
+
+		<!-- ============================ FAQ ============================ -->
+		<section id="faq" class="wrap sec">
+			<div class="faq-grid">
+				<div>
+					<p><span class="label" data-anim="fade">Got questions?</span></p>
+					<h2 class="d2" data-anim="words" style="margin-top:2rem;--anim-delay:60ms">
+						We've got<br /><span class="ghost">answers.</span>
+					</h2>
+					<p class="body measure" data-anim="up" style="margin-top:2rem;--anim-delay:240ms">
+						Everything about freshness, sourcing and how we get tea to your cup.
+					</p>
+				</div>
+
+				<div class="faq-list" data-anim="stagger">
+					{
+						faqs.map((f, i) => (
+							<details class="faq" style={`--i:${i}`}>
+								<summary>
+									{f.q}
+									<span class="faq-sign" aria-hidden="true" />
+								</summary>
+								<div class="faq-body">
+									<div>
+										<p>{f.a}</p>
+									</div>
+								</div>
+							</details>
+						))
+					}
+				</div>
+			</div>
+		</section>
+	</main>
+</LayoutV2>
+
+<script>
+	// ---- Hot / iced brew toggle (feature card A) ----------------------------
+	const toggle = document.getElementById('brew-toggle');
+	const knob = document.getElementById('brew-knob');
+	const mode = document.getElementById('brew-mode');
+	const word = document.querySelector('[data-brew-word]');
+	const copy = document.querySelector('[data-brew-copy]');
+	const flameSVG =
+		'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
+	const snowSVG =
+		'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5 4.2 16.5"/></svg>';
+
+	let iced = false;
+	toggle?.addEventListener('click', () => {
+		iced = !iced;
+		toggle.setAttribute('aria-checked', String(iced));
+		if (knob) {
+			knob.style.transform = iced ? 'translateX(26px)' : 'translateX(0)';
+			knob.innerHTML = iced ? snowSVG : flameSVG;
+		}
+		if (mode) mode.textContent = iced ? 'Iced brew' : 'Hot brew';
+		if (word) word.textContent = iced ? 'crisp, cold-steeped clarity' : 'tournament-grade care';
+		if (copy)
+			copy.textContent = iced
+				? 'Cold-steep 4 hours for a smooth, refreshing pour.'
+				: 'Steep hot at 90°C for a bold, aromatic cup.';
+	});
+
+	// ---- Taste-profile bars grow to their target width when revealed -------
+	document.querySelectorAll<HTMLElement>('.bar-fill').forEach((el) => {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					if (!e.isIntersecting) return;
+					el.style.width = getComputedStyle(el).getPropertyValue('--w');
+					io.unobserve(el);
+				});
+			},
+			{ threshold: 0.5 }
+		);
+		io.observe(el);
+	});
+
+	// ---- Category filter tabs ----------------------------------------------
+	const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+	const cards = document.querySelectorAll<HTMLElement>('[data-product]');
+
+	chips.forEach((chip) => {
+		chip.addEventListener('click', () => {
+			chips.forEach((c) => (c.dataset.on = String(c === chip)));
+
+			const slug = chip.dataset.filter;
+			cards.forEach((card) => {
+				const match = slug === 'all' || (card.dataset.category || '').split(' ').includes(slug!);
+				if (match) {
+					card.style.display = '';
+					requestAnimationFrame(() => card.classList.remove('is-hidden'));
+				} else {
+					card.classList.add('is-hidden');
+					setTimeout(() => {
+						if (card.classList.contains('is-hidden')) card.style.display = 'none';
+					}, 350);
+				}
+			});
+		});
+	});
+</script>
