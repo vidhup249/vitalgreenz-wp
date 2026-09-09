@@ -119,16 +119,19 @@ const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
 
 		<!-- ========================== OUR PURPOSE ======================== -->
 		<section class="wrap sec" style="border-top:1px solid var(--line)">
-			<div class="split-page">
+			<!-- Wide column first: the statement is the substance here, so it takes
+			     the larger side and the supporting copy sits beside it. A label
+			     alone in a narrow column left a 473x367 hole. -->
+			<div class="split-page wide-left">
 				<div data-anim="up">
 					<span class="label">Our Purpose</span>
-				</div>
-				<div data-anim="up" style="--anim-delay:120ms">
-					<h2 class="d3" style="max-width:34ch">
+					<h2 class="d3" style="margin-top:1.5rem">
 						We believe that every product can create a positive connection between the people who grow
 						it, the people who enjoy it and the environment we all share.
 					</h2>
-					<div class="prose" style="margin-top:1.75rem">
+				</div>
+				<div data-anim="up" style="--anim-delay:120ms">
+					<div class="prose">
 						<p>
 							From a refreshing cup of tea to the spices that bring a meal to life, Vital Greenz is
 							building Indian brands that taste good, do good and create lasting value.
