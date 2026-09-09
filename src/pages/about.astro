@@ -7,127 +7,170 @@ const pick = (name: string, idx = 0) => products.find((p) => p.name === name)?.i
 const imgA = pick('Indian Masala Tea', 0);
 const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
 
-const values = [
-	{
-		title: 'Empowering Small Tea Growers',
-		body: 'We buy directly from family-run gardens at fair prices — no middlemen skimming the margin, more going back to the people who grow the leaf.',
-	},
-	{
-		title: 'Sustainably Cultivated',
-		body: 'Grown with responsible practices that protect soil, water and biodiversity — so the gardens that feed us today are thriving tomorrow.',
-	},
-	{
-		title: 'Crafted for Exceptional Taste',
-		body: 'Small-batch blended and packed to order. Freshness you can smell the moment you open the pack, and taste in every cup.',
-	},
-];
-
-const stats = [
-	{ value: 6, suffix: '', label: 'Signature blends' },
-	{ value: 100, suffix: '%', label: 'Single-origin leaf' },
-	{ value: 48, suffix: 'h', label: 'Garden to your pack' },
-	{ value: 1200, suffix: '+', label: 'Happy sippers' },
+const commitments = [
+	'Empowering small tea growers',
+	'Encouraging zero-chemical farming',
+	'Protecting soil health',
+	'Promoting sustainable agriculture',
+	'Strengthening rural livelihoods',
 ];
 ---
 
 <LayoutV2
-	title="About — Wayomile"
-	description="The story behind Wayomile: premium Indian tea, sourced fairly from small growers and packed fresh."
+	title="About — Vital Greenz"
+	description="From India's rural farms to your everyday moments. Vital Greenz is a purpose-driven Indian enterprise behind Wayomile premium teas and Flavvo Fresh premium spices."
 >
 	<main>
 		<!-- ============================ INTRO ============================ -->
 		<section class="wrap page-top sec">
 			<div class="page-head">
-				<span class="label" data-anim="fade">Our Story</span>
-				<h1 class="d1" data-anim="words" style="--anim-delay:60ms;font-size:clamp(2.4rem,6.2vw,4.5rem);max-width:16ch">
-					Sip the legacy,<br /><span class="accent">taste the tradition.</span>
+				<span class="label" data-anim="fade">About Us</span>
+				<h1 class="d1" data-anim="words" style="--anim-delay:60ms;font-size:clamp(2.1rem,5vw,3.75rem);max-width:22ch">
+					From India's Rural Farms to Your <span class="accent">Everyday Moments!</span>
 				</h1>
-				<p class="lede" data-anim="up" style="--anim-delay:240ms">
-					Wayomile began with a simple belief — that the finest cup starts with fairness. We connect
-					small Indian tea gardens directly to your kitchen, with nothing lost in between.
-				</p>
+				<div class="prose" data-anim="up" style="--anim-delay:240ms">
+					<p>
+						At <strong>Vital Greenz</strong>, we believe that great products begin with great people,
+						responsible farming and respect for nature. We are a purpose-driven Indian enterprise
+						creating premium food and beverage brands that bring together quality, authenticity,
+						sustainability and the rich agricultural heritage of India.
+					</p>
+					<p><strong>Our journey is led by two distinctive brands.</strong></p>
+				</div>
 			</div>
 		</section>
 
-		<!-- ============================ STORY ============================ -->
-		<section class="wrap sec" style="padding-top:0">
+		<!-- =========================== WAYOMILE ========================== -->
+		<section id="wayomile" class="wrap sec" style="padding-top:0">
 			<div class="story-grid" style="margin-top:0">
 				<div class="story-figs">
-					{imgA && (
-						<figure class="story-fig" data-anim="mask">
-							<img src={imgA.src} srcset={imgA.srcset} sizes="(min-width:900px) 28vw, 45vw"
-								alt={imgA.alt || 'Wayomile masala tea'} width="500" height="625" loading="lazy" />
-						</figure>
-					)}
-					{imgB && (
-						<figure class="story-fig" data-anim="mask" style="--anim-delay:160ms">
-							<img src={imgB.src} srcset={imgB.srcset} sizes="(min-width:900px) 28vw, 45vw"
-								alt={imgB.alt || 'Wayomile rose tea'} width="500" height="625" loading="lazy" />
-						</figure>
-					)}
+					{
+						imgA && (
+							<figure class="story-fig" data-anim="mask">
+								<img
+									src={imgA.src}
+									srcset={imgA.srcset}
+									sizes="(min-width:900px) 28vw, 45vw"
+									alt={imgA.alt || 'Wayomile masala tea'}
+									width="500"
+									height="625"
+									loading="lazy"
+								/>
+							</figure>
+						)
+					}
+					{
+						imgB && (
+							<figure class="story-fig" data-anim="mask" style="--anim-delay:160ms">
+								<img
+									src={imgB.src}
+									srcset={imgB.srcset}
+									sizes="(min-width:900px) 28vw, 45vw"
+									alt={imgB.alt || 'Wayomile rose tea'}
+									width="500"
+									height="625"
+									loading="lazy"
+								/>
+							</figure>
+						)
+					}
 				</div>
 
 				<div data-anim="right">
-					<span class="label">Why we started</span>
-					<h2 class="d2" style="margin-top:1.5rem;max-width:16ch">
-						Great tea shouldn't cost the grower.
+					<span class="label">Wayomile</span>
+					<h2 class="d2" style="margin-top:1.5rem;max-width:18ch">Premium Indian Tea Products</h2>
+
+					<div class="prose" style="margin-top:1.75rem">
+						<p>
+							Wayomile brings the timeless heritage of premium Indian tea to your cup. Sourced directly
+							from the dedicated rural small tea growers and farmer collectives across India, our teas
+							are carefully selected to deliver authentic flavour and exceptional quality.
+						</p>
+						<p>
+							Beyond great tea, Wayomile is committed to empowering small tea growers, encouraging
+							zero-chemical farming, protecting soil health, promoting sustainable agriculture and
+							strengthening rural livelihoods.
+						</p>
+					</div>
+
+					<ul class="pdp-trust" style="margin-top:2rem">
+						{commitments.map((c) => <li>{c}</li>)}
+					</ul>
+
+					<p class="reg-note">
+						Tea Board of India Tea Mark Registration No: TB|LC|TM|BLF|TR-10007 &amp; TB|LC|TM|KE-10001
+						· Buyer Licence: TB|LC|SI-B/10388
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- ========================= FLAVVO FRESH ======================== -->
+		<section id="flavvo-fresh" class="wrap sec" style="border-top:1px solid var(--line)">
+			<div class="split-page">
+				<div data-anim="up">
+					<span class="label">Flavvo Fresh</span>
+					<h2 class="d2" style="margin-top:1.5rem;max-width:16ch">Premium Indian Spices</h2>
+				</div>
+				<div class="prose" data-anim="up" style="--anim-delay:120ms">
+					<p>
+						Flavvo Fresh celebrates the vibrant flavours and culinary traditions of India through
+						premium spices sourced with a focus on quality, authenticity and responsible sourcing.
+						From everyday cooking to special occasions, we bring the richness of authentic Indian
+						spices closer to every kitchen.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- ========================== OUR PURPOSE ======================== -->
+		<section class="wrap sec" style="border-top:1px solid var(--line)">
+			<div class="split-page">
+				<div data-anim="up">
+					<span class="label">Our Purpose</span>
+				</div>
+				<div data-anim="up" style="--anim-delay:120ms">
+					<h2 class="d3" style="max-width:34ch">
+						Every product can create a positive connection between the people who grow it, the people
+						who enjoy it and the environment we all share.
 					</h2>
 					<div class="prose" style="margin-top:1.75rem">
 						<p>
-							Too much of the tea on shelves travels through a maze of traders before it reaches a cup —
-							losing freshness and fairness along the way. We do it differently: work hand-in-hand with
-							small gardens, roast and blend in small batches, and pack only when you order.
+							From a refreshing cup of tea to the spices that bring a meal to life, Vital Greenz is
+							building Indian brands that taste good, do good and create lasting value.
 						</p>
-						<p>No middlemen. No shortcuts. No compromise on taste.</p>
 					</div>
+					<p class="purpose-line">Empowering Rural Farmers · Preserving Nature · Enriching Lives.</p>
 				</div>
 			</div>
 		</section>
 
-		<!-- =========================== VALUES ============================ -->
-		<section class="wrap sec">
-			<h2 class="d2" data-anim="words" style="max-width:14ch">What we stand for.</h2>
+		<!-- ============================ V-STEP =========================== -->
+		<section id="v-step" class="wrap sec" style="border-top:1px solid var(--line)">
+			<div class="card-dark" data-anim="up" style="padding:clamp(2rem,5vw,4rem)">
+				<span class="label label-light">V-STEP</span>
+				<h2 class="d2" style="margin-top:1.5rem;max-width:20ch">Earn While You Learn</h2>
 
-			<div class="trio" data-anim="stagger" style="margin-top:clamp(2.5rem,5vw,3.5rem)">
-				{
-					values.map((v, i) => (
-						<article class="card" style={`--i:${i}`}>
-							<div>
-								<span class="stat-num" style="font-size:clamp(1.6rem,2.4vw,2rem)">
-									{String(i + 1).padStart(2, '0')}
-								</span>
-								<h3 class="d3" style="margin-top:1.5rem">{v.title}</h3>
-							</div>
-							<p class="body">{v.body}</p>
-						</article>
-					))
-				}
-			</div>
-		</section>
-
-		<!-- ============================ STATS ============================ -->
-		<section class="wrap sec-tight">
-			<div class="stats" data-anim="stagger">
-				{
-					stats.map((s, i) => (
-						<div class="stat" style={`--i:${i}`}>
-							<p class="stat-num">
-								<span data-countup={String(s.value)} data-suffix={s.suffix}>0{s.suffix}</span>
-							</p>
-							<p class="stat-label">{s.label}</p>
-						</div>
-					))
-				}
-			</div>
-		</section>
-
-		<!-- ============================= CTA ============================= -->
-		<section class="wrap sec">
-			<div class="card-dark" data-anim="up" style="padding:clamp(2.5rem,6vw,5rem);text-align:center">
-				<h2 class="d2" data-anim="words">Taste the difference.</h2>
-				<div style="margin-top:2.25rem;display:flex;justify-content:center">
-					<a href="/#shop" class="btn btn-light">Shop the collection <span class="arrow">↗</span></a>
+				<div class="prose prose-light" style="margin-top:1.75rem;max-width:74ch">
+					<p>
+						V-STEP is a gender-neutral Earn While You Learn programme designed by Vital Greenz in tune
+						with the UGC guidelines and the broader objectives of Kerala's higher education sector,
+						particularly in promoting skill development, entrepreneurship, employability, student
+						talent and financial self-reliance.
+					</p>
+					<p>
+						V-STEP also creates institutional value by contributing to NAAC accreditation score,
+						strengthening industry–academia linkages, fostering industry collaboration and enhancing
+						institutional visibility, while empowering students with practical experience,
+						entrepreneurship and employability skills and an opportunity to earn while learning.
+					</p>
 				</div>
+
+				<p class="vstep-contact">
+					Institutions are welcome to contact us at
+					<a href="tel:+919633846338">+91 96338 46338</a> or
+					<a href="mailto:vstep@vitalgreenz.in">vstep@vitalgreenz.in</a>
+				</p>
 			</div>
 		</section>
 	</main>

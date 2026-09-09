@@ -37,11 +37,15 @@ const canonicalURL = new URL(Astro.url.pathname, base).href;
 const isHome = Astro.url.pathname === '/';
 const sec = (id: string) => (isHome ? `#${id}` : `/#${id}`);
 
+// Tabs per the content brief. SPICES, CORPORATE GIFTING and V-STEP have no
+// pages of their own yet, so they point at the closest existing content —
+// see the notes handed back with this change.
 const navLinks = [
-	{ label: 'Shop', href: sec('shop') },
-	{ label: 'Our Story', href: sec('story') },
-	{ label: 'Find Yours', href: sec('blend') },
-	{ label: 'About', href: '/about' },
+	{ label: 'Premium Teas', href: sec('shop') },
+	{ label: 'Spices', href: '/about#flavvo-fresh' },
+	{ label: 'Corporate Gifting', href: '/contact' },
+	{ label: 'Our Story', href: '/about' },
+	{ label: 'V-STEP', href: '/about#v-step' },
 	{ label: 'Contact', href: '/contact' },
 ];
 

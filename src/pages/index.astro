@@ -18,19 +18,23 @@ const clip = (text: string, max: number) => {
 	return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd().replace(/[.,;:—-]$/, '') + '…';
 };
 
-// Feature cards
-const profiles = [
-	{ label: 'Floral', value: 82 },
-	{ label: 'Malty', value: 64 },
-	{ label: 'Spiced', value: 91 },
+// Foot marquee — duplicated once for a seamless -50% loop
+const marqueeItems = [
+	'Empowering Small Tea Growers',
+	'Promoting Zero-Chemical Farming',
+	'Preserving Soil Health',
+	'Advancing Sustainable Agriculture',
+	'Strengthening Rural Livelihoods',
+	'Crafting Safe & Responsible Tea',
 ];
+const marqueeLoop = [...marqueeItems, ...marqueeItems];
 
-// Stats
-const stats = [
-	{ value: 6, suffix: '', label: 'Signature blends' },
-	{ value: 100, suffix: '%', label: 'Single-origin leaf' },
-	{ value: 1200, suffix: '+', label: 'Happy sippers' },
-	{ value: 48, suffix: 'h', label: 'Garden to your pack' },
+// "What Makes Wayomile Special?" — two figures, two statements
+const facts = [
+	{ value: 6, suffix: '+', label: 'Premium Tea Varieties' },
+	{ value: 100, suffix: '%', label: 'Indian Tea' },
+	{ value: null, suffix: '', label: 'Small Tea Growers at Our Heart' },
+	{ value: null, suffix: '', label: 'Tea & Spices' },
 ];
 
 // Shop filters
@@ -103,11 +107,14 @@ const faqs = [
 			<div class="wrap hero-inner">
 				<div class="hero-copy">
 					<span class="label label-light" data-anim="fade" style="--anim-delay:100ms">
-						Premium Indian Tea · Est. small farms
+						Wayomile
 					</span>
+					<p class="hero-tagline" data-anim="up" style="--anim-delay:200ms">
+						Authentic Premium Indian Tea, Rooted in Tradition!
+					</p>
 
 					<h1 class="d1 hero-title" data-anim="words" style="--anim-delay:180ms">
-						Experience the Heritage<br /><span class="accent">of Indian Tea.</span>
+						Discover the <span class="accent">Soul</span> of<br />Authentic Indian Premium Tea
 					</h1>
 
 					<p class="lede hero-lede" data-anim="up" style="--anim-delay:520ms">
@@ -115,11 +122,7 @@ const faqs = [
 						growers, cultivated sustainably.
 					</p>
 
-					<div class="hero-actions" data-anim="up" style="--anim-delay:620ms">
-						<a href="#shop" class="btn btn-light">Start sipping <span class="arrow">↗</span></a>
-						<a href="#story" class="btn btn-outline-light">Our story</a>
 					</div>
-				</div>
 
 				<!-- Cutout. Imported through astro:assets so the 3.4 MB source PNG
 				     is emitted as sized WebP variants rather than shipped whole. -->
@@ -135,15 +138,6 @@ const faqs = [
 						fetchpriority="high"
 					/>
 				</div>
-			</div>
-		</section>
-
-		<!-- ========================= COMMITMENTS ======================== -->
-		<section class="creds" aria-label="What we stand for">
-			<div class="wrap creds-grid" data-anim="stagger">
-				<p style="--i:0">Empowering Small Tea Growers</p>
-				<p style="--i:1">Sustainably Cultivated</p>
-				<p style="--i:2">Crafted for Exceptional Taste</p>
 			</div>
 		</section>
 
@@ -193,40 +187,19 @@ const faqs = [
 
 		<!-- ======================= FEATURE CARDS ======================= -->
 		<section class="wrap sec">
-			<div class="trio" data-anim="stagger">
-				<!-- A · dark, with the Hot/Iced toggle -->
-				<article class="card-dark">
-					<div>
-						<span class="label label-light">Brew your way</span>
-						<h3 class="d3" style="margin-top:1.75rem">
-							Small-batch blended with <span data-brew-word class="accent">tournament-grade care</span> —
-							brewed your way.
-						</h3>
-						<p class="body" data-brew-copy style="margin-top:1.1rem;color:var(--on-dark-mute)">
-							Steep hot at 90°C for a bold, aromatic cup.
-						</p>
-					</div>
-
-					<div style="display:flex;align-items:center;gap:0.9rem">
-						<button
-							id="brew-toggle"
-							class="switch"
-							role="switch"
-							aria-checked="false"
-							aria-label="Toggle hot or iced brew"
-						>
-							<span id="brew-knob" class="switch-knob">
-								<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z" /></svg>
-							</span>
-						</button>
-						<span id="brew-mode" style="font-size:0.9rem;font-weight:600">Hot brew</span>
-					</div>
+			<div class="trio trio-2" data-anim="stagger">
+				<!-- A · statement -->
+				<article class="card-dark" style="justify-content:center;gap:1.25rem">
+					<h3 class="d3">From India's Sustainable Tea Gardens to Your Cup</h3>
+					<p class="body" style="color:var(--on-dark-mute)">
+						Carefully selected, thoughtfully crafted and freshly packed to bring you the authentic
+						taste and timeless tradition of premium Indian tea.
+					</p>
 				</article>
 
 				<!-- B · imagery -->
-				<article class="card-dark feat-media" style="--i:1">
+				<article class="card-dark feat-media" style="--i:1;justify-content:flex-end">
 					<img src="/images/tea-close-up.webp" alt="" loading="lazy" />
-					<span class="label label-light">Loose-leaf &amp; granules</span>
 					<div>
 						<h3 class="d3">From whole leaves to fine granules</h3>
 						<p class="body" style="margin-top:0.9rem;color:var(--on-dark-mute)">
@@ -234,46 +207,27 @@ const faqs = [
 						</p>
 					</div>
 				</article>
-
-				<!-- C · taste profile -->
-				<article class="card" style="--i:2">
-					<div>
-						<p class="stat-num"><span data-countup="6">0</span></p>
-						<p class="body" style="margin-top:1.1rem">
-							Signature blends, each with its own character — tasting notes profiled so you always find
-							your match.
-						</p>
-					</div>
-
-					<div class="bars">
-						{
-							profiles.map((p, i) => (
-								<div class="bar-row">
-									<span style="color:var(--mute)">{p.label}</span>
-									<span class="bar-track">
-										<span class="bar-fill" style={`--w:${p.value}%;--bar-delay:${i * 140}ms`} />
-									</span>
-									<span style="text-align:right;font-variant-numeric:tabular-nums">{p.value}</span>
-								</div>
-							))
-						}
-					</div>
-				</article>
 			</div>
 		</section>
 
 		<!-- =========================== STATS =========================== -->
 		<section class="wrap sec-tight">
-			<p class="body" data-anim="fade" style="text-align:center">A few facts about us, in numbers</p>
+			<h2 class="d3" data-anim="up" style="text-align:center">What Makes Wayomile Special?</h2>
 
 			<div class="stats" data-anim="stagger" style="margin-top:clamp(2.5rem,5vw,4rem)">
 				{
-					stats.map((s, i) => (
+					facts.map((f, i) => (
 						<div class="stat" style={`--i:${i}`}>
-							<p class="stat-num">
-								<span data-countup={String(s.value)} data-suffix={s.suffix}>0{s.suffix}</span>
-							</p>
-							<p class="stat-label">{s.label}</p>
+							{f.value ? (
+								<>
+									<p class="stat-num">
+										<span data-countup={String(f.value)} data-suffix={f.suffix}>0{f.suffix}</span>
+									</p>
+									<p class="stat-label">{f.label}</p>
+								</>
+							) : (
+								<p class="stat-word">{f.label}</p>
+							)}
 						</div>
 					))
 				}
@@ -286,13 +240,16 @@ const faqs = [
 				<div>
 					<p><span class="label" data-anim="fade">The Collection</span></p>
 					<h2 class="d2" data-anim="words" style="margin-top:2rem;--anim-delay:60ms">
-						Find your<br /><span class="ghost">everyday brew.</span>
+						Explore the Taste of<br /><span class="ghost">Indian Tea</span>
 					</h2>
 				</div>
-				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
-					Six honest blends, packed the day they ship. One tap drops a pack straight in your basket — no
-					page reloads, ever.
-				</p>
+				<div class="head-note" data-anim="up" style="--anim-delay:240ms">
+					<p class="note-lead">Discover Your Perfect Cup</p>
+					<p class="body" style="margin-top:0.5rem">
+						From small tea growers to your cup, discover authentic Indian teas rooted in tradition and
+						crafted for moments worth savouring.
+					</p>
+				</div>
 			</div>
 
 			<div class="chips no-scrollbar" data-anim="up" style="margin-top:clamp(2.5rem,5vw,3.5rem)">
@@ -416,52 +373,23 @@ const faqs = [
 				</div>
 			</div>
 		</section>
+			<!-- ========================== MARQUEE ========================== -->
+		<div class="marquee" aria-label="What we stand for">
+			<div class="marquee-track" style="--dur:64s">
+				{
+					marqueeLoop.map((item) => (
+						<span class="marquee-item">
+							{item}
+							<i />
+						</span>
+					))
+				}
+			</div>
+		</div>
 	</main>
 </LayoutV2>
 
 <script>
-	// ---- Hot / iced brew toggle (feature card A) ----------------------------
-	const toggle = document.getElementById('brew-toggle');
-	const knob = document.getElementById('brew-knob');
-	const mode = document.getElementById('brew-mode');
-	const word = document.querySelector('[data-brew-word]');
-	const copy = document.querySelector('[data-brew-copy]');
-	const flameSVG =
-		'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>';
-	const snowSVG =
-		'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5 4.2 16.5"/></svg>';
-
-	let iced = false;
-	toggle?.addEventListener('click', () => {
-		iced = !iced;
-		toggle.setAttribute('aria-checked', String(iced));
-		if (knob) {
-			knob.style.transform = iced ? 'translateX(26px)' : 'translateX(0)';
-			knob.innerHTML = iced ? snowSVG : flameSVG;
-		}
-		if (mode) mode.textContent = iced ? 'Iced brew' : 'Hot brew';
-		if (word) word.textContent = iced ? 'crisp, cold-steeped clarity' : 'tournament-grade care';
-		if (copy)
-			copy.textContent = iced
-				? 'Cold-steep 4 hours for a smooth, refreshing pour.'
-				: 'Steep hot at 90°C for a bold, aromatic cup.';
-	});
-
-	// ---- Taste-profile bars grow to their target width when revealed -------
-	document.querySelectorAll<HTMLElement>('.bar-fill').forEach((el) => {
-		const io = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((e) => {
-					if (!e.isIntersecting) return;
-					el.style.width = getComputedStyle(el).getPropertyValue('--w');
-					io.unobserve(el);
-				});
-			},
-			{ threshold: 0.5 }
-		);
-		io.observe(el);
-	});
-
 	// ---- Category filter tabs ----------------------------------------------
 	const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
 	const cards = document.querySelectorAll<HTMLElement>('[data-product]');

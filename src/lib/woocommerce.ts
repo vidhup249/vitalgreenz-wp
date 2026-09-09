@@ -120,12 +120,11 @@ export function cleanTerm(name: string): string {
 }
 
 // Curated display order (by WooCommerce product name).
-// Note: "Premium Tea" is the "Premium Tea Granules" listing on the price chart.
 export const DISPLAY_ORDER = [
 	'Premium Rose Tea',
 	'Premium Saffron Tea',
 	'Indian Masala Tea',
-	'Premium Tea',
+	'Premium Tea Granules',
 	'Premium Green Tea',
 	'Premium Orthodox Black Tea',
 ];

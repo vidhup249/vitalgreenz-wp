@@ -24,7 +24,18 @@ const clip = (text: string, max: number) => {
 
 // Sized to land inside the card's two-line clamp, so the visible cut is our
 // word-boundary ellipsis rather than the browser's mid-word one.
-const summary = clip(stripHtml(product.short_description, 400), 86);
+// The brief gives each product a tagline ("The Romantic One - Floral &
+// Refreshing") ahead of its description. It is authored as a leading
+// <strong>, so lift it out and show it as the kicker rather than letting it
+// run into the summary text.
+const raw = product.short_description || '';
+const taglineMatch = raw.match(/<strong>([\s\S]*?)<\/strong>/i);
+const tagline = taglineMatch ? stripHtml(taglineMatch[1], 200) : null;
+const bodyHtml = taglineMatch
+	? raw.replace(/<p>\s*<strong>[\s\S]*?<\/strong>\s*<\/p>/i, '')
+	: raw;
+
+const summary = clip(stripHtml(bodyHtml, 400), 92);
 
 const slugs = product.categories.map((c) => c.slug).join(' ');
 const href = `/products/${product.slug}`;
@@ -79,7 +90,7 @@ const mediaData = JSON.stringify(images.map((i) => ({ s: i.src, ss: i.srcset }))
 
 	<div class="pcard-body">
 		<p class="pcard-kicker" data-sale={String(product.on_sale)}>
-			{product.on_sale ? 'On sale' : cat?.name || 'Single-origin'}
+			{product.on_sale ? 'On sale' : tagline || cat?.name || 'Single-origin'}
 		</p>
 
 		<h3 class="pcard-title"><a href={href}>{product.name}</a></h3>
