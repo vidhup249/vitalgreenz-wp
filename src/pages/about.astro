@@ -1,4 +1,9 @@
 ---
+/**
+ * Copy on this page is the client's supplied text, verbatim. Do not
+ * paraphrase, re-case or re-punctuate it — headings, pipes and the
+ * registration string are all reproduced exactly as given.
+ */
 import LayoutV2 from '../layouts/LayoutV2.astro';
 import { getProducts } from '../lib/woocommerce';
 
@@ -6,19 +11,11 @@ const products = await getProducts(100);
 const pick = (name: string, idx = 0) => products.find((p) => p.name === name)?.images?.[idx];
 const imgA = pick('Indian Masala Tea', 0);
 const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
-
-const commitments = [
-	'Empowering small tea growers',
-	'Encouraging zero-chemical farming',
-	'Protecting soil health',
-	'Promoting sustainable agriculture',
-	'Strengthening rural livelihoods',
-];
 ---
 
 <LayoutV2
 	title="About — Vital Greenz"
-	description="From India's rural farms to your everyday moments. Vital Greenz is a purpose-driven Indian enterprise behind Wayomile premium teas and Flavvo Fresh premium spices."
+	description="From India's Rural Farms to Your Everyday Moments! Vital Greenz is a purpose-driven Indian enterprise behind WAYOMILE premium teas and FLAVVO FRESH premium spices."
 >
 	<main>
 		<!-- ============================ INTRO ============================ -->
@@ -30,12 +27,13 @@ const commitments = [
 				</h1>
 				<div class="prose" data-anim="up" style="--anim-delay:240ms">
 					<p>
-						At <strong>Vital Greenz</strong>, we believe that great products begin with great people,
-						responsible farming and respect for nature. We are a purpose-driven Indian enterprise
-						creating premium food and beverage brands that bring together quality, authenticity,
-						sustainability and the rich agricultural heritage of India.
+						At <strong>Vital Greenz</strong>, we believe that great products begin with
+						<strong>great people, responsible farming and respect for nature</strong>. We are a
+						purpose-driven Indian enterprise creating premium food and beverage brands that bring
+						together <strong>quality, authenticity, sustainability and the rich agricultural heritage
+						of India</strong>.
 					</p>
-					<p><strong>Our journey is led by two distinctive brands.</strong></p>
+					<p><strong>Our journey is led by two distinctive brands:</strong></p>
 				</div>
 			</div>
 		</section>
@@ -51,7 +49,7 @@ const commitments = [
 									src={imgA.src}
 									srcset={imgA.srcset}
 									sizes="(min-width:900px) 28vw, 45vw"
-									alt={imgA.alt || 'Wayomile masala tea'}
+									alt={imgA.alt || 'WAYOMILE Indian Masala Tea'}
 									width="500"
 									height="625"
 									loading="lazy"
@@ -66,7 +64,7 @@ const commitments = [
 									src={imgB.src}
 									srcset={imgB.srcset}
 									sizes="(min-width:900px) 28vw, 45vw"
-									alt={imgB.alt || 'Wayomile rose tea'}
+									alt={imgB.alt || 'WAYOMILE Premium Rose Tea'}
 									width="500"
 									height="625"
 									loading="lazy"
@@ -77,7 +75,7 @@ const commitments = [
 				</div>
 
 				<div data-anim="right">
-					<span class="label">Wayomile</span>
+					<span class="label">WAYOMILE</span>
 					<h2 class="d2" style="margin-top:1.5rem;max-width:18ch">Premium Indian Tea Products</h2>
 
 					<div class="prose" style="margin-top:1.75rem">
@@ -93,13 +91,9 @@ const commitments = [
 						</p>
 					</div>
 
-					<ul class="pdp-trust" style="margin-top:2rem">
-						{commitments.map((c) => <li>{c}</li>)}
-					</ul>
-
 					<p class="reg-note">
-						Tea Board of India Tea Mark Registration No: TB|LC|TM|BLF|TR-10007 &amp; TB|LC|TM|KE-10001
-						· Buyer Licence: TB|LC|SI-B/10388
+						(Tea Board of India Tea Mark Registration No: TB|LC|TM|BLF|TR-10007 &amp;
+						TB|LC|TM|KE-10001 | Buyer Licence: TB|LC|SI-B/10388)
 					</p>
 				</div>
 			</div>
@@ -109,12 +103,12 @@ const commitments = [
 		<section id="flavvo-fresh" class="wrap sec" style="border-top:1px solid var(--line)">
 			<div class="split-page">
 				<div data-anim="up">
-					<span class="label">Flavvo Fresh</span>
+					<span class="label">FLAVVO FRESH</span>
 					<h2 class="d2" style="margin-top:1.5rem;max-width:16ch">Premium Indian Spices</h2>
 				</div>
 				<div class="prose" data-anim="up" style="--anim-delay:120ms">
 					<p>
-						Flavvo Fresh celebrates the vibrant flavours and culinary traditions of India through
+						FLAVVO FRESH celebrates the vibrant flavours and culinary traditions of India through
 						premium spices sourced with a focus on quality, authenticity and responsible sourcing.
 						From everyday cooking to special occasions, we bring the richness of authentic Indian
 						spices closer to every kitchen.
@@ -131,8 +125,8 @@ const commitments = [
 				</div>
 				<div data-anim="up" style="--anim-delay:120ms">
 					<h2 class="d3" style="max-width:34ch">
-						Every product can create a positive connection between the people who grow it, the people
-						who enjoy it and the environment we all share.
+						We believe that every product can create a positive connection between the people who grow
+						it, the people who enjoy it and the environment we all share.
 					</h2>
 					<div class="prose" style="margin-top:1.75rem">
 						<p>
@@ -140,7 +134,7 @@ const commitments = [
 							building Indian brands that taste good, do good and create lasting value.
 						</p>
 					</div>
-					<p class="purpose-line">Empowering Rural Farmers · Preserving Nature · Enriching Lives.</p>
+					<p class="purpose-line">Empowering Rural Farmers | Preserving Nature | Enriching Lives.</p>
 				</div>
 			</div>
 		</section>
@@ -148,26 +142,23 @@ const commitments = [
 		<!-- ============================ V-STEP =========================== -->
 		<section id="v-step" class="wrap sec" style="border-top:1px solid var(--line)">
 			<div class="card-dark" data-anim="up" style="padding:clamp(2rem,5vw,4rem)">
-				<span class="label label-light">V-STEP</span>
-				<h2 class="d2" style="margin-top:1.5rem;max-width:20ch">Earn While You Learn</h2>
+				<h2 class="d2" style="max-width:20ch">About V-STEP</h2>
 
 				<div class="prose prose-light" style="margin-top:1.75rem;max-width:74ch">
 					<p>
-						V-STEP is a gender-neutral Earn While You Learn programme designed by Vital Greenz in tune
+						V-STEP is a gender neutral Earn While You Learn program designed by Vital Greenz in tune
 						with the UGC guidelines and the broader objectives of Kerala's higher education sector,
 						particularly in promoting skill development, entrepreneurship, employability, student
-						talent and financial self-reliance.
-					</p>
-					<p>
-						V-STEP also creates institutional value by contributing to NAAC accreditation score,
-						strengthening industry–academia linkages, fostering industry collaboration and enhancing
-						institutional visibility, while empowering students with practical experience,
-						entrepreneurship and employability skills and an opportunity to earn while learning.
+						talent and financial self-reliance. V-STEP also creates institutional value by
+						contributing to NAAC accreditation score, strengthening industry–academia linkages,
+						fostering industry collaboration and enhancing institutional visibility, while empowering
+						students with practical experience, entrepreneurship and employability skills and an
+						opportunity to earn while learning.
 					</p>
 				</div>
 
 				<p class="vstep-contact">
-					Institutions are welcome to contact us at
+					For more information about V-STEP, institutions are welcome to contact us at
 					<a href="tel:+919633846338">+91 96338 46338</a> or
 					<a href="mailto:vstep@vitalgreenz.in">vstep@vitalgreenz.in</a>
 				</p>
