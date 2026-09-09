@@ -9,6 +9,7 @@ import {
 	formatPrice,
 	cleanTerm,
 	normalizeBrand,
+	stripHtml,
 	type WooProduct,
 } from '../../lib/woocommerce';
 
@@ -37,6 +38,13 @@ const price = Number(product.on_sale ? product.prices.sale_price : product.price
 const related = list
 	.filter((p) => p.id !== product.id && p.categories.some((c) => cat && c.id === cat.id))
 	.slice(0, 3);
+
+// Both WooCommerce description fields currently carry the same supplied copy,
+// so only render the Details block when the long one actually adds something.
+// If the client later expands it, the section reappears on its own.
+const shortText = stripHtml(product.short_description, 8000);
+const longText = stripHtml(product.description, 8000);
+const showDetails = longText.length > 0 && longText !== shortText;
 
 const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafted for Exceptional Taste'];
 ---
@@ -131,7 +139,7 @@ const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafte
 
 		<!-- Full description -->
 		{
-			product.description && (
+			showDetails && (
 				<section class="wrap sec" style="border-top:1px solid var(--line)">
 					<h2 class="d3" data-anim="up">Details</h2>
 					<div class="prose-tea" data-anim="up" style="--anim-delay:100ms;margin-top:1.5rem;max-width:68ch" set:html={normalizeBrand(product.description)} />
