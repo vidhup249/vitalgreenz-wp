@@ -22,8 +22,6 @@ const clip = (text: string, max: number) => {
 	return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd().replace(/[.,;:—-]$/, '') + '…';
 };
 
-// Sized to land inside the card's two-line clamp, so the visible cut is our
-// word-boundary ellipsis rather than the browser's mid-word one.
 // The brief gives each product a tagline ("The Romantic One - Floral &
 // Refreshing") ahead of its description. It is authored as a leading
 // <strong>, so lift it out and show it as the kicker rather than letting it
@@ -35,6 +33,8 @@ const bodyHtml = taglineMatch
 	? raw.replace(/<p>\s*<strong>[\s\S]*?<\/strong>\s*<\/p>/i, '')
 	: raw;
 
+// Sized to land inside the card's two-line clamp, so the visible cut is our
+// word-boundary ellipsis rather than the browser's mid-word one.
 const summary = clip(stripHtml(bodyHtml, 400), 92);
 
 const slugs = product.categories.map((c) => c.slug).join(' ');
@@ -43,38 +43,31 @@ const eager = index < 3;
 
 const rating = Number(product.average_rating) || 0;
 const hasRating = product.review_count > 0 && rating > 0;
-
-// src + srcset pairs for the dot navigation (handled by the delegated
-// carousel listener in LayoutV2).
-const mediaData = JSON.stringify(images.map((i) => ({ s: i.src, ss: i.srcset })));
 ---
 
-<article
-	data-card
-	data-product
-	data-category={slugs}
-	data-images={mediaData}
-	style={`--i:${index % 3}`}
-	class="pcard"
->
+<article data-card data-product data-category={slugs} style={`--i:${index % 3}`} class="pcard">
 	<div class="pcard-media">
 		<a href={href} aria-label={product.name}>
-			{
-				image && (
-					<img
-						data-media-img
-						src={image.src}
-						srcset={image.srcset}
-						sizes="(min-width:1024px) 32vw, (min-width:640px) 45vw, 92vw"
-						alt={image.alt || product.name}
-						width="640"
-						height="640"
-						loading={eager ? 'eager' : 'lazy'}
-						decoding="async"
-						fetchpriority={eager ? 'high' : 'auto'}
-					/>
-				)
-			}
+			{/* Every image lives in the track, so hovering slides between them
+			    instead of swapping src — no flash, and it can animate. Only the
+			    first is eager; the rest load lazily. */}
+			<div class="pcard-track" data-track>
+				{
+					images.map((img, i) => (
+						<img
+							src={img.src}
+							srcset={img.srcset}
+							sizes="(min-width:1024px) 32vw, (min-width:640px) 45vw, 92vw"
+							alt={i === 0 ? img.alt || product.name : ''}
+							width="640"
+							height="640"
+							loading={eager && i === 0 ? 'eager' : 'lazy'}
+							decoding="async"
+							fetchpriority={eager && i === 0 ? 'high' : 'auto'}
+						/>
+					))
+				}
+			</div>
 		</a>
 
 		{

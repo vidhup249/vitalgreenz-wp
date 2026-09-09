@@ -144,25 +144,31 @@ const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
 
 		<!-- ============================ V-STEP =========================== -->
 		<section id="v-step" class="wrap sec" style="border-top:1px solid var(--line)">
-			<div class="card-dark" data-anim="up" style="padding:clamp(2rem,5vw,4rem)">
+			<div class="card-dark vstep" data-anim="up">
 				<h2 class="d2" style="max-width:20ch">About V-STEP</h2>
 
-				<div class="prose prose-light" style="margin-top:1.75rem;max-width:74ch">
+				<!-- Two columns: one block of this length is a wall of text across the
+				     full card width. The client supplied it as two paragraphs. -->
+				<div class="prose prose-light vstep-body">
 					<p>
 						V-STEP is a gender neutral Earn While You Learn program designed by Vital Greenz in tune
 						with the UGC guidelines and the broader objectives of Kerala's higher education sector,
 						particularly in promoting skill development, entrepreneurship, employability, student
-						talent and financial self-reliance. V-STEP also creates institutional value by
-						contributing to NAAC accreditation score, strengthening industry–academia linkages,
-						fostering industry collaboration and enhancing institutional visibility, while empowering
-						students with practical experience, entrepreneurship and employability skills and an
-						opportunity to earn while learning.
+						talent and financial self-reliance.
+					</p>
+					<p>
+						V-STEP also creates institutional value by contributing to NAAC accreditation score,
+						strengthening industry–academia linkages, fostering industry collaboration and enhancing
+						institutional visibility, while empowering students with practical experience,
+						entrepreneurship and employability skills and an opportunity to earn while learning.
 					</p>
 				</div>
 
+				{/* {' '} keeps the space Astro would otherwise swallow before an
+				    element that starts on the next line. */}
 				<p class="vstep-contact">
-					For more information about V-STEP, institutions are welcome to contact us at
-					<a href="tel:+919633846338">+91 96338 46338</a> or
+					For more information about V-STEP, institutions are welcome to contact us at{' '}
+					<a href="tel:+919633846338">+91 96338 46338</a> or{' '}
 					<a href="mailto:vstep@vitalgreenz.in">vstep@vitalgreenz.in</a>
 				</p>
 			</div>

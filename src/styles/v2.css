@@ -1121,14 +1121,29 @@ astro-island [class*="rounded"] {
 	overflow: hidden;
 	background: var(--surface-2);
 }
-.pcard-media img {
+/* Sliding track: all of a product's images sit side by side and the track
+   translates, so hovering advances them like a carousel. */
+.pcard-track {
+	display: flex;
+	height: 100%;
+	width: 100%;
+	transform: translateX(calc(var(--i, 0) * -100%));
+	transition: transform 0.65s var(--ease);
+}
+.pcard-track img {
+	flex: 0 0 100%;
 	height: 100%;
 	width: 100%;
 	object-fit: cover;
-	transition: transform 0.9s var(--ease);
+	transition: scale 0.9s var(--ease);
 }
-.pcard:hover .pcard-media img {
-	transform: scale(1.05);
+.pcard:hover .pcard-track img {
+	scale: 1.04;
+}
+@media (prefers-reduced-motion: reduce) {
+	.pcard-track {
+		transition: none;
+	}
 }
 .pcard-dots {
 	position: absolute;
@@ -1936,6 +1951,27 @@ astro-island [class*="rounded"] {
 .prose-light p {
 	color: var(--on-dark-mute);
 }
+.vstep {
+	padding: clamp(2rem, 5vw, 4rem);
+}
+/* Long body copy set in two columns so it does not run the full card width */
+.vstep-body {
+	margin-top: clamp(1.75rem, 3vw, 2.5rem);
+}
+@media (min-width: 860px) {
+	.vstep-body {
+		columns: 2;
+		column-gap: clamp(2rem, 4vw, 3.5rem);
+	}
+	.vstep-body p + p {
+		margin-top: 0;
+	}
+	.vstep-body p {
+		break-inside: avoid;
+		margin-bottom: 1.25rem;
+	}
+}
+
 .vstep-contact {
 	margin-top: 2.25rem;
 	padding-top: 1.75rem;
@@ -1945,8 +1981,13 @@ astro-island [class*="rounded"] {
 }
 .vstep-contact a {
 	color: var(--on-dark);
-	font-weight: 500;
-	transition: color 0.35s var(--ease);
+	font-weight: 600;
+	white-space: nowrap;
+	box-shadow: inset 0 -1px 0 var(--on-dark-line);
+	transition: color 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.vstep-contact a:hover {
+	box-shadow: inset 0 -1px 0 var(--accent);
 }
 .vstep-contact a:hover {
 	color: var(--accent);

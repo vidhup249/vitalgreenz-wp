@@ -435,25 +435,69 @@ const footerColumns = [
 			})();
 		</script>
 
-		<!-- Product card image carousel (one delegated handler for all cards) -->
+		<!-- Product card carousel: hovering advances the image track. -->
 		<script is:inline>
-			document.addEventListener('click', function (e) {
-				var dot = e.target.closest && e.target.closest('[data-dot]');
-				if (!dot) return;
-				var card = dot.closest('[data-card]');
-				if (!card) return;
-				var img = card.querySelector('[data-media-img]');
-				var raw = card.getAttribute('data-images');
-				if (!img || !raw) return;
-				var imgs = JSON.parse(raw);
-				var i = parseInt(dot.getAttribute('data-dot'), 10);
-				if (!imgs[i]) return;
-				img.setAttribute('src', imgs[i].s);
-				if (imgs[i].ss) img.setAttribute('srcset', imgs[i].ss);
-				card.querySelectorAll('[data-dot]').forEach(function (d) {
-					d.setAttribute('data-active', d === dot ? 'true' : 'false');
+			(function () {
+				var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				// Touch devices get no hover, so they keep the dots and nothing auto-plays.
+				var canHover = window.matchMedia('(hover: hover)').matches;
+
+				document.querySelectorAll('[data-card]').forEach(function (card) {
+					var track = card.querySelector('[data-track]');
+					if (!track) return;
+					var slides = track.children.length;
+					var dots = card.querySelectorAll('[data-dot]');
+					var timer = null;
+					var i = 0;
+
+					var go = function (n) {
+						i = ((n % slides) + slides) % slides;
+						track.style.setProperty('--i', i);
+						dots.forEach(function (d, k) {
+							d.setAttribute('data-active', k === i ? 'true' : 'false');
+						});
+					};
+					var stop = function () {
+						clearInterval(timer);
+						timer = null;
+					};
+					var start = function () {
+						if (timer || slides < 2 || reduce) return;
+						timer = setInterval(function () {
+							go(i + 1);
+						}, 1200);
+					};
+
+					dots.forEach(function (d, k) {
+						d.addEventListener('click', function (e) {
+							e.preventDefault();
+							stop();
+							go(k);
+						});
+					});
+
+					if (slides < 2) return;
+
+					if (canHover) {
+						card.addEventListener('mouseenter', start);
+						card.addEventListener('mouseleave', function () {
+							stop();
+							go(0);
+						});
+					}
+					// Keyboard users get the same thing when the card takes focus.
+					card.addEventListener('focusin', start);
+					card.addEventListener('focusout', function () {
+						if (card.contains(document.activeElement)) return;
+						stop();
+						go(0);
+					});
+					// Never leave a timer running on a hidden tab.
+					document.addEventListener('visibilitychange', function () {
+						if (document.hidden) stop();
+					});
 				});
-			});
+			})();
 		</script>
 	</body>
 </html>
