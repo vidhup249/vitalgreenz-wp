@@ -668,22 +668,23 @@ astro-island [class*="rounded"] {
 .hero-copy {
 	max-width: 40rem;
 }
-.hero-title br {
-	display: none;
-}
-@media (min-width: 720px) {
-	.hero-title br {
-		display: inline;
-	}
-}
 .hero-title {
 	margin-top: clamp(1.5rem, 3vw, 2.25rem);
-	/* Two forced lines in a half-width column. The longer line is 23
-	   characters; measured against the 640px column the ceiling is ~61.5px,
-	   so this sits just under it at every breakpoint with margin to spare. */
-	font-size: clamp(2rem, 3.85vw, 3.1rem);
+	/* Three forced lines; the longest is 18 characters. Measured against the
+	   column at each breakpoint, the ceiling is ~78px on desktop and ~34px at
+	   320px wide, so both clamps sit just under with margin. */
+	font-size: clamp(1.9rem, 10.2vw, 3.4rem);
 	max-width: 24ch;
 }
+/* Desktop: the copy is a half-width column, so the ceiling is lower than
+   the full-width stacked case above. Declared after the base rule so it
+   wins — an equal-specificity media block placed earlier would not. */
+@media (min-width: 900px) {
+	.hero-title {
+		font-size: clamp(3.1rem, 5.7vw, 4.5rem);
+	}
+}
+
 .hero-lede {
 	margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
 	max-width: 44ch;
@@ -732,22 +733,47 @@ astro-island [class*="rounded"] {
 }
 
 @media (max-width: 899px) {
+	/* Stacked hero: copy anchored to the top, product grounded at the bottom,
+	   with the slack between them rather than orbiting a centred block. */
+	.hero {
+		align-items: stretch;
+		padding-top: calc(var(--nav-h) + clamp(1rem, 4vw, 2.25rem));
+		padding-bottom: clamp(0.75rem, 3vw, 1.75rem);
+	}
+	.hero-inner {
+		grid-template-rows: auto 1fr;
+		gap: clamp(1.25rem, 3.5vw, 2rem);
+	}
 	.hero-figure {
-		min-height: clamp(200px, 52vw, 320px);
+		align-self: end;
+		min-height: 0;
 	}
 	.hero-figure img {
-		/* Stacked under the copy, it gets whatever height is left over. */
-		max-height: min(32svh, 280px);
-		max-width: 78%;
+		/* Bigger and bottom-anchored, so it reads as part of the composition
+		   instead of floating in the leftover space. */
+		max-height: min(44svh, 400px);
+		max-width: 88%;
 	}
-	/* Stacked layout: the copy spans the full width, so a left-weighted
-	   scrim leaves the ends of each line unprotected. Go vertical instead. */
+	/* Break after the comma instead of stranding "Tradition!" on its own. */
+	.hero-tagline {
+		max-width: 24ch;
+		margin-top: 0.7rem;
+	}
+	.hero-lede {
+		max-width: 36ch;
+		font-size: 1rem;
+		line-height: 1.55;
+	}
+	/* The copy spans the full width here, so a left-weighted scrim leaves the
+	   line ends unprotected — go vertical, and heavier through the band the
+	   headline crosses. */
 	.hero-bg::after {
 		background: linear-gradient(
 			180deg,
-			rgba(6, 12, 9, 0.74) 0%,
-			rgba(6, 12, 9, 0.58) 48%,
-			rgba(6, 12, 9, 0.38) 100%
+			rgba(6, 12, 9, 0.8) 0%,
+			rgba(6, 12, 9, 0.72) 38%,
+			rgba(6, 12, 9, 0.5) 68%,
+			rgba(6, 12, 9, 0.34) 100%
 		);
 	}
 }
