@@ -60,7 +60,7 @@ const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafte
 
 <LayoutV2
 	title={`${product.name} — ${brandOf(product)}`}
-	description={product.short_description.replace(/<[^>]*>/g, '').slice(0, 150)}
+	description={stripHtml(product.short_description, 150)}
 >
 	<main>
 		<div class="wrap page-top" style="padding-bottom:clamp(3.5rem,6.5vw,5.75rem)">

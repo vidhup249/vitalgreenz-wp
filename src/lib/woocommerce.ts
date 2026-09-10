@@ -113,18 +113,31 @@ const productsCache = new Map<number, Promise<WooProduct[]>>();
  * "&amp;". Decode once here, at the fetch boundary, rather than at each of the
  * dozen-odd places a name is rendered.
  *
+ * WordPress also runs wptexturize over stored content, turning straight quotes
+ * and apostrophes into curly ones and emitting them as numeric entities
+ * (&#8220;, &#8217;), so those are decoded generically rather than one at a time.
+ *
  * &amp; is unescaped last so "&amp;lt;" decodes to "&lt;" and not to "<".
  */
 function decodeEntities(text: string): string {
 	return text
-		.replace(/&#0?39;|&#x27;/gi, "'")
+		.replace(/&#x([0-9a-f]+);/gi, (m, hex) => fromCodePoint(parseInt(hex, 16), m))
+		.replace(/&#(\d+);/g, (m, dec) => fromCodePoint(Number(dec), m))
 		.replace(/&quot;/g, '"')
 		.replace(/&nbsp;/g, ' ')
-		.replace(/&#8211;/g, '–')
-		.replace(/&#8212;/g, '—')
 		.replace(/&lt;/g, '<')
 		.replace(/&gt;/g, '>')
 		.replace(/&amp;/g, '&');
+}
+
+/** Leave malformed entities alone rather than throwing on a bad code point. */
+function fromCodePoint(code: number, original: string): string {
+	if (!Number.isInteger(code) || code <= 0 || code > 0x10ffff) return original;
+	try {
+		return String.fromCodePoint(code);
+	} catch {
+		return original;
+	}
 }
 
 /** Names reach the DOM as plain text, so they must arrive already decoded. */
@@ -217,10 +230,9 @@ export function formatPrice(amount: string, prices: WooProduct['prices']): strin
  * that mentions the parent company.
  */
 export function stripHtml(html: string, max = 120): string {
-	const text = html
-		.replace(/<[^>]*>/g, ' ')
-		.replace(/&nbsp;/g, ' ')
-		.replace(/&amp;/g, '&')
+	// Tags first, then entities: decoding first would turn an encoded "&lt;p&gt;"
+	// into a real tag that the strip has already passed over.
+	const text = decodeEntities(html.replace(/<[^>]*>/g, ' '))
 		.replace(/\s+/g, ' ')
 		.trim();
 	return text.length > max ? text.slice(0, max).trimEnd() + '…' : text;
