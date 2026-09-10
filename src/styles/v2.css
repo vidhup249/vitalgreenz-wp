@@ -1174,9 +1174,8 @@ astro-island [class*="rounded"] {
 }
 /* Category / sale marker — micro caps in the body, not a badge on the photo */
 .pcard-title {
-	font-size: 1.15rem;
+	font-size: 1.25rem;
 	font-weight: 600;
-	letter-spacing: -0.025em;
 	line-height: 1.3;
 }
 /* The product's tagline, directly under its name. */
