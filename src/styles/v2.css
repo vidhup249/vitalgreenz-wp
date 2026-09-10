@@ -1635,50 +1635,33 @@ astro-island [class*="rounded"] {
 }
 @media (min-width: 860px) {
 	.foot-top {
-		grid-template-columns: 1.5fr 1fr 1fr 1fr;
+		grid-template-columns: 1.6fr 1fr 1fr;
 	}
 }
 .foot-logo {
 	height: 52px;
 	width: auto;
 }
-.foot-form {
-	display: flex;
+/* Brand strapline sitting above the footer blurb. */
+.foot-strap {
+	margin-top: 1.5rem;
+	font-size: clamp(1rem, 1.5vw, 1.2rem);
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	color: var(--on-dark);
+}
+
+/* Two support addresses on one line, wrapping together on narrow screens. */
+.foot-mails {
+	display: inline-flex;
+	flex-wrap: wrap;
 	align-items: center;
-	gap: 0.5rem;
-	margin-top: 1.75rem;
-	max-width: 22rem;
-	border-bottom: 1px solid var(--on-dark-line);
-	padding-bottom: 0.6rem;
-	transition: border-color 0.4s var(--ease);
+	gap: 0 0.6rem;
 }
-.foot-form:focus-within {
-	border-color: var(--on-dark);
+.foot-mails span {
+	color: var(--on-dark-line);
 }
-.foot-form input {
-	flex: 1;
-	min-width: 0;
-	background: transparent;
-	color: var(--on-dark);
-	font-size: 0.9rem;
-}
-.foot-form input::placeholder {
-	color: var(--on-dark-mute);
-}
-.foot-form button {
-	display: grid;
-	place-items: center;
-	height: 34px;
-	width: 34px;
-	border-radius: 0;
-	background: var(--on-dark);
-	color: var(--ink);
-	transition: background 0.4s var(--ease), color 0.4s var(--ease);
-}
-.foot-form button:hover {
-	background: var(--accent);
-	color: var(--on-dark);
-}
+
 .foot-col h3 {
 	font-size: 0.68rem;
 	font-weight: 600;

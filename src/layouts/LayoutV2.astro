@@ -53,28 +53,22 @@ const footerColumns = [
 	{
 		title: 'Shop',
 		links: [
-			{ label: 'All teas', href: sec('shop') },
-			{ label: 'Blend Lab', href: sec('blend') },
+			{ label: 'Premium Indian Tea', href: sec('shop') },
+			// Spices and kombucha have no storefront listing yet — their products
+			// are still drafts — so these point at the brand sections that do exist.
+			{ label: 'Natural Spices', href: '/about#flavvo-fresh' },
+			{ label: 'Premium Kombucha', href: '/about#sbooch' },
 			{ label: 'Bestsellers', href: sec('shop') },
-			{ label: 'Gift sets', href: sec('shop') },
+			{ label: 'Corporate Gifting', href: '/contact' },
 		],
 	},
 	{
-		title: 'Company',
-		links: [
-			{ label: 'Our story', href: sec('story') },
-			{ label: 'Sustainability', href: sec('story') },
-			{ label: 'Small growers', href: sec('story') },
-			{ label: 'FAQ', href: sec('faq') },
-		],
-	},
-	{
-		title: 'Social',
+		title: 'Connect',
 		links: [
 			{ label: 'Instagram', href: '#' },
 			{ label: 'Facebook', href: '#' },
-			{ label: 'YouTube', href: '#' },
-			{ label: 'WhatsApp', href: '#' },
+			{ label: 'LinkedIn', href: '#' },
+			{ label: 'Contact Us', href: '/contact' },
 		],
 	},
 ];
@@ -179,9 +173,9 @@ const footerColumns = [
 					<source src="/videos/tea-pour.mp4" type="video/mp4" />
 				</video>
 				<div class="wrap">
-					<p><span class="label label-light" data-anim="fade">Start today</span></p>
-					<h2 data-anim="words" class="d2" style="margin-top:2rem;--anim-delay:80ms">
-						Brew something<br /><span style="color:var(--on-dark-mute)">worth savouring.</span>
+					<h2 data-anim="words" class="d2" style="--anim-delay:80ms">
+						Begin Your Authentic Tea Experience{' '}
+						<span style="color:var(--on-dark-mute)">with Wayomile</span>
 					</h2>
 					<div data-anim="up" style="margin-top:2.75rem;display:flex;justify-content:center;--anim-delay:340ms">
 						<a href="#shop" class="btn btn-light">
@@ -196,13 +190,11 @@ const footerColumns = [
 				<div class="foot-top" data-anim="stagger">
 					<div>
 						<img src="/images/vg-logo-w.png" alt="Wayomile" width="615" height="444" class="foot-logo" />
-						<p class="body measure" style="margin-top:1.5rem;color:var(--on-dark-mute)">
-							Sip the legacy, taste the tradition. Premium Indian tea from small growers to your cup.
+						<p class="foot-strap">Taste | Explore | Experience</p>
+						<p class="body measure" style="margin-top:1.25rem;color:var(--on-dark-mute)">
+							Premium Indian teas, natural spices and premium Kombucha, thoughtfully crafted to bring
+							authentic flavours and exceptional quality to every moment.
 						</p>
-						<form class="foot-form" onsubmit="return false">
-							<input type="email" required placeholder="Your email" aria-label="Email address" />
-							<button aria-label="Subscribe"><span class="arrow">↗</span></button>
-						</form>
 					</div>
 
 					{
@@ -222,7 +214,11 @@ const footerColumns = [
 				<div class="foot-bottom" data-anim="fade">
 					<div style="display:flex;flex-wrap:wrap;gap:0 1.75rem">
 						<a href="tel:+919633816338">+91 9633816338</a>
-						<a href="mailto:support@wayomile.in">support@wayomile.in</a>
+						<span class="foot-mails">
+							<a href="mailto:support@vitalgreenz.in">support@vitalgreenz.in</a>
+							<span aria-hidden="true">|</span>
+							<a href="mailto:support@wayomile.in">support@wayomile.in</a>
+						</span>
 					</div>
 					<p>© {new Date().getFullYear()} Wayomile. All rights reserved.</p>
 				</div>
