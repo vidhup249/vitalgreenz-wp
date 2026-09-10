@@ -56,22 +56,38 @@ const finderProducts: FinderProduct[] = products.map((p) => {
 	};
 });
 
-// Testimonials
+// Testimonials — the client's supplied text, verbatim. Names and cities are
+// reproduced exactly as given, punctuation included ("Vikram. S", "Amaya VC").
 const quotes = [
 	{
-		text: 'The saffron tea genuinely stopped me buying supermarket brands. You can taste that it was packed fresh.',
-		name: 'Ananya R.',
+		text: 'The saffron tea is wonderfully fresh and beautifully balanced. After experiencing its distinctive taste and quality, I simply stopped going back to supermarket brands.',
+		name: 'Sonal Singh',
 		role: 'Bengaluru',
 	},
 	{
-		text: 'Knowing it comes from small growers — and it actually tastes better — is the whole package for me.',
-		name: 'Vikram S.',
+		text: 'Exceptional taste, rooted in a meaningful story. Knowing that Wayomile supports small tea growers makes every cup feel even more special.',
+		name: 'Vikram. S',
 		role: 'Mumbai',
 	},
 	{
-		text: 'Built my own rose-green blend in the Blend Lab. Ridiculously fun, and now it is my daily cup.',
-		name: 'Meera K.',
-		role: 'Pune',
+		text: 'Delicate, fragrant and beautifully balanced, Premium Rose Tea combines smooth tea notes with a subtle floral touch, creating a refined and refreshing experience with every sip.',
+		name: 'Ananya. C',
+		role: 'Delhi',
+	},
+	{
+		text: 'Rich, aromatic and beautifully balanced, Wayomile Masala Tea brings together premium tea with a warm blend of authentic spices. A comforting, flavourful cup that makes every sip truly memorable.',
+		name: 'Amaya VC',
+		role: 'Kozhikode',
+	},
+	{
+		text: 'A beautifully smooth and refreshing Green Tea with a clean, delicate flavour. Wayomile Premium Loose Leaf Green Tea offers an elegant, authentic tea experience in every sip, while making wellness a naturally enjoyable part of your daily ritual.',
+		name: 'Deepthi Jose',
+		role: 'Kochi',
+	},
+	{
+		text: 'Rich, smooth and beautifully balanced, Wayomile Premium Loose Leaf Orthodox Black Tea delivers a refined cup with distinctive depth and richness. A truly satisfying black tea experience, from the very first sip to the last.',
+		name: 'Gayathri D',
+		role: 'Bengaluru',
 	},
 ];
 
@@ -250,15 +266,12 @@ const faqs = [
 		<!-- ====================== FLAVOUR FINDER ======================= -->
 		<section id="blend" class="wrap sec">
 			<div class="head-row">
-				<div>
-					<p><span class="label" data-anim="fade">Find your blend</span></p>
-					<h2 class="d2" data-anim="words" style="margin-top:2rem;max-width:14ch;--anim-delay:60ms">
-						Not sure where to start? <span class="ghost">We'll match you.</span>
-					</h2>
-				</div>
+				<h2 class="d2" data-anim="words" style="max-width:14ch;--anim-delay:60ms">
+					Not sure where to start? <span class="ghost">We'll match you.</span>
+				</h2>
 				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
 					One tap on the mood you're after and we'll point you to the blend that fits — then drop it
-					straight in your basket.
+					straight in your basket
 				</p>
 			</div>
 
@@ -270,12 +283,9 @@ const faqs = [
 		<!-- ========================== RITUAL =========================== -->
 		<section id="ritual" class="wrap sec">
 			<div class="head-row">
-				<div>
-					<p><span class="label" data-anim="fade">The Ritual</span></p>
-					<h2 class="d2" data-anim="words" style="margin-top:2rem;--anim-delay:60ms">
-						Steep it <span class="ghost">just right.</span>
-					</h2>
-				</div>
+				<h2 class="d2" data-anim="words" style="--anim-delay:60ms">
+					Steep it <span class="ghost">just right.</span>
+				</h2>
 				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
 					A tiny brew companion — because great leaves deserve great timing. Fully interactive, just for
 					fun.
@@ -295,10 +305,10 @@ const faqs = [
 		<section class="wrap sec">
 			<div class="head-row">
 				<h2 class="d2" data-anim="words" style="max-width:15ch">
-					Why they keep the <span class="ghost">kettle on.</span>
+					The Wayomile <span class="ghost">Experience!</span>
 				</h2>
 				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
-					Real cups, real people — here's what lands in our inbox.
+					Real experiences, heartfelt appreciation, and memorable tea moments shared by our tea lovers.
 				</p>
 			</div>
 

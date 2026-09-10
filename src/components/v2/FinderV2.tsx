@@ -60,14 +60,21 @@ export default function FinderV2({ products }: { products: FinderProduct[] }) {
 		<div className="split">
 			{/* ---------------- 01 · the picker ---------------- */}
 			<div className="panel card-dark">
-				<p className="panel-step" style={{ color: 'var(--on-dark-mute)' }}>
-					01 — Your mood
-				</p>
-				<h3 className="d3" style={{ marginTop: '1.25rem', marginBottom: '2.5rem' }}>
-					What are you
-					<br />
-					<span style={{ color: 'var(--on-dark-mute)' }}>in the mood for?</span>
+				<h3 className="d3" style={{ marginBottom: '0.85rem' }}>
+					Your Tea Moment of the Day!
 				</h3>
+				<p
+					style={{
+						color: 'var(--on-dark-mute)',
+						fontSize: '1rem',
+						lineHeight: 1.6,
+						marginBottom: '2.5rem',
+						maxWidth: '34ch',
+						textWrap: 'balance',
+					}}
+				>
+					What kind of tea experience are you looking for?
+				</p>
 
 				<div className="moods">
 					{vibes.map((v) => (
@@ -90,7 +97,7 @@ export default function FinderV2({ products }: { products: FinderProduct[] }) {
 			{/* ---------------- 02 · the match ---------------- */}
 			<div className="panel card">
 				<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-					<p className="panel-step">02 — Your match</p>
+					<p className="panel-step">Your match</p>
 					{active && <p className="panel-step" style={{ color: 'var(--ink)' }}>{active.label}</p>}
 				</div>
 
