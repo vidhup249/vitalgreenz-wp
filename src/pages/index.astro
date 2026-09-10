@@ -308,7 +308,13 @@ const faqs = [
 				</p>
 			</div>
 
-			<div class="quotes" data-anim="stagger" style="margin-top:clamp(2.5rem,5vw,3.5rem)">
+			<div
+				class="quote-carousel"
+				data-quote-carousel
+				data-anim="up"
+				style="margin-top:clamp(2.5rem,5vw,3.5rem)"
+			>
+				<div class="quote-track no-scrollbar" data-quote-track>
 				{
 					quotes.map((q, i) => (
 						<figure class="quote" style={`--i:${i}`}>
@@ -323,7 +329,17 @@ const faqs = [
 							</figcaption>
 						</figure>
 					))
-				}
+					}
+				</div>
+
+				<div class="quote-nav">
+					<button class="q-btn" type="button" data-quote-prev aria-label="Previous testimonials">
+						<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/></svg>
+					</button>
+					<button class="q-btn" type="button" data-quote-next aria-label="Next testimonials">
+						<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/></svg>
+					</button>
+				</div>
 			</div>
 		</section>
 
@@ -399,5 +415,38 @@ const faqs = [
 				}
 			});
 		});
+	});
+</script>
+
+<script>
+	// Testimonial carousel. Scroll position is the single source of truth, so
+	// dragging, the buttons and a resize all stay in agreement.
+	document.querySelectorAll('[data-quote-carousel]').forEach((root) => {
+		const track = root.querySelector('[data-quote-track]');
+		const prev = root.querySelector('[data-quote-prev]');
+		const next = root.querySelector('[data-quote-next]');
+		if (!track || !prev || !next) return;
+
+		// One card plus one gap — measured, not assumed, since the card count
+		// per view changes at each breakpoint.
+		const step = () => {
+			const card = track.querySelector('.quote');
+			if (!card) return track.clientWidth;
+			const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+			return card.getBoundingClientRect().width + gap;
+		};
+
+		const sync = () => {
+			// 1px of slack: fractional widths mean scrollLeft rarely hits the max exactly.
+			const max = track.scrollWidth - track.clientWidth - 1;
+			prev.disabled = track.scrollLeft <= 0;
+			next.disabled = track.scrollLeft >= max;
+		};
+
+		prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+		next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+		track.addEventListener('scroll', sync, { passive: true });
+		window.addEventListener('resize', sync);
+		sync();
 	});
 </script>

@@ -1455,14 +1455,62 @@ astro-island [class*="rounded"] {
 }
 
 /* ============================ Testimonials ======================== */
-.quotes {
-	display: grid;
-	gap: clamp(0.85rem, 1.5vw, 1.25rem);
+/* Same cards as the grid this replaces — only the container changes.
+   Native scroll-snap carries the touch drag and keyboard scrolling, so
+   the buttons only have to nudge scrollLeft. */
+.quote-carousel {
+	--q-gap: clamp(0.85rem, 1.5vw, 1.25rem);
 }
-@media (min-width: 900px) {
-	.quotes {
-		grid-template-columns: repeat(3, 1fr);
+.quote-track {
+	display: flex;
+	gap: var(--q-gap);
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	/* Cards stretch to the tallest in the track, so every caption lines up. */
+	align-items: stretch;
+}
+.quote-track > .quote {
+	flex: 0 0 86%;
+	scroll-snap-align: start;
+}
+@media (min-width: 640px) {
+	.quote-track > .quote {
+		flex-basis: calc((100% - var(--q-gap)) / 2);
 	}
+}
+@media (min-width: 1024px) {
+	.quote-track > .quote {
+		flex-basis: calc((100% - 2 * var(--q-gap)) / 3);
+	}
+}
+.quote-nav {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.6rem;
+	margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+.q-btn {
+	display: grid;
+	place-items: center;
+	height: 46px;
+	width: 46px;
+	border: 1px solid var(--line-2);
+	color: var(--ink);
+	transition: background 0.35s var(--ease), color 0.35s var(--ease),
+		border-color 0.35s var(--ease), opacity 0.35s var(--ease);
+}
+.q-btn:hover:not(:disabled) {
+	background: var(--ink);
+	border-color: var(--ink);
+	color: var(--on-dark);
+}
+.q-btn:disabled {
+	opacity: 0.28;
+	cursor: default;
+}
+.q-btn svg {
+	height: 17px;
+	width: 17px;
 }
 .quote {
 	display: flex;
@@ -1937,10 +1985,10 @@ astro-island [class*="rounded"] {
 	color: var(--ink);
 }
 
+/* Fine print, now sitting mid-flow between two paragraphs rather than closing
+   the block, so it no longer carries a divider rule above it. */
 .reg-note {
-	margin-top: 1.75rem;
-	padding-top: 1.25rem;
-	border-top: 1px solid var(--line);
+	margin-top: 1.25rem;
 	font-size: 0.75rem;
 	line-height: 1.65;
 	color: var(--faint);
