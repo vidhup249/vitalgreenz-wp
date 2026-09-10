@@ -670,10 +670,10 @@ astro-island [class*="rounded"] {
 }
 .hero-title {
 	margin-top: clamp(1.5rem, 3vw, 2.25rem);
-	/* Three forced lines; the longest is 18 characters. Measured against the
-	   column at each breakpoint, the ceiling is ~78px on desktop and ~34px at
+	/* Two forced lines; the longest is 20 characters. Measured against the
+	   column at each breakpoint the ceiling is ~71px on desktop and ~31px at
 	   320px wide, so both clamps sit just under with margin. */
-	font-size: clamp(1.9rem, 10.2vw, 3.4rem);
+	font-size: clamp(1.85rem, 9.8vw, 3.4rem);
 	max-width: 24ch;
 }
 /* Desktop: the copy is a half-width column, so the ceiling is lower than
@@ -681,7 +681,7 @@ astro-island [class*="rounded"] {
    wins — an equal-specificity media block placed earlier would not. */
 @media (min-width: 900px) {
 	.hero-title {
-		font-size: clamp(3.1rem, 5.7vw, 4.5rem);
+		font-size: clamp(3rem, 5.3vw, 4.35rem);
 	}
 }
 
