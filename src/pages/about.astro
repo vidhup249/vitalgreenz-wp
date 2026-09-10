@@ -14,6 +14,14 @@ const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
 
 // SBOOCH flavours and their regions, exactly as the client listed them —
 // including "Gor Keri / Gold Car", which is theirs to correct, not mine.
+// The three Vital Greenz brands, in the order the client lists them.
+// SBOOCH's descriptor is the one the client picked to match the other two.
+const brands = [
+	{ name: 'WAYOMILE', desc: 'Premium Indian Tea Products', href: '#wayomile' },
+	{ name: 'FLAVVO FRESH', desc: 'Premium Indian Spices', href: '#flavvo-fresh' },
+	{ name: 'SBOOCH', desc: 'Premium Indian Kombucha', href: '#sbooch' },
+];
+
 const flavours: { name: string; region: string }[] = [
 	{ name: 'Koshimbir', region: 'Maharashtra' },
 	{ name: 'Tulsi & Lemon', region: 'Uttar Pradesh' },
@@ -44,8 +52,24 @@ const flavours: { name: string; region: string }[] = [
 						together <strong>quality, authenticity, sustainability and the rich agricultural heritage
 						of India</strong>.
 					</p>
-					<p><strong>Our journey is led by two distinctive brands:</strong></p>
+					<p><strong>Our journey is led by three distinctive brands:</strong></p>
 				</div>
+
+				{/* The sentence above ends on a colon, so the brands it promises follow
+				    immediately. Each row links to that brand's section below. */}
+				<ul class="brand-lead" data-anim="up" style="--anim-delay:320ms">
+					{
+						brands.map((b) => (
+							<li>
+								<a href={b.href}>
+									<span class="brand-lead-name">{b.name}</span>
+									<span class="brand-lead-dash" aria-hidden="true">-</span>
+									<span class="brand-lead-desc">{b.desc}</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
 			</div>
 		</section>
 

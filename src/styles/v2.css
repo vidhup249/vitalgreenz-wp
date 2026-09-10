@@ -1985,6 +1985,54 @@ astro-island [class*="rounded"] {
 	color: var(--ink);
 }
 
+/* ------------------------- Brand lead-in list ---------------------
+   Completes the "led by three distinctive brands:" sentence. Hairline
+   rows, matching the feature list further down the page. */
+.brand-lead {
+	margin: clamp(1.75rem, 3vw, 2.5rem) 0 0;
+	padding: 0;
+	list-style: none;
+	max-width: 62ch;
+	border-top: 1px solid var(--line);
+}
+.brand-lead li {
+	border-bottom: 1px solid var(--line);
+}
+.brand-lead a {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.2rem 0.7rem;
+	padding: clamp(0.9rem, 1.7vw, 1.25rem) 0;
+}
+.brand-lead-name {
+	font-size: clamp(1rem, 1.3vw, 1.15rem);
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	color: var(--ink);
+}
+.brand-lead-dash {
+	color: var(--faint);
+}
+.brand-lead-desc {
+	font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+	color: var(--mute);
+	transition: color 0.35s var(--ease);
+}
+.brand-lead a:hover .brand-lead-desc {
+	color: var(--ink);
+}
+/* The dash reads as punctuation between two words, so it must not be
+   stranded at the end of a line when the row wraps on a phone. */
+@media (max-width: 460px) {
+	.brand-lead a {
+		flex-direction: column;
+	}
+	.brand-lead-dash {
+		display: none;
+	}
+}
+
 /* Fine print, now sitting mid-flow between two paragraphs rather than closing
    the block, so it no longer carries a divider rule above it. */
 .reg-note {

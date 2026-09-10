@@ -56,6 +56,14 @@ const finderProducts: FinderProduct[] = products.map((p) => {
 	};
 });
 
+// The three Vital Greenz brands. Their sections live on /about, so the
+// links leave this page rather than pointing at anchors that aren't here.
+const brands = [
+	{ name: 'WAYOMILE', desc: 'Premium Indian Tea Products', href: '/about#wayomile' },
+	{ name: 'FLAVVO FRESH', desc: 'Premium Indian Spices', href: '/about#flavvo-fresh' },
+	{ name: 'SBOOCH', desc: 'Premium Indian Kombucha', href: '/about#sbooch' },
+];
+
 // Testimonials — the client's supplied text, verbatim. Names and cities are
 // reproduced exactly as given, punctuation included ("Vikram. S", "Amaya VC").
 const quotes = [
@@ -194,8 +202,24 @@ const faqs = [
 							together <strong>quality, authenticity, sustainability and the rich agricultural heritage
 							of India</strong>.
 						</p>
-						<p><strong>Our journey is led by two distinctive brands:</strong></p>
+						<p><strong>Our journey is led by three distinctive brands:</strong></p>
 					</div>
+
+					{/* The sentence ends on a colon, so the brands it promises follow.
+					    Off the About page, each row links to that brand's section there. */}
+					<ul class="brand-lead" data-anim="up" style="--anim-delay:200ms">
+						{
+							brands.map((b) => (
+								<li>
+									<a href={b.href}>
+										<span class="brand-lead-name">{b.name}</span>
+										<span class="brand-lead-dash" aria-hidden="true">-</span>
+										<span class="brand-lead-desc">{b.desc}</span>
+									</a>
+								</li>
+							))
+						}
+					</ul>
 				</div>
 			</div>
 		</section>
