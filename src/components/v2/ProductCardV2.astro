@@ -33,16 +33,13 @@ const bodyHtml = taglineMatch
 	? raw.replace(/<p>\s*<strong>[\s\S]*?<\/strong>\s*<\/p>/i, '')
 	: raw;
 
-// Sized to land inside the card's two-line clamp, so the visible cut is our
-// word-boundary ellipsis rather than the browser's mid-word one.
-const summary = clip(stripHtml(bodyHtml, 400), 92);
-
+// Shown in full — no clamp — so the whole description reads at a glance.
+// The generous cap is only a guard against a future runaway description.
+const summary = clip(stripHtml(bodyHtml, 600), 260);
 const slugs = product.categories.map((c) => c.slug).join(' ');
 const href = `/products/${product.slug}`;
 const eager = index < 3;
 
-const rating = Number(product.average_rating) || 0;
-const hasRating = product.review_count > 0 && rating > 0;
 ---
 
 <article data-card data-product data-category={slugs} style={`--i:${index % 3}`} class="pcard">
@@ -82,15 +79,9 @@ const hasRating = product.review_count > 0 && rating > 0;
 	</div>
 
 	<div class="pcard-body">
-		<p class="pcard-kicker" data-sale={String(product.on_sale)}>
-			{product.on_sale ? 'On sale' : tagline || cat?.name || 'Single-origin'}
-		</p>
-
 		<h3 class="pcard-title"><a href={href}>{product.name}</a></h3>
 
-		<p class="pcard-meta">
-			{hasRating ? `★ ${rating.toFixed(1)}` : 'New'} · Freshly packed · Ships in 48h
-		</p>
+		<p class="pcard-tagline">{tagline || cat?.name || 'Single-origin'}</p>
 
 		<p class="pcard-sum">{summary}</p>
 
@@ -101,6 +92,7 @@ const hasRating = product.review_count > 0 && rating > 0;
 						<>
 							{formatPrice(product.prices.sale_price, product.prices)}
 							<span class="pcard-was">{formatPrice(product.prices.regular_price, product.prices)}</span>
+							<span class="pcard-sale">On sale</span>
 						</>
 					) : (
 						formatPrice(product.prices.price, product.prices)

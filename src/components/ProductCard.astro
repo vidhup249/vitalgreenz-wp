@@ -12,7 +12,14 @@ const { product, index = 0 } = Astro.props;
 const images = product.images?.slice(0, 5) ?? [];
 const image = images[0];
 const cat = product.categories.find((c) => c.name.toLowerCase() !== 'uncategorized');
-const summary = stripHtml(product.short_description, 96);
+// Tagline is authored as a leading <strong> in the short description.
+const raw = product.short_description || '';
+const tagMatch = raw.match(/<strong>([\s\S]*?)<\/strong>/i);
+const tagline = tagMatch ? stripHtml(tagMatch[1], 200) : null;
+const summary = stripHtml(
+	tagMatch ? raw.replace(/<p>\s*<strong>[\s\S]*?<\/strong>\s*<\/p>/i, '') : raw,
+	200
+);
 const slugs = product.categories.map((c) => c.slug).join(' ');
 const href = `/products/${product.slug}`;
 const eager = index < 3;
@@ -113,8 +120,8 @@ const mediaData = JSON.stringify(images.map((i) => ({ s: i.src, ss: i.srcset }))
 			)}
 		</div>
 
-		<p class="mt-1.5 text-sm text-ink/45">Freshly packed · Ships in 48h</p>
-		<p class="mt-2 line-clamp-2 text-sm text-ink/60 text-pretty">{summary}</p>
+		{tagline && <p class="mt-1 text-sm font-medium text-brand">{tagline}</p>}
+		<p class="mt-2 text-sm text-ink/60 text-pretty">{summary}</p>
 
 		<div class="mt-5 flex items-center justify-between gap-3 pt-1">
 			<div class="flex items-baseline gap-2">

@@ -42,6 +42,15 @@ const related = list
 // Both WooCommerce description fields currently carry the same supplied copy,
 // so only render the Details block when the long one actually adds something.
 // If the client later expands it, the section reappears on its own.
+// Lift the tagline so it can sit directly under the product name, matching
+// the cards, and keep the rest for the description block below the price.
+const rawShort = product.short_description || '';
+const tagMatch = rawShort.match(/<strong>([\s\S]*?)<\/strong>/i);
+const tagline = tagMatch ? stripHtml(tagMatch[1], 200) : null;
+const shortBody = tagMatch
+	? rawShort.replace(/<p>\s*<strong>[\s\S]*?<\/strong>\s*<\/p>/i, '')
+	: rawShort;
+
 const shortText = stripHtml(product.short_description, 8000);
 const longText = stripHtml(product.description, 8000);
 const showDetails = longText.length > 0 && longText !== shortText;
@@ -94,6 +103,8 @@ const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafte
 
 					<h1 class="d2" style="margin-top:1.25rem;font-size:clamp(2rem,4.4vw,3.25rem)">{product.name}</h1>
 
+					{tagline && <p class="pdp-tagline">{tagline}</p>}
+
 					<div class="pdp-rating">
 						<span aria-label={`Rated ${rating} out of 5`}>
 							{[1, 2, 3, 4, 5].map((n) => <span style={n <= rating ? '' : 'opacity:0.25'}>★</span>)}
@@ -115,9 +126,7 @@ const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafte
 						}
 					</p>
 
-					{product.short_description && (
-						<div class="prose-tea" set:html={normalizeBrand(product.short_description)} />
-					)}
+					{shortBody && <div class="prose-tea" set:html={normalizeBrand(shortBody)} />}
 
 					<ProductBuy
 						client:load
