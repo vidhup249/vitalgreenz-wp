@@ -11,11 +11,22 @@ const products = await getProducts(100);
 const pick = (name: string, idx = 0) => products.find((p) => p.name === name)?.images?.[idx];
 const imgA = pick('Indian Masala Tea', 0);
 const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
+
+// SBOOCH flavours and their regions, exactly as the client listed them —
+// including "Gor Keri / Gold Car", which is theirs to correct, not mine.
+const flavours: { name: string; region: string }[] = [
+	{ name: 'Koshimbir', region: 'Maharashtra' },
+	{ name: 'Tulsi & Lemon', region: 'Uttar Pradesh' },
+	{ name: 'Gor Keri / Gold Car', region: 'Gujarat' },
+	{ name: 'Rasam', region: 'Tamil Nadu' },
+	{ name: 'Rice & Pandan', region: 'Odisha' },
+	{ name: 'Naga Pepper', region: 'Nagaland' },
+];
 ---
 
 <LayoutV2
 	title="About — Vital Greenz"
-	description="From India's Rural Farms to Your Everyday Moments! Vital Greenz is a purpose-driven Indian enterprise behind WAYOMILE premium teas and FLAVVO FRESH premium spices."
+	description="From India's Rural Farms to Your Everyday Moments! Vital Greenz is a purpose-driven Indian enterprise behind WAYOMILE premium teas, FLAVVO FRESH premium spices and SBOOCH sparkling kombucha."
 >
 	<main>
 		<!-- ============================ INTRO ============================ -->
@@ -114,6 +125,59 @@ const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
 						spices closer to every kitchen.
 					</p>
 				</div>
+			</div>
+		</section>
+
+		<!-- ============================ SBOOCH =========================== -->
+		<section id="sbooch" class="wrap sec" style="border-top:1px solid var(--line)">
+			<div class="split-page">
+				<div data-anim="up">
+					<span class="label">SBOOCH</span>
+					<h2 class="d2" style="margin-top:1.5rem;max-width:16ch">About Sbooch Kombucha</h2>
+				</div>
+				<div class="prose" data-anim="up" style="--anim-delay:120ms">
+					<p>
+						SBOOCH is India’s first globally awarded sparkling Kombucha brand, crafted by blending
+						traditionally fermented Green Tea and Orthodox Black Tea, sourced directly from small tea
+						growers, with distinctive, regionally inspired Indian flavours.
+					</p>
+				</div>
+			</div>
+
+			<h3 class="d3 spec-head" data-anim="up">Key Features &amp; Ingredients</h3>
+
+			<ul class="spec-list" data-anim="up" style="--anim-delay:80ms">
+				<li>
+					Brewed using filtered water, cane sugar, tea, and a live Kombucha culture (SCOBY) with zero
+					artificial additives, preservatives or colorings.
+				</li>
+				<li>
+					<strong>Health Benefits:</strong> Non-alcoholic, vegan, gluten-free, low-caffeine and rich in
+					antioxidants to support gut health and digestion.
+				</li>
+				<li>
+					<strong>Regional Indian Flavors:</strong> Created using real local ingredients, featuring
+					unique varieties such as:
+				</li>
+			</ul>
+
+			<div class="flavour-grid" data-anim="up" style="--anim-delay:140ms">
+				{
+					flavours.map((f) => (
+						<div class="flavour-cell">
+							<p class="flavour-name">{f.name}</p>
+							<p class="flavour-region">{f.region}</p>
+						</div>
+					))
+				}
+			</div>
+
+			<div class="card-dark award" data-anim="up" style="--anim-delay:200ms">
+				<span class="label label-light">Accolades</span>
+				<p class="award-line">
+					Winner of "Kombucha of the Year" at the 2025 London Beer Competition and recognized at the
+					World Kombucha Awards in Spain.
+				</p>
 			</div>
 		</section>
 
