@@ -8,7 +8,7 @@ import {
 	orderProducts,
 	formatPrice,
 	cleanTerm,
-	normalizeBrand,
+	brandOf,
 	stripHtml,
 	type WooProduct,
 } from '../../lib/woocommerce';
@@ -59,8 +59,8 @@ const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafte
 ---
 
 <LayoutV2
-	title={`${product.name} — Wayomile`}
-	description={normalizeBrand(product.short_description.replace(/<[^>]*>/g, '')).slice(0, 150)}
+	title={`${product.name} — ${brandOf(product)}`}
+	description={product.short_description.replace(/<[^>]*>/g, '').slice(0, 150)}
 >
 	<main>
 		<div class="wrap page-top" style="padding-bottom:clamp(3.5rem,6.5vw,5.75rem)">
@@ -126,7 +126,7 @@ const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafte
 						}
 					</p>
 
-					{shortBody && <div class="prose-tea" set:html={normalizeBrand(shortBody)} />}
+					{shortBody && <div class="prose-tea" set:html={shortBody} />}
 
 					<ProductBuy
 						client:load
@@ -151,7 +151,7 @@ const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafte
 			showDetails && (
 				<section class="wrap sec" style="border-top:1px solid var(--line)">
 					<h2 class="d3" data-anim="up">Details</h2>
-					<div class="prose-tea" data-anim="up" style="--anim-delay:100ms;margin-top:1.5rem;max-width:68ch" set:html={normalizeBrand(product.description)} />
+					<div class="prose-tea" data-anim="up" style="--anim-delay:100ms;margin-top:1.5rem;max-width:68ch" set:html={product.description} />
 				</section>
 			)
 		}

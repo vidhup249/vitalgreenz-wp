@@ -37,6 +37,14 @@ export interface WooCategory {
 	slug: string;
 }
 
+/** WooCommerce's native brands taxonomy (Woo 9.4+). Hierarchical: the three
+    sub-brands sit under a "Vital Greenz" parent term. */
+export interface WooBrand {
+	id: number;
+	name: string;
+	slug: string;
+}
+
 export interface WooAttribute {
 	id: number;
 	name: string;
@@ -64,6 +72,7 @@ export interface WooProduct {
 	review_count: number;
 	images: WooImage[];
 	categories: WooCategory[];
+	brands?: WooBrand[];
 }
 
 /** Fetch with a timeout + retries, so a slow/flaky WooCommerce host doesn't fail the build. */
@@ -179,6 +188,15 @@ export async function getShopData() {
 	return { products, categories: [...map.values()] };
 }
 
+/**
+ * The sub-brand a product belongs to — WAYOMILE, FLAVVO FRESH or SBOOCH.
+ * Falls back to the parent company so a product with no brand term assigned
+ * still reads correctly rather than showing a tea brand on a spice.
+ */
+export function brandOf(product: WooProduct): string {
+	return product.brands?.[0]?.name || 'Vital Greenz';
+}
+
 /** Store API prices come in minor units. "37500" -> "₹375". */
 export function formatPrice(amount: string, prices: WooProduct['prices']): string {
 	const value = Number(amount) / 10 ** prices.currency_minor_unit;
@@ -188,14 +206,18 @@ export function formatPrice(amount: string, prices: WooProduct['prices']): strin
 	})}`;
 }
 
-/** Old backend brand → current storefront brand. Applied to all displayed copy. */
-export function normalizeBrand(text: string): string {
-	return text.replace(/vital\s*greenz/gi, 'Wayomile');
-}
-
-/** Strip HTML tags from WooCommerce rich-text fields for safe short summaries. */
+/**
+ * Strip HTML tags from WooCommerce rich-text fields for safe short summaries.
+ *
+ * This used to rewrite "Vital Greenz" to "Wayomile" in all displayed copy, back
+ * when the backend held a single tea brand. Vital Greenz is now the parent of
+ * three sub-brands (WAYOMILE tea, FLAVVO FRESH spices, SBOOCH kombucha), so that
+ * rename would mislabel a spice or kombucha as a tea brand. No product copy
+ * relies on it, so it is gone rather than left to fire on the next description
+ * that mentions the parent company.
+ */
 export function stripHtml(html: string, max = 120): string {
-	const text = normalizeBrand(html)
+	const text = html
 		.replace(/<[^>]*>/g, ' ')
 		.replace(/&nbsp;/g, ' ')
 		.replace(/&amp;/g, '&')
