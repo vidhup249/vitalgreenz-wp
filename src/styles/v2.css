@@ -1021,14 +1021,15 @@ astro-island [class*="rounded"] {
 	color: var(--mute);
 }
 @media (min-width: 860px) {
+	/* Three across, two rows — six facts divide evenly, where four columns
+	   would strand the last two. */
 	.stats {
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(3, 1fr);
 	}
-	.stat {
-		border-bottom: 0;
-	}
-	.stat + .stat {
-		border-left: 1px solid var(--line);
+	/* Undo the two-column rules above before re-deriving them for three.
+	   Same specificity, so these must come first to win on source order. */
+	.stat:nth-child(2n) {
+		border-left: 0;
 	}
 	.stat:nth-child(2n + 1) {
 		padding-left: clamp(1rem, 2.5vw, 2rem);
@@ -1036,10 +1037,19 @@ astro-island [class*="rounded"] {
 	.stat:nth-child(2n) {
 		padding-right: clamp(1rem, 2.5vw, 2rem);
 	}
-	.stat:first-child {
+	/* A divider on every cell except the first of its row. */
+	.stat:not(:nth-child(3n + 1)) {
+		border-left: 1px solid var(--line);
+	}
+	/* Only the final row loses its bottom rule. */
+	.stat:nth-last-child(-n + 3) {
+		border-bottom: 0;
+	}
+	/* Outer cells sit flush with the page gutter. */
+	.stat:nth-child(3n + 1) {
 		padding-left: 0;
 	}
-	.stat:last-child {
+	.stat:nth-child(3n) {
 		padding-right: 0;
 	}
 }
@@ -1734,14 +1744,6 @@ astro-island [class*="rounded"] {
 	letter-spacing: -0.025em;
 	color: var(--ink);
 	text-wrap: balance;
-}
-
-/* Lead line of a section note */
-.note-lead {
-	font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-	font-weight: 500;
-	letter-spacing: -0.025em;
-	color: var(--ink);
 }
 
 /* ============================== Marquee ===========================
