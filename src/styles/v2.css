@@ -1778,6 +1778,20 @@ astro-island [class*="rounded"] {
 	}
 }
 
+/* Full-width statement card (the feature row is down to one panel) */
+.statement {
+	display: grid;
+	gap: clamp(1.25rem, 2.5vw, 1.75rem);
+	padding: clamp(2rem, 5vw, 4rem);
+}
+.statement h2 {
+	max-width: 22ch;
+}
+.statement p {
+	max-width: 60ch;
+	color: var(--on-dark-mute);
+}
+
 /* ============================ Inner pages =========================
    Shared furniture for everything that isn't the homepage: about,
    contact, checkout, success and the product pages. Same tokens, same
