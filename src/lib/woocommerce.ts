@@ -94,16 +94,46 @@ async function fetchJSON(url: string, attempts = 3, timeoutMs = 20000): Promise<
  */
 const productsCache = new Map<number, Promise<WooProduct[]>>();
 
+/**
+ * Decode the HTML entities WooCommerce stores in post titles.
+ *
+ * A product named "Tulsi & Lemon" comes back from the Store API as
+ * "Tulsi &amp; Lemon". Rich-text fields are fine because stripHtml() already
+ * decodes them, but `name` is rendered straight into an Astro/JSX expression,
+ * which escapes the ampersand a second time - so the page would show the raw
+ * "&amp;". Decode once here, at the fetch boundary, rather than at each of the
+ * dozen-odd places a name is rendered.
+ *
+ * &amp; is unescaped last so "&amp;lt;" decodes to "&lt;" and not to "<".
+ */
+function decodeEntities(text: string): string {
+	return text
+		.replace(/&#0?39;|&#x27;/gi, "'")
+		.replace(/&quot;/g, '"')
+		.replace(/&nbsp;/g, ' ')
+		.replace(/&#8211;/g, '–')
+		.replace(/&#8212;/g, '—')
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>')
+		.replace(/&amp;/g, '&');
+}
+
+/** Names reach the DOM as plain text, so they must arrive already decoded. */
+function normalizeProduct<T extends { name?: string }>(product: T): T {
+	if (typeof product?.name === 'string') product.name = decodeEntities(product.name);
+	return product;
+}
+
 export function getProducts(perPage = 100): Promise<WooProduct[]> {
 	let pending = productsCache.get(perPage);
 	if (!pending) {
-		pending = fetchJSON(`${WP_URL}/wp-json/wc/store/v1/products?per_page=${perPage}`).catch(
-			(err) => {
+		pending = fetchJSON(`${WP_URL}/wp-json/wc/store/v1/products?per_page=${perPage}`)
+			.then((list: WooProduct[]) => list.map(normalizeProduct))
+			.catch((err) => {
 				// Don't cache failures — let the next caller retry.
 				productsCache.delete(perPage);
 				throw err;
-			}
-		);
+			});
 		productsCache.set(perPage, pending);
 	}
 	return pending;
@@ -111,7 +141,7 @@ export function getProducts(perPage = 100): Promise<WooProduct[]> {
 
 /** Fetch a single product (full detail incl. description + attributes). */
 export async function getProduct(id: number): Promise<WooProduct> {
-	return fetchJSON(`${WP_URL}/wp-json/wc/store/v1/products/${id}`);
+	return normalizeProduct(await fetchJSON(`${WP_URL}/wp-json/wc/store/v1/products/${id}`));
 }
 
 /** WooCommerce sometimes stores term names with stray quotes/slashes — tidy them. */
