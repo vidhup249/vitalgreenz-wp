@@ -951,6 +951,17 @@ astro-island [class*="rounded"] {
 .story-fig:last-child {
 	margin-top: clamp(1.5rem, 4vw, 3rem);
 }
+/* A single wide banner (index.astro's About Us) instead of the usual
+   staggered portrait pair — one column, no stagger offset, landscape crop. */
+.story-figs--single {
+	grid-template-columns: 1fr;
+}
+.story-figs--single .story-fig--wide {
+	aspect-ratio: 3 / 2;
+}
+.story-figs--single .story-fig:last-child {
+	margin-top: 0;
+}
 .story-fig img {
 	height: 100%;
 	width: 100%;
