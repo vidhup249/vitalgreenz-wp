@@ -5,6 +5,7 @@
  * registration string are all reproduced exactly as given.
  */
 import LayoutV2 from '../layouts/LayoutV2.astro';
+import FloatingLeaves from '../components/decor/FloatingLeaves.astro';
 import { getProducts } from '../lib/woocommerce';
 
 const products = await getProducts(100);
@@ -12,8 +13,6 @@ const pick = (name: string, idx = 0) => products.find((p) => p.name === name)?.i
 const imgA = pick('Indian Masala Tea', 0);
 const imgB = pick('Premium Rose Tea', 2) || pick('Premium Rose Tea', 0);
 
-// SBOOCH flavours and their regions, exactly as the client listed them —
-// including "Gor Keri / Gold Car", which is theirs to correct, not mine.
 // The three Vital Greenz brands, in the order the client lists them.
 // SBOOCH's descriptor is the one the client picked to match the other two.
 const brands = [
@@ -22,6 +21,8 @@ const brands = [
 	{ name: 'SBOOCH', desc: 'Premium Indian Kombucha', href: '#sbooch' },
 ];
 
+// SBOOCH flavours and their regions, exactly as the client listed them —
+// including "Gor Keri / Gold Car", which is theirs to correct, not mine.
 const flavours: { name: string; region: string }[] = [
 	{ name: 'Koshimbir', region: 'Maharashtra' },
 	{ name: 'Tulsi & Lemon', region: 'Uttar Pradesh' },
@@ -162,7 +163,7 @@ const flavours: { name: string; region: string }[] = [
 			<div class="split-page">
 				<div data-anim="up">
 					<span class="label">SBOOCH</span>
-					<h2 class="d2" style="margin-top:1.5rem;max-width:16ch">About Sbooch Kombucha</h2>
+					<h2 class="d2" style="margin-top:1.5rem;max-width:16ch">About Our Premium Kombucha</h2>
 				</div>
 				<div class="prose" data-anim="up" style="--anim-delay:120ms">
 					<p>
@@ -179,14 +180,6 @@ const flavours: { name: string; region: string }[] = [
 				<li>
 					Brewed using filtered water, cane sugar, tea, and a live Kombucha culture (SCOBY) with zero
 					artificial additives, preservatives or colorings.
-				</li>
-				<li>
-					<strong>Health Benefits:</strong> Non-alcoholic, vegan, gluten-free, low-caffeine and rich in
-					antioxidants to support gut health and digestion.
-				</li>
-				<li>
-					<strong>Regional Indian Flavors:</strong> Created using real local ingredients, featuring
-					unique varieties such as:
 				</li>
 			</ul>
 
@@ -238,29 +231,32 @@ const flavours: { name: string; region: string }[] = [
 		<!-- ============================ V-STEP =========================== -->
 		<section id="v-step" class="wrap sec" style="border-top:1px solid var(--line)">
 			<div class="card-dark vstep" data-anim="up">
-				<h2 class="d2" style="max-width:20ch">About V-STEP</h2>
+				<FloatingLeaves tone="gold" count={4} />
+				<span class="label label-light">Earn While You Learn</span>
+				<h2 class="d2" style="max-width:20ch;margin-top:1.5rem">About V-STEP</h2>
 
 				<!-- Two columns: one block of this length is a wall of text across the
 				     full card width. The client supplied it as two paragraphs. -->
 				<div class="prose prose-light vstep-body">
 					<p>
-						V-STEP is a gender neutral Earn While You Learn program designed by Vital Greenz in tune
-						with the UGC guidelines and the broader objectives of Kerala's higher education sector,
-						particularly in promoting skill development, entrepreneurship, employability, student
-						talent and financial self-reliance.
+						V-STEP is a gender-neutral Earn While You Learn program developed by Vital Greenz,
+						aligned with UGC guidelines and the broader objectives of Kerala's higher education
+						sector — particularly its focus on skill development, entrepreneurship, employability,
+						nurturing student talent, and financial self-reliance.
 					</p>
 					<p>
-						V-STEP also creates institutional value by contributing to NAAC accreditation score,
-						strengthening industry–academia linkages, fostering industry collaboration and enhancing
-						institutional visibility, while empowering students with practical experience,
-						entrepreneurship and employability skills and an opportunity to earn while learning.
+						Beyond individual student benefits, V-STEP also creates institutional value by
+						contributing to NAAC accreditation scores, strengthening industry–academia linkages, and
+						enhancing institutional visibility — all while equipping students with practical
+						experience, entrepreneurial and employability skills, and the opportunity to earn while
+						they learn.
 					</p>
 				</div>
 
 				{/* {' '} keeps the space Astro would otherwise swallow before an
 				    element that starts on the next line. */}
 				<p class="vstep-contact">
-					For more information about V-STEP, institutions are welcome to contact us at{' '}
+					For further information about V-STEP, institutions may contact us at{' '}
 					<a href="tel:+919633846338">+91 96338 46338</a> or{' '}
 					<a href="mailto:vstep@vitalgreenz.in">vstep@vitalgreenz.in</a>
 				</p>

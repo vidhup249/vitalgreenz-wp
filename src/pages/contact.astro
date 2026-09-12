@@ -77,7 +77,8 @@ const details = [
 					</button>
 
 					<p id="contact-success" class="note" hidden>
-						Thanks! Your message is on its way — we'll be in touch soon.
+						Opening your email app with the message ready to send — just hit send there and we'll be in
+						touch soon.
 					</p>
 				</form>
 			</div>
@@ -86,16 +87,33 @@ const details = [
 </LayoutV2>
 
 <script>
-	// NOTE: static site — no backend wired yet. Shows a success state on submit.
-	// Hook this up to Formspree / a serverless endpoint / WP contact form to deliver mail.
+	// No backend yet — hands the message to the visitor's own email client via
+	// a mailto: link, addressed to the team inbox. Swap this for a real form
+	// endpoint (Resend / Web3Forms / etc.) once one is chosen.
+	const TO = 'support@wayomile.in';
+
 	const form = document.getElementById('contact-form') as HTMLFormElement | null;
 	const success = document.getElementById('contact-success');
+
 	form?.addEventListener('submit', (e) => {
 		e.preventDefault();
 		if (!form.checkValidity()) {
 			form.reportValidity();
 			return;
 		}
+
+		const data = new FormData(form);
+		const name = String(data.get('name') || '');
+		const email = String(data.get('email') || '');
+		const subjectField = String(data.get('subject') || '');
+		const message = String(data.get('message') || '');
+
+		const subject = subjectField || `Website enquiry from ${name}`;
+		const body = `${message}\n\n—\n${name}\n${email}`;
+		const mailto = `mailto:${TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+		window.location.href = mailto;
+
 		if (success) success.hidden = false;
 		form.reset();
 	});

@@ -1,22 +1,12 @@
 ---
-import { Image } from 'astro:assets';
-import heroCup from '../assets/hero-tea-cup.png';
 import LayoutV2 from '../layouts/LayoutV2.astro';
 import ProductCardV2 from '../components/v2/ProductCardV2.astro';
-import FinderV2, { type FinderProduct } from '../components/v2/FinderV2.tsx';
-import TimerV2 from '../components/v2/TimerV2.tsx';
-import { getShopData, stripHtml } from '../lib/woocommerce';
+import FloatingLeaves from '../components/decor/FloatingLeaves.astro';
+import GardenHills from '../components/decor/GardenHills.astro';
+import { getShopData } from '../lib/woocommerce';
 
 // ---- Data (one fetch, shared by every section) ---------------------------
 const { products, categories } = await getShopData();
-
-/** Truncate on a word boundary — a mid-word cut reads as a bug at this scale. */
-const clip = (text: string, max: number) => {
-	if (text.length <= max) return text;
-	const cut = text.slice(0, max);
-	const space = cut.lastIndexOf(' ');
-	return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd().replace(/[.,;:—-]$/, '') + '…';
-};
 
 // Foot marquee — duplicated once for a seamless -50% loop
 const marqueeItems = [
@@ -41,20 +31,6 @@ const facts = [
 
 // Shop filters
 const filters = [{ name: 'All', slug: 'all' }, ...categories];
-
-// Flavour finder
-const finderProducts: FinderProduct[] = products.map((p) => {
-	const img = p.images?.[0];
-	return {
-		id: p.id,
-		name: p.name,
-		price: Number(p.on_sale ? p.prices.sale_price : p.prices.price),
-		image: img?.thumbnail || img?.src || '',
-		permalink: `/products/${p.slug}`,
-		slug: p.slug,
-		summary: clip(stripHtml(p.short_description, 400), 92),
-	};
-});
 
 // The three Vital Greenz brands. Their sections live on /about, so the
 // links leave this page rather than pointing at anchors that aren't here.
@@ -118,13 +94,28 @@ const faqs = [
 		a: 'We deliver across India. Enjoy free shipping on orders above ₹1500. For orders below ₹1500, a standard shipping charge will be charged.',
 	},
 ];
+
+// FAQPage structured data — lets search engines show these Q&As as rich
+// results directly in search, using the same copy rendered below.
+const faqJsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqs.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a },
+	})),
+};
 ---
 
 <LayoutV2 heroOverlay>
+	<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
 	<main>
 		<!-- ============================ HERO ============================ -->
 		<section id="top" class="hero">
 			<div class="hero-bg" aria-hidden="true"></div>
+			<FloatingLeaves tone="gold" count={5} />
+			<GardenHills />
 
 			<div class="wrap hero-inner">
 				<div class="hero-copy">
@@ -146,16 +137,14 @@ const faqs = [
 
 					</div>
 
-				<!-- Cutout. Imported through astro:assets so the 3.4 MB source PNG
-				     is emitted as sized WebP variants rather than shipped whole. -->
+				<!-- Plain <img> from public/ — a single ~270KB JPEG doesn't need the
+				     astro:assets pipeline's multi-format/multi-size generation. -->
 				<div class="hero-figure" data-anim="up" style="--anim-delay:760ms">
-					<Image
-						src={heroCup}
-						alt="A glass cup of freshly poured Wayomile tea, mid-splash with sugar and mint"
-						widths={[420, 640, 900]}
-						sizes="(min-width: 900px) 38vw, 70vw"
-						format="webp"
-						quality={82}
+					<img
+						src="/images/wayomile-tea-cup-mascot.jpg"
+						alt="The Wayomile chai cup mascot giving a thumbs up beside a bowl of whole Indian spices"
+						width="1254"
+						height="1254"
 						loading="eager"
 						fetchpriority="high"
 					/>
@@ -227,6 +216,8 @@ const faqs = [
 		<!-- ========================== STATEMENT ========================= -->
 		<section class="wrap sec">
 			<article class="card-dark statement" data-anim="up">
+				<FloatingLeaves tone="gold" count={4} />
+				<GardenHills />
 				<h2 class="d2" data-anim="words">From India's Sustainable Tea Gardens to Your Cup</h2>
 				<p class="body">
 					Carefully selected, thoughtfully crafted and freshly packed to bring you the authentic
@@ -264,7 +255,7 @@ const faqs = [
 			<div>
 				<p><span class="label" data-anim="fade">The Collection</span></p>
 				<h2 class="d2" data-anim="words" style="margin-top:2rem;--anim-delay:60ms">
-					Explore the Taste of<br /><span class="ghost">Indian Tea</span>
+					Explore the Taste of Premium<br /><span class="ghost">Indian Tea</span>
 				</h2>
 			</div>
 
@@ -280,44 +271,6 @@ const faqs = [
 
 			<div class="grid-3" data-anim="stagger" style="margin-top:clamp(1.75rem,3vw,2.5rem)">
 				{products.map((product, i) => <ProductCardV2 product={product} index={i} />)}
-			</div>
-		</section>
-
-		<!-- ====================== FLAVOUR FINDER ======================= -->
-		<section id="blend" class="wrap sec">
-			<div class="head-row">
-				<h2 class="d2" data-anim="words" style="max-width:14ch;--anim-delay:60ms">
-					Not sure where to start? <span class="ghost">We'll match you.</span>
-				</h2>
-				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
-					One tap on the mood you're after and we'll point you to the blend that fits — then drop it
-					straight in your basket
-				</p>
-			</div>
-
-			<div data-anim="up" style="margin-top:clamp(2.5rem,5vw,3.5rem)">
-				<FinderV2 client:visible products={finderProducts} />
-			</div>
-		</section>
-
-		<!-- ========================== RITUAL =========================== -->
-		<section id="ritual" class="wrap sec">
-			<div class="head-row">
-				<h2 class="d2" data-anim="words" style="--anim-delay:60ms">
-					Steep it <span class="ghost">just right.</span>
-				</h2>
-				<p class="body head-note" data-anim="up" style="--anim-delay:240ms">
-					A tiny brew companion — because great leaves deserve great timing. Fully interactive, just for
-					fun.
-				</p>
-			</div>
-
-			<div
-				class="card"
-				data-anim="up"
-				style="margin-top:clamp(2.5rem,5vw,3.5rem);padding:clamp(1.75rem,4vw,3.5rem)"
-			>
-				<TimerV2 client:visible />
 			</div>
 		</section>
 

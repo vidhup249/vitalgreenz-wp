@@ -1,0 +1,47 @@
+---
+/**
+ * Ambient floating tea-leaf accents — a nod to the loose petals/leaves
+ * drifting through the product poster artwork, reinterpreted as a light,
+ * CSS-only motif rather than reusing that raster illustration.
+ */
+interface Props {
+	/** Palette for the leaf/vein strokes — pick the one legible on the host background. */
+	tone?: 'gold' | 'light';
+	/** How many leaves to scatter. */
+	count?: number;
+}
+
+const { tone = 'gold', count = 5 } = Astro.props;
+
+// Deterministic scatter (no client JS needed) — spread across the width,
+// varied size/rotation/duration so the drift doesn't read as a repeating tile.
+const leaves = Array.from({ length: count }, (_, i) => {
+	const seed = i * 47 + 13;
+	return {
+		left: (seed * 17) % 92,
+		top: (seed * 31) % 80,
+		size: 22 + ((seed * 7) % 20),
+		rotate: (seed * 13) % 360,
+		duration: 10 + ((seed * 5) % 8),
+		delay: -(seed % 9),
+	};
+});
+---
+
+<div class="floating-leaves" data-tone={tone} aria-hidden="true">
+	{
+		leaves.map((l) => (
+			<svg
+				class="floating-leaf"
+				viewBox="0 0 32 32"
+				style={`--left:${l.left}%; --top:${l.top}%; --size:${l.size}px; --rot:${l.rotate}deg; --dur:${l.duration}s; --delay:${l.delay}s;`}
+			>
+				<path
+					class="floating-leaf-body"
+					d="M16 2C9 6 4 12 4 20c0 6 5 10 12 10s12-4 12-10C28 12 23 6 16 2Z"
+				/>
+				<path class="floating-leaf-vein" d="M16 6c-3 6-3 14 0 24" />
+			</svg>
+		))
+	}
+</div>

@@ -10,6 +10,7 @@ import '../styles/v2.css';
 import { WP_URL } from '../lib/woocommerce';
 import CartButton from '../components/cart/CartButton.tsx';
 import CartDrawer from '../components/cart/CartDrawer.tsx';
+import FloatingLeaves from '../components/decor/FloatingLeaves.astro';
 
 interface Props {
 	title?: string;
@@ -65,12 +66,18 @@ const footerColumns = [
 	{
 		title: 'Connect',
 		links: [
-			{ label: 'Instagram', href: '#' },
-			{ label: 'Facebook', href: '#' },
-			{ label: 'LinkedIn', href: '#' },
+			{ label: 'Instagram', href: 'https://www.instagram.com/wayomile.global/' },
+			{ label: 'Facebook', href: 'https://www.facebook.com/wayomile/' },
 			{ label: 'Contact Us', href: '/contact' },
 		],
 	},
+];
+
+const legalLinks = [
+	{ label: 'Privacy Policy', href: '/privacy-policy' },
+	{ label: 'Terms & Conditions', href: '/terms' },
+	{ label: 'Shipping Policy', href: '/shipping-policy' },
+	{ label: 'Refund & Return Policy', href: '/refund-policy' },
 ];
 ---
 
@@ -172,6 +179,7 @@ const footerColumns = [
 				<video autoplay muted loop playsinline preload="metadata" aria-hidden="true">
 					<source src="/videos/tea-pour.mp4" type="video/mp4" />
 				</video>
+				<FloatingLeaves tone="light" count={4} />
 				<div class="wrap">
 					<h2 data-anim="words" class="d2" style="--anim-delay:80ms">
 						Begin Your Authentic Tea Experience{' '}
@@ -195,6 +203,21 @@ const footerColumns = [
 							Premium Indian teas, natural spices and premium Kombucha, thoughtfully crafted to bring
 							authentic flavours and exceptional quality to every moment.
 						</p>
+
+						<form class="foot-newsletter" id="newsletter-form" novalidate>
+							<label class="sr-only" for="newsletter-email">Email address</label>
+							<input
+								id="newsletter-email"
+								name="email"
+								type="email"
+								required
+								placeholder="Your email address"
+								class="field-dark"
+								autocomplete="email"
+							/>
+							<button type="submit" class="btn btn-outline-light">Subscribe</button>
+						</form>
+						<p id="newsletter-note" class="foot-newsletter-note" role="status"></p>
 					</div>
 
 					{
@@ -202,9 +225,16 @@ const footerColumns = [
 							<div class="foot-col" style={`--i:${i + 1}`}>
 								<h3>{col.title}</h3>
 								<ul>
-									{col.links.map((l) => (
-										<li><a href={l.href}>{l.label}</a></li>
-									))}
+									{col.links.map((l) => {
+										const external = l.href.startsWith('http');
+										return (
+											<li>
+												<a href={l.href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>
+													{l.label}
+												</a>
+											</li>
+										);
+									})}
 								</ul>
 							</div>
 						))
@@ -220,6 +250,9 @@ const footerColumns = [
 							<a href="mailto:support@wayomile.in">support@wayomile.in</a>
 						</span>
 					</div>
+					<div class="foot-legal" style="display:flex;flex-wrap:wrap;gap:0 1.5rem">
+						{legalLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+					</div>
 					<p>© {new Date().getFullYear()} Wayomile. All rights reserved.</p>
 				</div>
 			</footer>
@@ -227,6 +260,35 @@ const footerColumns = [
 		)}
 
 		<CartDrawer client:load />
+
+		<script>
+			// Newsletter signup — posts to /api/newsletter, currently a stub that
+			// validates and accepts the address but doesn't forward it anywhere
+			// (see the TODO there once a real ESP is chosen).
+			const newsletterForm = document.getElementById('newsletter-form') as HTMLFormElement | null;
+			const newsletterNote = document.getElementById('newsletter-note');
+
+			newsletterForm?.addEventListener('submit', async (e) => {
+				e.preventDefault();
+				const input = newsletterForm.querySelector<HTMLInputElement>('#newsletter-email');
+				const email = input?.value.trim() || '';
+				if (!newsletterNote) return;
+
+				try {
+					const res = await fetch('/api/newsletter', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ email }),
+					});
+					const data = await res.json();
+					if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+					newsletterNote.textContent = "Thanks — you're on the list!";
+					newsletterForm.reset();
+				} catch (err) {
+					newsletterNote.textContent = err instanceof Error ? err.message : 'Something went wrong.';
+				}
+			});
+		</script>
 
 		<script>
 			// Weighted / inertia scroll via Lenis (skipped for reduced-motion users).

@@ -1,0 +1,66 @@
+---
+/**
+ * Placeholder business fields ([REGISTERED BUSINESS NAME] etc.) need to be
+ * filled in with real registration details before launch — see the note in
+ * the PR/handoff. Delivery terms reuse the client's supplied copy from the
+ * homepage FAQ ("free shipping above ₹1500...").
+ */
+import LayoutV2 from '../layouts/LayoutV2.astro';
+---
+
+<LayoutV2
+	title="Shipping Policy — Wayomile"
+	description="Delivery timelines, coverage and charges for Wayomile orders across India."
+>
+	<main>
+		<section class="wrap page-top sec">
+			<div class="page-head">
+				<span class="label" data-anim="fade">Legal</span>
+				<h1 class="d1" data-anim="words" style="--anim-delay:60ms;font-size:clamp(2.1rem,5vw,3.75rem);max-width:22ch">
+					Shipping <span class="accent">Policy</span>
+				</h1>
+				<p class="lede" data-anim="up" style="--anim-delay:220ms">Last updated: [DATE]</p>
+			</div>
+		</section>
+
+		<section class="wrap sec" style="padding-top:0">
+			<div class="prose measure-wide" data-anim="up">
+				<p>
+					<strong>[REGISTERED BUSINESS NAME]</strong> ships across India. This policy explains our
+					delivery timelines, coverage and charges.
+				</p>
+
+				<h2 class="d3" style="margin-top:2.5rem">Delivery Coverage</h2>
+				<p>We currently deliver to serviceable pin codes across India via our courier partners.</p>
+
+				<h2 class="d3" style="margin-top:2.5rem">Shipping Charges</h2>
+				<p>
+					We offer <strong>free shipping on orders above ₹1500</strong>. For orders below ₹1500, a
+					standard shipping charge will be applied at checkout.
+				</p>
+
+				<h2 class="d3" style="margin-top:2.5rem">Processing &amp; Delivery Time</h2>
+				<p>
+					Orders are typically processed within <strong>[X]</strong> business days of confirmation.
+					Delivery generally takes <strong>[X–X]</strong> business days depending on your location,
+					once the order has been dispatched. You will receive a confirmation with tracking details
+					(where available) once your order ships.
+				</p>
+
+				<h2 class="d3" style="margin-top:2.5rem">Delays</h2>
+				<p>
+					While we aim to meet the timelines above, delivery times may occasionally be affected by
+					courier delays, weather, or circumstances beyond our control. We'll keep you informed if
+					your order is delayed.
+				</p>
+
+				<h2 class="d3" style="margin-top:2.5rem">Questions About Your Order</h2>
+				<p>
+					For any shipping questions, contact us at{' '}
+					<a href="mailto:support@wayomile.in">support@wayomile.in</a> or{' '}
+					<a href="tel:+919633816338">+91 9633816338</a>.
+				</p>
+			</div>
+		</section>
+	</main>
+</LayoutV2>

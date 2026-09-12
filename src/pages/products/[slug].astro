@@ -56,12 +56,44 @@ const longText = stripHtml(product.description, 8000);
 const showDetails = longText.length > 0 && longText !== shortText;
 
 const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafted for Exceptional Taste'];
+
+// Product structured data — lets search engines show price/availability/
+// rating directly in results. Store API is India-only (₹), so the currency
+// is fixed rather than derived from the (symbol-only) prices field.
+const inStock = (product as any).is_in_stock ?? true;
+const productJsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'Product',
+	name: product.name,
+	description: stripHtml(product.short_description, 500),
+	image: product.images?.map((img) => img.src) || [],
+	sku: String(product.id),
+	brand: { '@type': 'Brand', name: brandOf(product) },
+	offers: {
+		'@type': 'Offer',
+		url: new URL(`/products/${product.slug}`, Astro.site ?? Astro.url).href,
+		priceCurrency: 'INR',
+		// `price` above is minor units (paise) — schema.org wants the decimal amount.
+		price: (price / 10 ** product.prices.currency_minor_unit).toFixed(2),
+		availability: `https://schema.org/${inStock ? 'InStock' : 'OutOfStock'}`,
+	},
+	...(product.review_count > 0
+		? {
+				aggregateRating: {
+					'@type': 'AggregateRating',
+					ratingValue: product.average_rating,
+					reviewCount: product.review_count,
+				},
+			}
+		: {}),
+};
 ---
 
 <LayoutV2
 	title={`${product.name} — ${brandOf(product)}`}
 	description={stripHtml(product.short_description, 150)}
 >
+	<script type="application/ld+json" set:html={JSON.stringify(productJsonLd)} />
 	<main>
 		<div class="wrap page-top" style="padding-bottom:clamp(3.5rem,6.5vw,5.75rem)">
 			<!-- Breadcrumb -->
