@@ -355,6 +355,36 @@ html.js .label[data-anim].is-in::after {
 	transform: translate(3px, -3px);
 }
 
+/* Back-to-top: a floating action, so — like the close-block/dark cards —
+   it's a deliberate exception to the squared-off system, not a hairline. */
+.back-to-top {
+	position: fixed;
+	right: clamp(1rem, 3vw, 2rem);
+	bottom: clamp(1rem, 3vw, 2rem);
+	z-index: 40;
+	display: grid;
+	place-items: center;
+	height: 48px;
+	width: 48px;
+	border-radius: 999px;
+	background: var(--ink);
+	color: var(--on-dark);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(12px);
+	transition: opacity 0.35s var(--ease), transform 0.35s var(--ease),
+		visibility 0.35s, background 0.35s var(--ease), color 0.35s var(--ease);
+}
+.back-to-top.is-visible {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+.back-to-top:hover {
+	background: var(--accent);
+}
+
 /* Round icon button (timer reset, and anywhere else a bare glyph needs a hit area) */
 .icon-btn {
 	display: grid;
