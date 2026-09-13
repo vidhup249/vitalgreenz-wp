@@ -805,27 +805,22 @@ astro-island [class*="rounded"] {
 	place-items: center;
 	min-height: clamp(240px, 34vw, 460px);
 }
-/* The mascot photo's bright sky/greens sit hard against the dark hero
-   gradient — a warm glow behind it (echoing its own palette) bridges the
-   two instead of leaving a stark rectangle. */
-.hero-figure::before {
-	content: "";
-	position: absolute;
-	inset: -8%;
-	background: radial-gradient(closest-side, rgba(224, 163, 88, 0.75), transparent 68%);
-	filter: blur(36px);
-	pointer-events: none;
-}
 .hero-figure img {
 	/* Capping HEIGHT rather than width keeps a tall crop off the bottom of
 	   a 100vh hero; harmless for the current ~square mascot photo too. */
-	position: relative;
 	width: auto;
 	height: auto;
 	max-width: 100%;
 	max-height: min(74svh, 640px);
 	object-fit: contain;
-	filter: drop-shadow(0 34px 60px rgba(0, 0, 0, 0.55)) saturate(0.9) brightness(0.96);
+	/* The mascot photo's bright sky/greens sit hard against the dark hero
+	   gradient. A same-tone ::before glow was tried first, but its bright
+	   core sat centered behind this opaque image and only the already-faded
+	   tail showed past the edge. Stacked drop-shadows radiate from the
+	   image's own silhouette instead, so the warm glow can't be occluded. */
+	filter: drop-shadow(0 0 55px rgba(224, 163, 88, 0.85))
+		drop-shadow(0 0 26px rgba(224, 163, 88, 0.7))
+		drop-shadow(0 34px 60px rgba(0, 0, 0, 0.55)) saturate(0.9) brightness(0.96);
 	/* Float lives on the image so it can't fight the reveal transform,
 	   which is applied to .hero-figure. */
 	animation: floaty 9s ease-in-out infinite;
