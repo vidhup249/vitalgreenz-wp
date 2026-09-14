@@ -1,5 +1,5 @@
 /**
- * Supabase client for the V-STEP database (shared with the V-STEP mobile app).
+ * Supabase client for a database shared with the V-STEP mobile app.
  * Schema/tables are decided separately — this only establishes the connection.
  *
  * Two clients, for two different trust levels:
@@ -8,6 +8,14 @@
  *    policies allow an anonymous user to see/change.
  *  - `supabaseAdmin` (service role key): SERVER-ONLY, bypasses RLS entirely.
  *    Never import this into a client component or expose it to the browser.
+ *
+ * This app's own tables (customers/orders/newsletter — see supabase/schema.sql)
+ * live in the `shop` Postgres schema, not `public`, to stay structurally
+ * isolated from the V-STEP app's existing tables. getSupabaseAdmin() defaults
+ * to that schema, so `getSupabaseAdmin().from('orders')` reaches `shop.orders`
+ * without needing `.schema('shop')` on every call. Reach into `public` (or
+ * anywhere else) explicitly with `.schema('public').from(...)` when needed —
+ * e.g. if/when this app needs to *read* the V-STEP tables themselves.
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
@@ -46,6 +54,7 @@ export function getSupabaseAdmin(): SupabaseClient {
 	if (!_supabaseAdmin) {
 		_supabaseAdmin = createClient(URL, SERVICE_ROLE_KEY, {
 			auth: { persistSession: false, autoRefreshToken: false },
+			db: { schema: 'shop' },
 		});
 	}
 	return _supabaseAdmin;
