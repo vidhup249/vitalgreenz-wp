@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { cartItems, cartSubtotal, setQty, removeItem, clearCart } from '../../stores/cart';
 import { formatINR } from '../../lib/format';
+import { certsFor } from '../../lib/certifications';
+
+const trustCerts = certsFor();
 
 const FREE_SHIP_THRESHOLD = 50000; // ₹500
 const FLAT_SHIP = 4900; // ₹49
@@ -202,6 +205,21 @@ export default function Checkout() {
 						<span>{formatINR(total)}</span>
 					</div>
 				</div>
+
+				{trustCerts.length > 0 && (
+					<div className="mt-6 space-y-2 rounded-2xl bg-cream/60 p-4 text-xs text-ink/70 ring-1 ring-ink/5">
+						{trustCerts.map((c) => (
+							<div key={c.key} className="flex items-center gap-2">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-brand">
+									<polyline points="20 6 9 17 4 12" />
+								</svg>
+								<span>
+									<strong className="font-semibold text-ink">{c.label}:</strong> {c.numberLabel} {c.number}
+								</span>
+							</div>
+						))}
+					</div>
+				)}
 			</aside>
 		</div>
 	);

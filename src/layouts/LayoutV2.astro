@@ -11,6 +11,7 @@ import { WP_URL } from '../lib/woocommerce';
 import CartButton from '../components/cart/CartButton.tsx';
 import CartDrawer from '../components/cart/CartDrawer.tsx';
 import FloatingLeaves from '../components/decor/FloatingLeaves.astro';
+import FooterCertBar from '../components/trust/FooterCertBar.astro';
 
 interface Props {
 	title?: string;
@@ -193,6 +194,8 @@ const legalLinks = [
 					</div>
 				</div>
 			</section>
+
+			<FooterCertBar />
 
 			<footer class="wrap foot">
 				<div class="foot-top" data-anim="stagger">

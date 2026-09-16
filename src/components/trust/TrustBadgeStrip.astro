@@ -1,0 +1,103 @@
+---
+import { certsFor, type ProductType } from '../../lib/certifications';
+
+interface Props {
+	productType?: ProductType;
+}
+
+const { productType } = Astro.props;
+const certs = certsFor(productType);
+---
+
+{
+	certs.length > 0 && (
+		<div class="trust-strip">
+			<div class="trust-strip-head">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+					<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+				</svg>
+				<span>100% Quality &amp; Regulatory Assured</span>
+			</div>
+			<div class="trust-strip-grid">
+				{certs.map((c) => (
+					<div class="trust-strip-item">
+						<span class="trust-strip-icon" aria-hidden="true">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+								<path d="m9 12 2 2 4-4" />
+							</svg>
+						</span>
+						<span class="trust-strip-text">
+							<strong>{c.label}</strong>
+							<em>
+								{c.numberLabel} {c.number}
+							</em>
+						</span>
+					</div>
+				))}
+			</div>
+			<p class="trust-strip-note">Sourced directly from registered growers. Tested for zero chemical additives.</p>
+		</div>
+	)
+}
+
+<style>
+	.trust-strip {
+		margin-top: 1.5rem;
+		padding: 1rem 1.25rem;
+		background: var(--surface);
+		border: 1px solid var(--line);
+		border-radius: 14px;
+	}
+	.trust-strip-head {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--accent);
+	}
+	.trust-strip-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+		gap: 0.85rem;
+		margin-top: 0.75rem;
+	}
+	.trust-strip-item {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+	.trust-strip-icon {
+		display: grid;
+		place-items: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 999px;
+		background: var(--bg);
+		color: var(--accent);
+		flex-shrink: 0;
+	}
+	.trust-strip-text {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.25;
+	}
+	.trust-strip-text strong {
+		font-size: 0.75rem;
+		color: var(--ink);
+	}
+	.trust-strip-text em {
+		font-style: normal;
+		font-size: 0.6875rem;
+		color: var(--mute);
+	}
+	.trust-strip-note {
+		margin: 0.75rem 0 0;
+		padding-top: 0.6rem;
+		border-top: 1px solid var(--line);
+		font-size: 0.75rem;
+		color: var(--mute);
+		font-style: italic;
+	}
+</style>

@@ -1,0 +1,95 @@
+---
+import { certsFor, type ProductType } from '../../lib/certifications';
+
+interface Props {
+	productType?: ProductType;
+}
+
+const { productType } = Astro.props;
+const certs = certsFor(productType);
+---
+
+{
+	certs.length > 0 && (
+		<details class="compliance">
+			<summary>
+				Purity, Safety &amp; Regulatory Compliance
+				<span class="compliance-chevron" aria-hidden="true">
+					+
+				</span>
+			</summary>
+			<ul>
+				{certs.map((c) => (
+					<li>
+						<strong>{c.label}</strong>
+						<span class="compliance-num">
+							{c.numberLabel} <code>{c.number}</code>
+						</span>
+						<p>{c.blurb}</p>
+					</li>
+				))}
+				<li>
+					<strong>Quality &amp; Chemical Testing</strong>
+					<p>Screened for heavy metals and pesticide residue against safe limits. Zero added chemical preservatives.</p>
+				</li>
+			</ul>
+		</details>
+	)
+}
+
+<style>
+	.compliance {
+		margin-top: 2rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--line);
+		max-width: 68ch;
+	}
+	.compliance summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		cursor: pointer;
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--ink);
+		list-style: none;
+	}
+	.compliance summary::-webkit-details-marker {
+		display: none;
+	}
+	.compliance-chevron {
+		font-size: 1.1rem;
+		color: var(--mute);
+		transition: transform 0.2s ease;
+	}
+	.compliance[open] .compliance-chevron {
+		transform: rotate(45deg);
+	}
+	.compliance ul {
+		margin: 1.25rem 0 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 1.1rem;
+	}
+	.compliance li strong {
+		display: block;
+		font-size: 0.875rem;
+		color: var(--ink);
+	}
+	.compliance-num {
+		display: block;
+		margin-top: 0.15rem;
+		font-size: 0.75rem;
+		color: var(--accent);
+	}
+	.compliance-num code {
+		font-family: inherit;
+	}
+	.compliance li p {
+		margin: 0.35rem 0 0;
+		font-size: 0.8125rem;
+		color: var(--mute);
+		line-height: 1.5;
+	}
+</style>

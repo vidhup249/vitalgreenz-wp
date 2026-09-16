@@ -1,0 +1,70 @@
+---
+import { certsFor } from '../../lib/certifications';
+
+const certs = certsFor();
+---
+
+{
+	certs.length > 0 && (
+		<div class="cert-bar">
+			<div class="wrap cert-bar-inner">
+				<span class="cert-bar-label">Govt. Authorized Quality &amp; Compliance</span>
+				<ul class="cert-bar-list">
+					{certs.map((c) => (
+						<li>
+							<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+								<path d="m9 12 2 2 4-4" />
+							</svg>
+							<span>
+								{c.label}
+								{c.number ? `: ${c.number}` : ''}
+							</span>
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
+	)
+}
+
+<style>
+	.cert-bar {
+		border-top: 1px solid var(--on-dark-line);
+		border-bottom: 1px solid var(--on-dark-line);
+	}
+	.cert-bar-inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 1.75rem;
+		padding-block: 1rem;
+	}
+	.cert-bar-label {
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: var(--on-dark-mute);
+		flex-shrink: 0;
+	}
+	.cert-bar-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.cert-bar-list li {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.75rem;
+		color: var(--on-dark);
+	}
+	.cert-bar-list svg {
+		color: var(--color-lime);
+		flex-shrink: 0;
+	}
+</style>
