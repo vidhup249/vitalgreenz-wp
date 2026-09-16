@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { capturePayPalOrder, isPayPalConfigured } from '../../lib/paypal';
 import { markWooOrderPaid } from '../../lib/woo-orders';
+import { markShopOrderPaid } from '../../lib/shop-orders';
+import { isSupabaseAdminConfigured } from '../../lib/supabase';
 
 export const prerender = false; // on-demand serverless function
 
@@ -27,6 +29,16 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 		// Payment captured → mark the Woo order paid + processing.
 		await markWooOrderPaid(Number(wooOrderId), capture.captureId || paypalOrderId);
+
+		// Mirror the status into Supabase too — best-effort, same reasoning as create-order.ts.
+		if (isSupabaseAdminConfigured()) {
+			try {
+				await markShopOrderPaid(Number(wooOrderId), capture.captureId || paypalOrderId);
+			} catch (err) {
+				console.error('Supabase order-paid mirror failed (non-fatal):', err);
+			}
+		}
+
 		return json({ ok: true, wooOrderId });
 	} catch (err) {
 		// Payment may have captured even if the Woo update failed — surface it so it

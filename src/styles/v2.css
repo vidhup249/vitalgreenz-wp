@@ -2701,3 +2701,63 @@ html.lenis body {
 .lenis.lenis-smooth iframe {
 	pointer-events: none;
 }
+
+/* ============================== Admin ============================== */
+.admin-table-wrap {
+	overflow-x: auto;
+	border: 1px solid var(--line);
+}
+.admin-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.88rem;
+	white-space: nowrap;
+}
+.admin-table th,
+.admin-table td {
+	padding: 0.85rem 1.1rem;
+	text-align: left;
+	border-bottom: 1px solid var(--line);
+}
+.admin-table th {
+	font-size: 0.68rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--faint);
+	background: var(--surface-2);
+}
+.admin-table tbody tr:last-child td {
+	border-bottom: none;
+}
+.admin-table tbody tr:hover {
+	background: var(--surface-2);
+}
+.admin-table-mute {
+	color: var(--faint);
+	font-size: 0.8rem;
+}
+.admin-status {
+	display: inline-block;
+	padding: 0.25rem 0.65rem;
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	background: var(--surface-2);
+	color: var(--mute);
+}
+.admin-status--delivered {
+	background: color-mix(in srgb, var(--accent) 15%, transparent);
+	color: var(--accent);
+}
+.admin-status--cancelled,
+.admin-status--returned,
+.admin-status--refunded {
+	background: color-mix(in srgb, #b3261e 12%, transparent);
+	color: #b3261e;
+}
+.admin-status--dispatched,
+.admin-status--out_for_delivery {
+	background: color-mix(in srgb, var(--accent-gold) 20%, transparent);
+	color: #7a5f22;
+}

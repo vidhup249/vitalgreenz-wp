@@ -108,12 +108,13 @@ export default function CartDrawer() {
 							</div>
 							<p className="font-semibold">Nothing steeping yet</p>
 							<p className="mt-1 text-sm text-ink/60">Add a blend and it'll appear here.</p>
-							<button
+							<a
+								href="/#shop"
 								onClick={closeCart}
 								className="mt-6 rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-cream transition hover:bg-brand"
 							>
 								Browse teas
-							</button>
+							</a>
 						</div>
 					) : (
 						<ul className="space-y-4">

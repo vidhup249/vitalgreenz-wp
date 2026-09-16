@@ -1,0 +1,59 @@
+---
+import LayoutV2 from '../../layouts/LayoutV2.astro';
+
+export const prerender = false;
+---
+
+<LayoutV2 title="Admin Login — Wayomile" description="Admin sign-in." hideFooter>
+	<main class="wrap page-top sec" style="max-width:26rem">
+		<h1 class="d2">Admin</h1>
+		<p class="lede" style="margin-top:0.75rem">Sign in with your admin account.</p>
+
+		<form id="admin-login-form" style="margin-top:2.5rem">
+			<label class="field-label">
+				<span>Email</span>
+				<input required name="email" type="email" class="field" placeholder="you@vitalgreenz.in" autocomplete="username" />
+			</label>
+			<label class="field-label" style="margin-top:1.5rem">
+				<span>Password</span>
+				<input required name="password" type="password" class="field" placeholder="••••••••" autocomplete="current-password" />
+			</label>
+
+			<button type="submit" class="btn btn-dark" style="margin-top:2rem;width:100%;justify-content:center">
+				Sign in
+			</button>
+
+			<p id="login-error" class="note" hidden style="border-color:var(--accent);color:var(--accent)"></p>
+		</form>
+	</main>
+</LayoutV2>
+
+<script>
+	const form = document.getElementById('admin-login-form') as HTMLFormElement | null;
+	const errorEl = document.getElementById('login-error');
+
+	form?.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		if (!errorEl) return;
+		errorEl.hidden = true;
+
+		const data = Object.fromEntries(new FormData(form).entries());
+		try {
+			const res = await fetch('/api/admin/login', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data),
+			});
+			const out = await res.json();
+			if (!res.ok || !out.ok) {
+				errorEl.textContent = out.error || 'Sign-in failed.';
+				errorEl.hidden = false;
+				return;
+			}
+			window.location.href = '/admin';
+		} catch {
+			errorEl.textContent = 'Something went wrong. Please try again.';
+			errorEl.hidden = false;
+		}
+	});
+</script>

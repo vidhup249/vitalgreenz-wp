@@ -1,0 +1,69 @@
+---
+interface OrderRow {
+	id: string;
+	order_number: string;
+	status: string;
+	placed_at: string;
+	total_amount: number;
+	currency: string;
+	discount_coupon_code: string | null;
+	vstep_reference_id: string | null;
+	customers: { full_name: string; mobile_number: string } | null;
+}
+
+interface Props {
+	orders: OrderRow[];
+	statusLabel: Record<string, string>;
+}
+
+const { orders, statusLabel } = Astro.props;
+
+const istTime = (iso: string) =>
+	new Date(iso).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+
+const fmt = (value: number) =>
+	`₹${value.toLocaleString('en-IN', { minimumFractionDigits: value % 1 === 0 ? 0 : 2, maximumFractionDigits: 2 })}`;
+---
+
+<div class="admin-table-wrap">
+	<table class="admin-table">
+		<thead>
+			<tr>
+				<th>Order</th>
+				<th>Placed</th>
+				<th>Customer</th>
+				<th>Status</th>
+				<th>Total</th>
+				<th>Coupon / V-STEP ref</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				orders.length === 0 ? (
+					<tr>
+						<td colspan="6">No orders in this range.</td>
+					</tr>
+				) : (
+					orders.map((o) => (
+						<tr>
+							<td>{o.order_number}</td>
+							<td>{istTime(o.placed_at)}</td>
+							<td>
+								{o.customers?.full_name || '—'}
+								<br />
+								<span class="admin-table-mute">{o.customers?.mobile_number}</span>
+							</td>
+							<td>
+								<span class={`admin-status admin-status--${o.status}`}>
+									{statusLabel[o.status] || o.status}
+								</span>
+							</td>
+							<td>{fmt(Number(o.total_amount))}</td>
+							<td>{o.discount_coupon_code || o.vstep_reference_id || '—'}</td>
+						</tr>
+					))
+				)
+			}
+		</tbody>
+	</table>
+</div>

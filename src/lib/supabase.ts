@@ -43,9 +43,14 @@ export function getSupabase(): SupabaseClient {
 	return _supabase;
 }
 
-let _supabaseAdmin: SupabaseClient | null = null;
+// Typed against the `shop` schema specifically — createClient()'s inferred
+// return type changes shape with `db.schema`, so the bare `SupabaseClient`
+// alias (which defaults to "public") doesn't match what this actually returns.
+type SupabaseAdminClient = SupabaseClient<any, any, 'shop'>;
+
+let _supabaseAdmin: SupabaseAdminClient | null = null;
 /** Service-role client — full access, bypasses RLS. SERVER-ONLY. */
-export function getSupabaseAdmin(): SupabaseClient {
+export function getSupabaseAdmin(): SupabaseAdminClient {
 	if (!URL || !SERVICE_ROLE_KEY) {
 		throw new Error(
 			'Supabase admin client is not configured (missing PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY).'

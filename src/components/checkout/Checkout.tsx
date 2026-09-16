@@ -130,6 +130,12 @@ export default function Checkout() {
 						<Field name="state" label="State" required placeholder="State" />
 						<Field name="pincode" label="PIN code" required placeholder="6-digit PIN" />
 					</div>
+
+					<h2 className="mt-10 text-xl font-bold">Got a code?</h2>
+					<div className="mt-4 grid gap-4 sm:grid-cols-2">
+						<Field name="discountCoupon" label="Discount coupon" placeholder="Optional" />
+						<Field name="vstepReferenceId" label="V-STEP reference ID" placeholder="Optional" />
+					</div>
 				</form>
 
 				{/* Payment */}
