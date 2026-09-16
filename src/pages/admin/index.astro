@@ -73,11 +73,16 @@ const STATUS_LABEL: Record<string, string> = {
 	<main class="wrap page-top sec">
 		<div class="head-row">
 			<h1 class="d2">Orders</h1>
-			<form action="/api/admin/logout" method="post">
-				<button type="submit" class="btn btn-outline-light" style="color:var(--ink);border-color:var(--line-2)">
-					Sign out
-				</button>
-			</form>
+			<div style="display:flex;gap:0.75rem">
+				<a href="/admin/certifications" class="btn btn-outline-light" style="color:var(--ink);border-color:var(--line-2)">
+					Certifications
+				</a>
+				<form action="/api/admin/logout" method="post">
+					<button type="submit" class="btn btn-outline-light" style="color:var(--ink);border-color:var(--line-2)">
+						Sign out
+					</button>
+				</form>
+			</div>
 		</div>
 
 		{

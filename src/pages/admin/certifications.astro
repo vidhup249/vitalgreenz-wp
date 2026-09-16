@@ -1,0 +1,69 @@
+---
+export const prerender = false;
+
+import LayoutV2 from '../../layouts/LayoutV2.astro';
+import { getCertifications } from '../../lib/certifications';
+
+const certs = await getCertifications();
+const byKey = Object.fromEntries(certs.map((c) => [c.key, c]));
+
+const FIELDS = [
+	{ key: 'fssai', label: 'FSSAI license number', placeholder: '14-digit license number' },
+	{ key: 'tea_board', label: 'Tea Board of India registration', placeholder: 'e.g. TB|LC|TM|BLF|TR-10007' },
+	{ key: 'spices_board', label: 'Spices Board certificate number', placeholder: 'Certificate number' },
+	{ key: 'apeda', label: 'APEDA RCMC number', placeholder: 'RCMC number' },
+];
+---
+
+<LayoutV2 title="Certifications — Wayomile" description="Manage government certification numbers." hideFooter>
+	<main class="wrap page-top sec" style="max-width:34rem">
+		<div class="head-row">
+			<h1 class="d2">Certifications</h1>
+			<a href="/admin" class="btn btn-outline-light" style="color:var(--ink);border-color:var(--line-2)">← Orders</a>
+		</div>
+		<p class="lede" style="margin-top:0.75rem">
+			These numbers power the trust badges on product pages, the site footer and checkout. Changes go
+			live immediately — no redeploy needed. Leave a field blank to hide that badge everywhere.
+		</p>
+
+		<form id="cert-form" style="margin-top:2.5rem">
+			{
+				FIELDS.map((f, i) => (
+					<label class="field-label" style={i > 0 ? 'margin-top:1.5rem' : ''}>
+						<span>{f.label}</span>
+						<input name={f.key} class="field" placeholder={f.placeholder} value={byKey[f.key]?.number || ''} />
+					</label>
+				))
+			}
+
+			<button type="submit" class="btn btn-dark" style="margin-top:2rem">Save changes</button>
+			<p id="cert-note" class="note" hidden style="border-color:var(--accent);color:var(--accent)" />
+		</form>
+	</main>
+</LayoutV2>
+
+<script>
+	const form = document.getElementById('cert-form') as HTMLFormElement | null;
+	const note = document.getElementById('cert-note');
+
+	form?.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		if (!note) return;
+		note.hidden = true;
+
+		const data = Object.fromEntries(new FormData(form).entries());
+		try {
+			const res = await fetch('/api/admin/certifications', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data),
+			});
+			const out = await res.json();
+			note.textContent = res.ok && out.ok ? 'Saved — live everywhere now.' : out.error || 'Save failed.';
+			note.hidden = false;
+		} catch {
+			note.textContent = 'Something went wrong. Please try again.';
+			note.hidden = false;
+		}
+	});
+</script>

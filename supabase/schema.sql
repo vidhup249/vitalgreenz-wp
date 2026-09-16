@@ -196,6 +196,40 @@ create table if not exists newsletter_subscribers (
 create index if not exists newsletter_subscribers_customer_id_idx on newsletter_subscribers (customer_id);
 
 -- ---------------------------------------------------------------------------
+-- certifications
+-- ---------------------------------------------------------------------------
+-- Government certification numbers (FSSAI, Tea Board, Spices Board, APEDA)
+-- shown as trust badges on product pages, the footer and checkout. Admin-
+-- editable at /admin/certifications — a badge only renders once `number` is
+-- non-null, so leaving a field blank hides it everywhere rather than showing
+-- a fabricated/placeholder value.
+create table if not exists certifications (
+	key           text primary key,
+	label         text not null,
+	number        text,
+	number_label  text not null default 'Reg.',
+	blurb         text not null default '',
+	-- Product types this claim applies to ('tea' | 'spice' | 'kombucha').
+	-- Null = applies to every product (e.g. FSSAI, APEDA).
+	applies_to    text[],
+	updated_at    timestamptz not null default now(),
+	updated_by    text
+);
+
+-- Seed the four known certifications. Re-running this script is safe — it
+-- never overwrites a number the admin has since edited via the dashboard.
+insert into certifications (key, label, number, number_label, blurb, applies_to) values
+	('fssai', 'FSSAI Certified', '11324011001462', 'Lic No.',
+		'Formulated, processed and packaged in hygienic FSSAI-audited facilities.', null),
+	('tea_board', 'Tea Board of India', 'TB|LC|TM|BLF|TR-10007 & TB|LC|TM|KE-10001', 'Reg.',
+		'Direct sourcing from registered small tea growers across India.', array['tea']),
+	('spices_board', 'Spices Board India', null, 'Cert.',
+		'100% natural, unadulterated whole & ground spices.', array['spice']),
+	('apeda', 'APEDA Registered', null, 'Reg.',
+		'Registered for export of agricultural & processed food products.', null)
+on conflict (key) do nothing;
+
+-- ---------------------------------------------------------------------------
 -- Row Level Security — lock every table to server-side (service_role) access
 -- only. The browser's anon key gets no policies, so it can't read or write
 -- any of this directly; all access goes through API routes using
@@ -205,6 +239,7 @@ alter table customers enable row level security;
 alter table orders enable row level security;
 alter table order_items enable row level security;
 alter table newsletter_subscribers enable row level security;
+alter table certifications enable row level security;
 
 -- ---------------------------------------------------------------------------
 -- Grants — RLS and schema/table grants are separate Postgres privilege

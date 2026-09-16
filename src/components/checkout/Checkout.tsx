@@ -2,9 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { cartItems, cartSubtotal, setQty, removeItem, clearCart } from '../../stores/cart';
 import { formatINR } from '../../lib/format';
-import { certsFor } from '../../lib/certifications';
-
-const trustCerts = certsFor();
+import type { Certification } from '../../lib/certifications';
 
 const FREE_SHIP_THRESHOLD = 50000; // ₹500
 const FLAT_SHIP = 4900; // ₹49
@@ -32,6 +30,7 @@ export default function Checkout() {
 	const items = useStore(cartItems);
 	const subtotal = useStore(cartSubtotal);
 	const [error, setError] = useState<string | null>(null);
+	const [trustCerts, setTrustCerts] = useState<Certification[]>([]);
 	const formRef = useRef<HTMLFormElement>(null);
 	const paypalRef = useRef<HTMLDivElement>(null);
 	const wooOrderIdRef = useRef<number | null>(null);
@@ -39,6 +38,13 @@ export default function Checkout() {
 
 	const shipping = subtotal >= FREE_SHIP_THRESHOLD || subtotal === 0 ? 0 : FLAT_SHIP;
 	const total = subtotal + shipping;
+
+	useEffect(() => {
+		fetch('/api/certifications')
+			.then((res) => res.json())
+			.then((data) => setTrustCerts(data.certs || []))
+			.catch(() => {});
+	}, []);
 
 	useEffect(() => {
 		if (!CLIENT_ID || items.length === 0 || renderedRef.current || !paypalRef.current) return;

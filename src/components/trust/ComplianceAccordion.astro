@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 import { certsFor, type ProductType } from '../../lib/certifications';
 
 interface Props {
@@ -6,42 +8,41 @@ interface Props {
 }
 
 const { productType } = Astro.props;
-const certs = certsFor(productType);
+const certs = await certsFor(productType);
 ---
 
 {
 	certs.length > 0 && (
-		<details class="compliance">
-			<summary>
-				Purity, Safety &amp; Regulatory Compliance
-				<span class="compliance-chevron" aria-hidden="true">
-					+
-				</span>
-			</summary>
-			<ul>
-				{certs.map((c) => (
+		<section class="wrap sec" style="border-top:1px solid var(--line)">
+			<details class="compliance">
+				<summary>
+					Purity, Safety &amp; Regulatory Compliance
+					<span class="compliance-chevron" aria-hidden="true">
+						+
+					</span>
+				</summary>
+				<ul>
+					{certs.map((c) => (
+						<li>
+							<strong>{c.label}</strong>
+							<span class="compliance-num">
+								{c.numberLabel} <code>{c.number}</code>
+							</span>
+							<p>{c.blurb}</p>
+						</li>
+					))}
 					<li>
-						<strong>{c.label}</strong>
-						<span class="compliance-num">
-							{c.numberLabel} <code>{c.number}</code>
-						</span>
-						<p>{c.blurb}</p>
+						<strong>Quality &amp; Chemical Testing</strong>
+						<p>Screened for heavy metals and pesticide residue against safe limits. Zero added chemical preservatives.</p>
 					</li>
-				))}
-				<li>
-					<strong>Quality &amp; Chemical Testing</strong>
-					<p>Screened for heavy metals and pesticide residue against safe limits. Zero added chemical preservatives.</p>
-				</li>
-			</ul>
-		</details>
+				</ul>
+			</details>
+		</section>
 	)
 }
 
 <style>
 	.compliance {
-		margin-top: 2rem;
-		padding-top: 1.5rem;
-		border-top: 1px solid var(--line);
 		max-width: 68ch;
 	}
 	.compliance summary {

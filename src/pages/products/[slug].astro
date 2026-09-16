@@ -14,7 +14,7 @@ import {
 	stripHtml,
 	type WooProduct,
 } from '../../lib/woocommerce';
-import { certsFor, productTypeOf } from '../../lib/certifications';
+import { productTypeOf } from '../../lib/certifications';
 
 export async function getStaticPaths() {
 	const products = orderProducts(await getProducts(100));
@@ -60,7 +60,6 @@ const showDetails = longText.length > 0 && longText !== shortText;
 
 const trust = ['Empowering Small Tea Growers', 'Sustainably Cultivated', 'Crafted for Exceptional Taste'];
 const productType = productTypeOf(brandOf(product));
-const hasCompliance = certsFor(productType).length > 0;
 
 // Product structured data — lets search engines show price/availability/
 // rating directly in results. Store API is India-only (₹), so the currency
@@ -180,7 +179,7 @@ const productJsonLd = {
 						{trust.map((t) => <li>{t}</li>)}
 					</ul>
 
-					<TrustBadgeStrip productType={productType} />
+					<TrustBadgeStrip productType={productType} server:defer />
 				</div>
 			</div>
 		</div>
@@ -191,17 +190,10 @@ const productJsonLd = {
 				<section class="wrap sec" style="border-top:1px solid var(--line)">
 					<h2 class="d3" data-anim="up">Details</h2>
 					<div class="prose-tea" data-anim="up" style="--anim-delay:100ms;margin-top:1.5rem;max-width:68ch" set:html={product.description} />
-					<ComplianceAccordion productType={productType} />
 				</section>
 			)
 		}
-		{
-			!showDetails && hasCompliance && (
-				<section class="wrap sec" style="border-top:1px solid var(--line)">
-					<ComplianceAccordion productType={productType} />
-				</section>
-			)
-		}
+		<ComplianceAccordion productType={productType} server:defer />
 
 		<!-- Related -->
 		{

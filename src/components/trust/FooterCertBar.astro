@@ -1,7 +1,9 @@
 ---
+export const prerender = false;
+
 import { certsFor } from '../../lib/certifications';
 
-const certs = certsFor();
+const certs = await certsFor();
 ---
 
 {

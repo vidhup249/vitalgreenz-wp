@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 import { certsFor, type ProductType } from '../../lib/certifications';
 
 interface Props {
@@ -6,7 +8,7 @@ interface Props {
 }
 
 const { productType } = Astro.props;
-const certs = certsFor(productType);
+const certs = await certsFor(productType);
 ---
 
 {
